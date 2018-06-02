@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <style>
+        @import url('../node_modules/bulma/css/bulma.css');
+    </style>
+</head>
+
+<body>
+    <section class="section">
+        <div class="container">
+            <div id="app"></div>
+        </div>
+    </section>
+</body>
+
+<script>
+    import Vue from 'vue';
+    import App from './app/App';
+
+    const app = new Vue(App).$mount('#app');
+</script>
+
+</html>
