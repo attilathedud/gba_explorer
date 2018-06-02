@@ -1,0 +1,9 @@
+@import '../../node_modules/bulma/bulma.sass';
+
+@import 'components/FileSelector';
+
+html {
+    background: #282c34;
+}
+
+::-webkit-scrollbar { display: none; }

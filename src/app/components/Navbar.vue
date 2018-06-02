@@ -1,6 +1,12 @@
 <template>
     <div>
-        <div v-for="item in categories" v-bind:key="item" v-on:click="$emit('item-picked', item)">{{item}}</div>
+        <aside class="menu">
+            <ul class="menu-list">
+                <li v-for="item in categories" v-bind:key="item" v-on:click="itemPicked(item)">
+                    <a :class="{'is-active':item == selected}">{{item}}</a>
+                </li>
+            </ul>
+        </aside>
     </div>
 </template>
 
@@ -9,7 +15,14 @@ export default {
     name: 'Navbar',
     data: function () {
         return {
-            categories: ['Header']
+            categories: ['Header'],
+            selected: ""
+        }
+    },
+    methods: {
+        itemPicked( item ) {
+            this.selected = item;
+            this.$emit('item-picked', item);
         }
     }
 };

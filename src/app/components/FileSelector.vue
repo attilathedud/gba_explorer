@@ -1,6 +1,12 @@
 <template>
-    <div>
-        <button v-on:click="chooseFile">Choose</button>
+    <div class="item-app-centered file-selector-box">
+        <div class="box">
+            <h3 class="is-size-3">Start Exploring!</h3>
+            <p>Please choose a .gba file to explore.</p>
+            <div class="item-app-centered">
+                <button class="button is-medium choose-file-button" v-on:click="chooseFile">Choose</button>
+            </div>
+        </div>
     </div>
 </template>
 

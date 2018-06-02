@@ -3,10 +3,14 @@
         <FileSelector v-on:file-picked="onFilePicked"></FileSelector>
     </div>
     <div v-else>
-        <Navbar v-on:item-picked="onItemPicked"></Navbar>
-        <div>
+      <div class="columns">
+        <div class="column is-one-quarter">
+            <Navbar v-on:item-picked="onItemPicked"></Navbar>
+        </div>
+        <div class="column">
             <HeaderInfo v-if="section == 'Header'" v-bind:rom=romData></HeaderInfo>
         </div>
+      </div>
     </div>
 </template>
 
@@ -24,7 +28,7 @@ export default {
   },
   data: {
     romData: Buffer.alloc(0),
-    section: ''
+    section: ""
   },
   methods: {
     onFilePicked: function(data) {
