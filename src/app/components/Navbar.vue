@@ -16,7 +16,7 @@ export default {
     data: function () {
         return {
             categories: ['Header'],
-            selected: ""
+            selected: 'Header'
         }
     },
     methods: {

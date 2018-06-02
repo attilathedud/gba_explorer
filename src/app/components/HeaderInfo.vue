@@ -1,8 +1,43 @@
 <template>
     <div>
-        {{gameTitle}}
-        {{gameCode}}
-        {{makerCode}}
+        <div class="field">
+            <label class="label">ROM Entry Point</label>
+            <div class="control">
+                <input class="input" type="text" v-model="romEntryPoint">
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">Debugging Enabled</label>
+            <div class="control">
+                <div class="select">
+                <select v-model="debuggingEnabled">
+                    <option value="21">0x21 (Disabled)</option>
+                    <option value="a5">0xa5 (Enabled)</option>
+                </select>
+                </div>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">Game Title</label>
+            <div class="control">
+                <input class="input" type="text" v-model="gameTitle">
+                <p class="help">{{gameTitleBytes}}</p>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">Game Code</label>
+            <div class="control">
+                <input class="input" type="text" v-model="gameCode">
+                <p class="help">{{gameCodeBytes}}</p>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">Maker Code</label>
+            <div class="control">
+                <input class="input" type="text" v-model="makerCode">
+                <p class="help">{{makerCodeBytes}}</p>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -11,8 +46,13 @@ export default {
     name: 'HeaderInfo',
     data: function () {
         return {
+            romEntryPoint : '',
+            debuggingEnabled : '',
+            gameTitleBytes : '',
             gameTitle : '',
+            gameCodeBytes : '',
             gameCode : '',
+            makerCodeBytes : '',
             makerCode : ''
         }
     },
@@ -20,13 +60,32 @@ export default {
         rom : Buffer
     },
     created: function() {
-        for( var i = 0xA0; i <= 0xAB; i++ ) {
+        for( var i = 0; i < 4; i++ ) {
+            this.romEntryPoint += Number(this.rom[i]).toString(16).padStart(2, '0');
+        }
+
+        this.debuggingEnabled = Number(this.rom[0x9c]).toString(16).padStart(2, '0');
+
+        for( var i = 0xa0; i < (0xa0 + 12); i++ ) {
+            this.gameTitleBytes += Number(this.rom[i]).toString(16).padStart(2, '0') + " ";
             if(this.rom[i] !== 0) {
                 this.gameTitle += String.fromCharCode(this.rom[i]);
             }
         }
-        this.gameCode = this.rom[0xAC];
-        this.makerCode = this.rom[0xB0];
+
+        for( var i = 0xac; i < (0xac + 4); i++ ) {
+            this.gameCodeBytes += Number(this.rom[i]).toString(16).padStart(2, '0') + " ";
+            if(this.rom[i] !== 0) {
+                this.gameCode += String.fromCharCode(this.rom[i]);
+            }
+        }
+
+        for( var i = 0xb0; i < (0xb0 + 2); i++ ) {
+            this.makerCodeBytes += Number(this.rom[i]).toString(16).padStart(2, '0') + " ";
+            if(this.rom[i] !== 0) {
+                this.makerCode += String.fromCharCode(this.rom[i]);
+            }
+        }
     }
 };
 </script>

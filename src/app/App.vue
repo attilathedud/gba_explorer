@@ -28,7 +28,7 @@ export default {
   },
   data: {
     romData: Buffer.alloc(0),
-    section: ""
+    section: 'Header'
   },
   methods: {
     onFilePicked: function(data) {
