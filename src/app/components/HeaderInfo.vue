@@ -11,8 +11,8 @@
             <div class="control">
                 <div class="select">
                 <select v-model="debuggingEnabled">
-                    <option value="21">0x21 (Disabled)</option>
-                    <option value="a5">0xa5 (Enabled)</option>
+                    <option value="21">21 (Disabled)</option>
+                    <option value="a5">a5 (Enabled)</option>
                 </select>
                 </div>
             </div>
@@ -38,6 +38,12 @@
                 <p class="help">{{makerCodeBytes}}</p>
             </div>
         </div>
+        <div class="field">
+            <label class="label">Software Version</label>
+            <div class="control">
+                <input class="input" type="text" v-model="softwareVersion">
+            </div>
+        </div>
     </div>
 </template>
 
@@ -53,7 +59,8 @@ export default {
             gameCodeBytes : '',
             gameCode : '',
             makerCodeBytes : '',
-            makerCode : ''
+            makerCode : '',
+            softwareVersion : ''
         }
     },
     props: {
@@ -86,6 +93,8 @@ export default {
                 this.makerCode += String.fromCharCode(this.rom[i]);
             }
         }
+
+        this.softwareVersion = Number(this.rom[0xbc]).toString(16).padStart(2, '0');
     }
 };
 </script>
