@@ -6435,3 +6435,7 @@ html {
 
 ::-webkit-scrollbar {
   display: none; }
+
+.main-section {
+  overflow-y: auto;
+  max-height: 90vh; }

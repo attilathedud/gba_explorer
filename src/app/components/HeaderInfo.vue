@@ -12,7 +12,7 @@
                 <div class="select">
                 <select v-model="debuggingEnabled">
                     <option value="21">21 (Disabled)</option>
-                    <option value="a5">a5 (Enabled)</option>
+                    <option value="A5">A5 (Enabled)</option>
                 </select>
                 </div>
             </div>
@@ -68,33 +68,33 @@ export default {
     },
     created: function() {
         for( var i = 0; i < 4; i++ ) {
-            this.romEntryPoint += Number(this.rom[i]).toString(16).padStart(2, '0');
+            this.romEntryPoint += Number(this.rom[i]).toString(16).toUpperCase().padStart(2, '0');
         }
 
-        this.debuggingEnabled = Number(this.rom[0x9c]).toString(16).padStart(2, '0');
+        this.debuggingEnabled = Number(this.rom[0x9c]).toString(16).toUpperCase().padStart(2, '0');
 
         for( var i = 0xa0; i < (0xa0 + 12); i++ ) {
-            this.gameTitleBytes += Number(this.rom[i]).toString(16).padStart(2, '0') + " ";
+            this.gameTitleBytes += Number(this.rom[i]).toString(16).toUpperCase().padStart(2, '0') + " ";
             if(this.rom[i] !== 0) {
                 this.gameTitle += String.fromCharCode(this.rom[i]);
             }
         }
 
         for( var i = 0xac; i < (0xac + 4); i++ ) {
-            this.gameCodeBytes += Number(this.rom[i]).toString(16).padStart(2, '0') + " ";
+            this.gameCodeBytes += Number(this.rom[i]).toString(16).toUpperCase().padStart(2, '0') + " ";
             if(this.rom[i] !== 0) {
                 this.gameCode += String.fromCharCode(this.rom[i]);
             }
         }
 
         for( var i = 0xb0; i < (0xb0 + 2); i++ ) {
-            this.makerCodeBytes += Number(this.rom[i]).toString(16).padStart(2, '0') + " ";
+            this.makerCodeBytes += Number(this.rom[i]).toString(16).toUpperCase().padStart(2, '0') + " ";
             if(this.rom[i] !== 0) {
                 this.makerCode += String.fromCharCode(this.rom[i]);
             }
         }
 
-        this.softwareVersion = Number(this.rom[0xbc]).toString(16).padStart(2, '0');
+        this.softwareVersion = Number(this.rom[0xbc]).toString(16).toUpperCase().padStart(2, '0');
     }
 };
 </script>

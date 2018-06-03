@@ -15,7 +15,7 @@ export default {
     name: 'Navbar',
     data: function () {
         return {
-            categories: ['Header'],
+            categories: ['Header', 'Hex View'],
             selected: 'Header'
         }
     },
