@@ -2,7 +2,7 @@
   "name": "gba_explorer",
   "productName": "gba_explorer",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
@@ -37,8 +37,8 @@
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
       "github_repository": {
-        "owner": "",
-        "name": ""
+        "owner": "attilathedud",
+        "name": "https://github.com/attilathedud/gba_explorer"
       },
       "windowsStoreConfig": {
         "packageName": "",
