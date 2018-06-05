@@ -1,0 +1,9 @@
+.hex-view-holder {
+    overflow-y: hidden;
+    height: 100%;
+
+    & table > tbody > tr > td {
+        cursor: pointer;
+        user-select: none;
+    }
+}

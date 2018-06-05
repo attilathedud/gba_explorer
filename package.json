@@ -52,8 +52,7 @@
     "electron-devtools-installer": "^2.2.4",
     "electron-squirrel-startup": "^1.0.0",
     "eslint": "^4.19.1",
-    "vue": "^2.5.16",
-    "vue-scrollmonitor": "^0.1.0"
+    "vue": "^2.5.16"
   },
   "devDependencies": {
     "babel-plugin-transform-async-to-generator": "^6.24.1",

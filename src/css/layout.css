@@ -6430,11 +6430,15 @@ label.panel-block {
 .choose-file-button {
   margin-top: 20px; }
 
+.hex-view-holder {
+  overflow-y: hidden;
+  height: 100%; }
+  .hex-view-holder table > tbody > tr > td {
+    cursor: pointer;
+    user-select: none; }
+
 html {
   background: #282c34; }
-
-::-webkit-scrollbar {
-  display: none; }
 
 .main-section {
   overflow-y: auto;
