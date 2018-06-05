@@ -87,7 +87,7 @@ export default {
     mounted: function() {
         document.getElementById('hex-view').addEventListener('wheel', this.handleScroll);
     },
-    destroyed: function () {
+    unmounted: function () {
         document.getElementById('hex-view').removeEventListener('wheel', this.handleScroll);
     }
 };
