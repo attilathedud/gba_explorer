@@ -55,6 +55,7 @@
     "electron-compile": "^6.4.2",
     "electron-devtools-installer": "^2.2.4",
     "electron-squirrel-startup": "^1.0.0",
+    "simple-web-worker": "^1.2.0",
     "vue": "^2.5.16"
   },
   "devDependencies": {
