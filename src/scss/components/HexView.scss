@@ -2,8 +2,13 @@
     overflow-y: hidden;
     height: 100%;
 
-    & table > tbody > tr > td {
-        cursor: pointer;
-        user-select: none;
+    & table {
+        width: 100%;
+
+        > tbody > tr > td {
+            cursor: pointer;
+            user-select: none;
+        }
     }
+
 }

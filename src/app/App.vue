@@ -3,15 +3,10 @@
         <FileSelector v-on:file-picked="onFilePicked"></FileSelector>
     </div>
     <div v-else>
-      <div class="columns">
-        <div class="column is-one-quarter">
-            <Navbar v-on:item-picked="onItemPicked"></Navbar>
-        </div>
-        <div class="column main-section">
-            <HeaderInfo v-if="section == 'Header'" v-bind:rom=romData></HeaderInfo>
-            <HexView v-if="section == 'Hex View'" v-bind:rom=romData></HexView>
-        </div>
-      </div>
+      <Navbar v-on:item-picked="onItemPicked"></Navbar>
+      <HeaderInfo v-if="section == 'Header'" v-bind:rom=romData></HeaderInfo>
+      <HexView v-if="section == 'Hex View'" v-bind:rom=romData></HexView>
+      <Strings v-if="section == 'Strings'" v-bind:rom=romData></Strings>
     </div>
 </template>
 
@@ -21,13 +16,15 @@ import Navbar from "./components/Navbar.vue";
 
 import HeaderInfo from "./components/HeaderInfo.vue";
 import HexView from "./components/HexView.vue";
+import Strings from "./components/Strings.vue";
 
 export default {
   components: {
     FileSelector,
     Navbar,
     HeaderInfo,
-    HexView
+    HexView,
+    Strings
   },
   data: {
     romData: Buffer.alloc(0),

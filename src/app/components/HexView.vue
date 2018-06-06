@@ -1,4 +1,5 @@
 <template>
+    <!-- Wire up search box -->
     <div class="hex-view-holder">
         <table id="hex-view" class="table is-striped is-narrow is-hoverable">
             <tbody>
@@ -36,6 +37,7 @@ export default {
     methods: {
         handleScroll: function(event) {
             if(event.deltaY > 0) {
+                //todo: don't allow scroll past end of byte buffer (this.rom.byteLength)
                 this.addresses.shift();
                 this.addresses.push(Number(parseInt(this.addresses[this.addresses.length - 1],16) + 16).toString(16).toUpperCase().padStart(8, '0'));
 

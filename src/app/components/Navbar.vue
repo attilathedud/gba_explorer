@@ -1,12 +1,10 @@
 <template>
-    <div>
-        <aside class="menu">
-            <ul class="menu-list">
-                <li v-for="item in categories" v-bind:key="item" v-on:click="itemPicked(item)">
-                    <a :class="{'is-active':item == selected}">{{item}}</a>
-                </li>
-            </ul>
-        </aside>
+    <div class="tabs is-full-width">
+        <ul>
+            <li v-for="item in categories" v-bind:key="item" v-on:click="itemPicked(item)" :class="{'is-active':item == selected}">
+                <a>{{item}}</a>
+            </li>
+        </ul>
     </div>
 </template>
 
@@ -15,7 +13,7 @@ export default {
     name: 'Navbar',
     data: function () {
         return {
-            categories: ['Header', 'Hex View'],
+            categories: ['Header', 'Hex View', 'Strings'],
             selected: 'Header'
         }
     },
