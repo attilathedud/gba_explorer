@@ -6,14 +6,10 @@ $text-strong: hsl(0, 0%, 86%);
 
 @import 'components/FileSelector';
 @import 'components/HexView';
+@import 'components/Strings';
 
 html {
     background: #282c34;
-}
-
-.main-section {
-    overflow-y: auto;
-    max-height: 90vh;
 }
 
 .centered-horizontal {

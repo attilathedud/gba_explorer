@@ -1,8 +1,11 @@
 <template>
-    <div class="tabs is-full-width">
+    <div class="tabs is-right is-full-width">
         <ul>
-            <li v-for="item in categories" v-bind:key="item" v-on:click="itemPicked(item)" :class="{'is-active':item == selected}">
-                <a>{{item}}</a>
+            <li v-for="item in categories" v-bind:key="item.title" v-on:click="itemPicked(item.title)" :class="{'is-active':item.title == selected}">
+                <a>
+                    <span class="icon is-small"><i class="fas" :class="item.icon" aria-hidden="true"></i></span>
+                    <span>{{item.title}}</span>
+                </a>
             </li>
         </ul>
     </div>
@@ -13,7 +16,7 @@ export default {
     name: 'Navbar',
     data: function () {
         return {
-            categories: ['Header', 'Hex View', 'Strings'],
+            categories: [ {title : 'Header', icon: 'fa-file-alt'} , {title : 'Hex View', icon: 'fa-columns'}, {title : 'Strings', icon: 'fa-font'}],
             selected: 'Header'
         }
     },

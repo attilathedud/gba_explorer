@@ -1,6 +1,6 @@
 .hex-view-holder {
   overflow-y: hidden;
-  height: 100%; }
+  height: 80vh; }
   .hex-view-holder table {
     width: 100%; }
     .hex-view-holder table > tbody > tr > td {

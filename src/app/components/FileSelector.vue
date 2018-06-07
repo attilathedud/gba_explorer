@@ -1,13 +1,20 @@
 <template>
-    <div class="centered-horizontal centered-vertical">
-        <div class="box">
+    <article class="media box">
+    <figure class="media-left">
+        <span class="icon is-large">
+            <i class="fas fa-3x fa-gamepad"></i>
+        </span>
+    </figure>
+    <div class="media-content">
+        <div class="content">
             <h3 class="is-size-3 has-text-dark">Start Exploring!</h3>
             <p class="has-text-dark">Please choose a .gba file to explore.</p>
             <div class="centered-horizontal">
-                <button class="button is-medium choose-file-button" v-on:click="chooseFile">Choose</button>
+                <button class="button is-primary is-medium choose-file-button" v-on:click="chooseFile">Choose</button>
             </div>
         </div>
     </div>
+    </article>
 </template>
 
 <script>

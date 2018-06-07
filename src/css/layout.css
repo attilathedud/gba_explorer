@@ -6424,19 +6424,18 @@ label.panel-block {
 
 .hex-view-holder {
   overflow-y: hidden;
-  height: 100%; }
+  height: 80vh; }
   .hex-view-holder table {
     width: 100%; }
     .hex-view-holder table > tbody > tr > td {
       cursor: pointer;
       user-select: none; }
 
+.menu-description {
+  font-size: smaller; }
+
 html {
   background: #282c34; }
-
-.main-section {
-  overflow-y: auto;
-  max-height: 90vh; }
 
 .centered-horizontal {
   display: flex;
