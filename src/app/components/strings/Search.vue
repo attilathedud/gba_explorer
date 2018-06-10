@@ -15,6 +15,22 @@
         <div class="control">
             <button class="button is-medium" v-on:click="startSearch" :class="{'is-loading':isSearching}">Search</button>
         </div>
+        <div class="modal" :class="{'is-active':matches.length > 1}">
+            <div class="modal-background"></div>
+            <div class="modal-content">
+                <div class="box">
+                    <p class="has-text-grey-dark">There were multiple matches for the search. Please choose one to use.</p>
+                    <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+                        <tbody>
+                            <tr v-for="address in matches" v-bind:key="address.id">
+                                <td>{{address}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <button class="modal-close is-large" aria-label="close"></button>
+        </div>
     </div>
 </template>
 
@@ -28,7 +44,8 @@ export default {
         return {
             searchText: '',
             isSearching: false,
-            worker : {}
+            worker : {},
+            matches : []
         }
     },
     props: {
@@ -48,6 +65,7 @@ export default {
                         }
                     }
 
+                    //match_score >= searchText.length - fuzz - 1
                     if( match_score >= searchText.length - 1 - 1) {
                         matches.push(i);
                     }
@@ -63,7 +81,8 @@ export default {
 
             this.worker.postMessage('search', [this.rom, this.searchText])
                 .then(results => {
-                    this.$emit('search-finished', results.matches, results.searchText);
+                    //this.$emit('search-finished', results.matches, results.searchText);
+                    this.matches = results.matches;
                     this.isSearching = false;
                 });
         }

@@ -5,6 +5,7 @@
         </div>
         <div class="column">
             <Search v-if="section == 'Search'" v-bind:rom=rom v-on:search-finished="onSearchFinished"></Search>
+            <Dictionary v-if="section == 'Dictionary'" v-bind:rom=rom></Dictionary>
         </div>
     </div>
 </template>
@@ -13,12 +14,14 @@
 <script>
 import Search from "./strings/Search.vue";
 import Navbar from "./strings/Navbar.vue";
+import Dictionary from "./strings/Dictionary.vue";
 
 export default {
     name: 'Strings',
     components: {
         Search,
-        Navbar
+        Navbar,
+        Dictionary
     },
     data: function() {
         return {
@@ -32,9 +35,11 @@ export default {
         onSearchFinished: function(matches, searchText) {
             const rom = this.rom;
 
-            matches.forEach(function(address) {
+            
+
+            /*matches.forEach(function(address) {
                 console.log( address + " :: " + rom.slice(address, address+searchText.length)); 
-            });
+            });*/
         },
         onItemPicked: function(item) {
             this.section = item;
