@@ -1,2 +1,5 @@
 .menu-description {
   font-size: smaller; }
+
+.search-selector {
+  cursor: pointer; }

@@ -6434,6 +6434,9 @@ label.panel-block {
 .menu-description {
   font-size: smaller; }
 
+.search-selector {
+  cursor: pointer; }
+
 html {
   background: #282c34; }
 

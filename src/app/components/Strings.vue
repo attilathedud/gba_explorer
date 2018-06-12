@@ -32,10 +32,10 @@ export default {
         rom : Buffer
     },
     methods : {
-        onSearchFinished: function(matches, searchText) {
+        onSearchFinished: function(match, searchText) {
             const rom = this.rom;
 
-            
+            console.log(match);
 
             /*matches.forEach(function(address) {
                 console.log( address + " :: " + rom.slice(address, address+searchText.length)); 
