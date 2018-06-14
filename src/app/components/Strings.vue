@@ -5,7 +5,7 @@
         </div>
         <div class="column">
             <Search v-if="section == 'Search'" v-bind:rom=rom v-on:search-finished="onSearchFinished"></Search>
-            <Dictionary v-if="section == 'Dictionary'" v-bind:rom=rom></Dictionary>
+            <Dictionary v-if="section == 'Dictionary'" v-bind:rom=rom v-bind:dictionary=dictionary></Dictionary>
         </div>
     </div>
 </template>
@@ -25,7 +25,8 @@ export default {
     },
     data: function() {
         return {
-            section: 'Search'
+            section: 'Search',
+            dictionary: {}
         }
     },
     props: {
@@ -33,16 +34,37 @@ export default {
     },
     methods : {
         onSearchFinished: function(match, searchText) {
-            const rom = this.rom;
-
-            console.log(match);
-
-            /*matches.forEach(function(address) {
-                console.log( address + " :: " + rom.slice(address, address+searchText.length)); 
-            });*/
+            this.generateMatchDictionaryFromSearchText(this.rom.slice(match, match + (searchText.length * 2)), searchText);
+            this.fillMatchDictionary(searchText);
         },
         onItemPicked: function(item) {
             this.section = item;
+        },
+        generateMatchDictionaryFromSearchText: function(bytes, searchText) {
+            for(var i = 0; i < searchText.length - 1; i++) {
+                this.dictionary[searchText[i]] = [bytes[i*2], bytes[i*2+1]];
+            }
+        },
+        fillMatchDictionary: function(searchText) {
+            let lowerCaseMatches = searchText.match(/[a-z]/g);
+            if( lowerCaseMatches.length > 0 ) {
+                for( var i = 0; i < 26; i++ ) {
+                    let letter = String.fromCharCode(97 + i);
+
+                    this.dictionary[letter] = 
+                        [this.dictionary[lowerCaseMatches[0]][0] + (letter.codePointAt() - lowerCaseMatches[0].codePointAt()), this.dictionary[lowerCaseMatches[0]][1]];
+                }
+            }
+
+            let upperCaseMatches = searchText.match(/[A-Z]/g);
+            if( upperCaseMatches.length > 0 ) {
+                for( var i = 0; i < 26; i++ ) {
+                    let letter = String.fromCharCode(65 + i);
+
+                    this.dictionary[letter] = 
+                        [this.dictionary[upperCaseMatches[0]][0] + (letter.codePointAt() - upperCaseMatches[0].codePointAt()), this.dictionary[upperCaseMatches[0]][1]];
+                }
+            }
         }
     }
 };

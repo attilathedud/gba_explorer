@@ -7,8 +7,9 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-
+            <tr v-for="(letter,key) in dictionary" v-bind:key="letter.id">
+                <td>{{letter}}</td>
+                <td>{{key}}</td>
             </tr>
         </tbody>
     </table>        
@@ -23,7 +24,8 @@ export default {
         }
     },
     props: {
-        rom : Buffer
+        rom : Buffer,
+        dictionary: {}
     },
     methods : {
         
