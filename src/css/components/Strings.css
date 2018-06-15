@@ -3,3 +3,7 @@
 
 .search-selector {
   cursor: pointer; }
+
+.dictionary-display {
+  height: 80vh;
+  overflow-y: scroll; }

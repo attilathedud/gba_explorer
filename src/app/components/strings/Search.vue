@@ -1,12 +1,6 @@
 <template>
     <div v-on:keyup.esc="isPickingMatch=false">
         <p>Search for a string that exists within the game.</p><br>
-        <p>Avoid text:</p>
-        <div class="tags">
-            <span class="tag is-danger is-medium">On the Title Screen</span>
-            <span class="tag is-danger is-medium">On the HUD</span>
-            <span class="tag is-danger is-medium">That contains numbers or punctuation</span>
-        </div>
         <div class="field">
             <div class="control">
                 <input class="input" type="text" v-model="searchText" v-on:keyup.enter="startSearch">
