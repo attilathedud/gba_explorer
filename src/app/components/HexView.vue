@@ -1,6 +1,23 @@
 <template>
     <!-- Wire up search box -->
     <div class="hex-view-holder">
+        <div class="field has-addons">
+            <p class="control">
+                <span class="select">
+                <select v-model="searchType">
+                    <option>Offset</option>
+                    <option>Bytes</option>
+                    <option>Text</option>
+                </select>
+                </span>
+            </p>
+            <p class="control is-expanded">
+                <input class="input" type="text" v-model="searchText" v-on:keyup.enter="startSearch">
+            </p>
+            <p class="control">
+                <a class="button" v-on:click="startSearch">Search</a>
+            </p>
+        </div>
         <table id="hex-view" class="table is-striped is-narrow is-hoverable">
             <tbody>
                 <tr v-for="(address, index) in addresses" v-bind:key="address.id">
@@ -28,7 +45,9 @@ export default {
             addresses : [],
             ascii: [],
             initialEntries: 400,
-            selected: ''
+            selected: '',
+            searchText: '',
+            searchType: 'Offset'
         }
     },
     props: {
@@ -74,6 +93,31 @@ export default {
         },
         byteClicked: function( byte, address ) {
             this.selected = byte + address;
+        },
+        startSearch: function() {
+            this.addresses = [];
+            this.romData = [];
+            this.ascii = [];
+
+            if( this.searchType === "Offset") {
+                let searchTextParsed = Number(parseInt(this.searchText, 16));
+                searchTextParsed = searchTextParsed - (searchTextParsed % 16);
+
+                for( const b of this.rom.slice(searchTextParsed, this.initialEntries + searchTextParsed) ) {
+                    this.romData.push(Number(b).toString(16).toUpperCase().padStart(2, '0'));
+                    this.ascii.push(String.fromCharCode(b));
+                }
+
+                for( var i = searchTextParsed; i < this.initialEntries + searchTextParsed; i += 16 ) {
+                    this.addresses.push(Number(i).toString(16).toUpperCase().padStart(8, '0'));
+                }
+            }
+            else if (this.searchType === "Bytes") {
+                
+            }
+            else if (this.searchType === "Text") {
+
+            }
         }
     },
     created: function() {
