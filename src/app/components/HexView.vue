@@ -99,24 +99,34 @@ export default {
             this.romData = [];
             this.ascii = [];
 
+            let offset = 0;
+
             if( this.searchType === "Offset") {
-                let searchTextParsed = Number(parseInt(this.searchText, 16));
-                searchTextParsed = searchTextParsed - (searchTextParsed % 16);
-
-                for( const b of this.rom.slice(searchTextParsed, this.initialEntries + searchTextParsed) ) {
-                    this.romData.push(Number(b).toString(16).toUpperCase().padStart(2, '0'));
-                    this.ascii.push(String.fromCharCode(b));
-                }
-
-                for( var i = searchTextParsed; i < this.initialEntries + searchTextParsed; i += 16 ) {
-                    this.addresses.push(Number(i).toString(16).toUpperCase().padStart(8, '0'));
-                }
+                offset = Number(parseInt(this.searchText, 16));
             }
             else if (this.searchType === "Bytes") {
-                
+                let byte_array = [];
+                let searchTextParsed = this.searchText.match(/.{2}/g);
+
+                for( var byte of searchTextParsed ) {
+                    byte_array.push(Number(parseInt(byte, 16)));
+                }
+
+                offset = this.rom.indexOf(Buffer.from(byte_array));
             }
             else if (this.searchType === "Text") {
+                offset = this.rom.indexOf(Buffer.from(this.searchText));
+            }
 
+            offset = offset - (offset % 16);
+
+            for( const b of this.rom.slice(offset, this.initialEntries + offset) ) {
+                this.romData.push(Number(b).toString(16).toUpperCase().padStart(2, '0'));
+                this.ascii.push(String.fromCharCode(b));
+            }
+
+            for( var i = offset; i < this.initialEntries + offset; i += 16 ) {
+                this.addresses.push(Number(i).toString(16).toUpperCase().padStart(8, '0'));
             }
         }
     },
