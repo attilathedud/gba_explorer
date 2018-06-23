@@ -1,5 +1,4 @@
 <template>
-    <!-- Wire up search box -->
     <div class="hex-view-holder">
         <div class="field has-addons">
             <p class="control">
@@ -47,13 +46,56 @@ export default {
             initialEntries: 400,
             selected: '',
             searchText: '',
-            searchType: 'Offset'
+            searchType: 'Offset',
+            lastByte: -1
         }
     },
     props: {
-        rom : Buffer
+        rom : Buffer,
+        dictionary: {},
+        letterDictionary: {}
     },
     methods: {
+        translateAscii: function( type, byte ) {
+            if( type == "unshift" ) {
+                if( !this.dictionary || Object.keys(this.dictionary).length === 0 ) {
+                    this.ascii.unshift(String.fromCharCode(byte));
+                }
+                else {
+                    if( this.lastByte !== -1 ) {
+                        let translated_byte = this.dictionary[[byte, this.lastByte]];
+                        if( translated_byte == undefined ) {
+                            translated_byte = "";
+                        }
+                        this.ascii.unshift(translated_byte);
+                        this.lastByte = -1;
+                    }
+                    else {
+                        this.lastByte = byte;
+                        this.ascii.unshift(" ");
+                    }
+                }
+            }
+            else {
+                if( !this.dictionary || Object.keys(this.dictionary).length === 0 ) {
+                    this.ascii.push(String.fromCharCode(byte));
+                }
+                else {
+                    if( this.lastByte !== -1 ) {
+                        let translated_byte = this.dictionary[[this.lastByte, byte]];
+                        if( translated_byte == undefined ) {
+                            translated_byte = "";
+                        }
+                        this.ascii.push(translated_byte);
+                        this.lastByte = -1;
+                    }
+                    else {
+                        this.lastByte = byte;
+                        this.ascii.push(" ");
+                    }
+                }
+            }
+        },
         handleScroll: function(event) {
             if(event.deltaY > 0) {
                 //todo: don't allow scroll past end of byte buffer (this.rom.byteLength)
@@ -65,7 +107,7 @@ export default {
                     this.romData.push(Number(b).toString(16).toUpperCase().padStart(2, '0'));
 
                     this.ascii.shift();
-                    this.ascii.push(String.fromCharCode(b));
+                    this.translateAscii("push", b);
                 }
             }
             else {
@@ -82,12 +124,13 @@ export default {
                 }
 
                 rom_buffer.reverse();
+
                 for(var i = 0; i < 16; i++ ) {
                     this.romData.pop();
                     this.romData.unshift(Number(rom_buffer[i]).toString(16).toUpperCase().padStart(2, '0'));
 
                     this.ascii.pop();
-                    this.ascii.unshift(String.fromCharCode(rom_buffer[i]));
+                    this.translateAscii("unshift", rom_buffer[i]);
                 }
             }
         },
@@ -95,6 +138,7 @@ export default {
             this.selected = byte + address;
         },
         startSearch: function() {
+            //todo: add in search for next element
             this.addresses = [];
             this.romData = [];
             this.ascii = [];
@@ -115,14 +159,28 @@ export default {
                 offset = this.rom.indexOf(Buffer.from(byte_array));
             }
             else if (this.searchType === "Text") {
-                offset = this.rom.indexOf(Buffer.from(this.searchText));
+                if( !this.dictionary || Object.keys(this.dictionary).length === 0 ) {
+                    offset = this.rom.indexOf(Buffer.from(this.searchText));
+                }
+                else {
+                    let byte_array = [];
+                    for( var letter of this.searchText ) {
+                        byte_array.push(this.letterDictionary[letter][0]);
+                        byte_array.push(this.letterDictionary[letter][1]);
+                    }
+
+                    offset = this.rom.indexOf(Buffer.from(byte_array));
+                }
             }
 
             offset = offset - (offset % 16);
+            if( offset < 0 ) {
+                offset = 0;
+            }
 
             for( const b of this.rom.slice(offset, this.initialEntries + offset) ) {
                 this.romData.push(Number(b).toString(16).toUpperCase().padStart(2, '0'));
-                this.ascii.push(String.fromCharCode(b));
+                this.translateAscii("push", b);
             }
 
             for( var i = offset; i < this.initialEntries + offset; i += 16 ) {
@@ -133,7 +191,7 @@ export default {
     created: function() {
         for( const b of this.rom.slice(0, this.initialEntries) ) {
             this.romData.push(Number(b).toString(16).toUpperCase().padStart(2, '0'));
-            this.ascii.push(String.fromCharCode(b));
+            this.translateAscii("push", b);
         }
 
         for( var i = 0; i < this.initialEntries; i += 16 ) {

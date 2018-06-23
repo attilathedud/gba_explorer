@@ -5,7 +5,8 @@
         </div>
         <div class="column">
             <Search v-if="section == 'Search'" v-bind:rom=rom v-on:search-finished="onSearchFinished"></Search>
-            <Dictionary v-if="section == 'Dictionary'" v-bind:rom=rom v-bind:dictionary=dictionary></Dictionary>
+            <Dictionary v-if="section == 'Dictionary'" v-bind:rom=rom v-bind:dictionary=dictionaryTextToByte></Dictionary>
+            <HexView v-if="section == 'Hex View'" v-bind:rom=rom v-bind:dictionary=dictionaryByteToText v-bind:letterDictionary=dictionaryTextToByte></HexView>
         </div>
     </div>
 </template>
@@ -15,18 +16,21 @@
 import Search from "./strings/Search.vue";
 import Navbar from "./strings/Navbar.vue";
 import Dictionary from "./strings/Dictionary.vue";
+import HexView from "./HexView.vue";
 
 export default {
     name: 'Strings',
     components: {
         Search,
         Navbar,
-        Dictionary
+        Dictionary,
+        HexView
     },
     data: function() {
         return {
             section: 'Search',
-            dictionary: {}
+            dictionaryTextToByte: {},
+            dictionaryByteToText: {}
         }
     },
     props: {
@@ -36,13 +40,16 @@ export default {
         onSearchFinished: function(match, searchText) {
             this.generateMatchDictionaryFromSearchText(this.rom.slice(match, match + (searchText.length * 2)), searchText);
             this.fillMatchDictionary(searchText);
+            for( var key in this.dictionaryTextToByte ) {
+                this.dictionaryByteToText[this.dictionaryTextToByte[key]] = key;
+            }
         },
         onItemPicked: function(item) {
             this.section = item;
         },
         generateMatchDictionaryFromSearchText: function(bytes, searchText) {
             for(var i = 0; i < searchText.length - 1; i++) {
-                this.dictionary[searchText[i]] = [bytes[i*2], bytes[i*2+1]];
+                this.dictionaryTextToByte[searchText[i]] = [bytes[i*2], bytes[i*2+1]];
             }
         },
         fillMatchDictionary: function(searchText) {
@@ -51,8 +58,8 @@ export default {
                 for( var i = 0; i < 26; i++ ) {
                     let letter = String.fromCharCode(97 + i);
 
-                    this.dictionary[letter] = 
-                        [this.dictionary[lowerCaseMatches[0]][0] + (letter.codePointAt() - lowerCaseMatches[0].codePointAt()), this.dictionary[lowerCaseMatches[0]][1]];
+                    this.dictionaryTextToByte[letter] = 
+                        [this.dictionaryTextToByte[lowerCaseMatches[0]][0] + (letter.codePointAt() - lowerCaseMatches[0].codePointAt()), this.dictionaryTextToByte[lowerCaseMatches[0]][1]];
                 }
             }
 
@@ -61,8 +68,8 @@ export default {
                 for( var i = 0; i < 26; i++ ) {
                     let letter = String.fromCharCode(65 + i);
 
-                    this.dictionary[letter] = 
-                        [this.dictionary[upperCaseMatches[0]][0] + (letter.codePointAt() - upperCaseMatches[0].codePointAt()), this.dictionary[upperCaseMatches[0]][1]];
+                    this.dictionaryTextToByte[letter] = 
+                        [this.dictionaryTextToByte[upperCaseMatches[0]][0] + (letter.codePointAt() - upperCaseMatches[0].codePointAt()), this.dictionaryTextToByte[upperCaseMatches[0]][1]];
                 }
             }
         }
