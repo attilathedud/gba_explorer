@@ -30,6 +30,7 @@ export default {
         dictionary: {}
     },
     created: function() {
+        //todo: flag if selection is invalid dictionary
         for( var key in this.dictionary ) {
             this.sortedDictionary.push([key , this.dictionary[key]]);
         }

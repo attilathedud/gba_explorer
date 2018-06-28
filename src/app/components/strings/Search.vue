@@ -9,6 +9,19 @@
         <div class="control">
             <button class="button is-medium" v-on:click="startSearch" :class="{'is-loading':isSearching}">Search</button>
         </div>
+        <br>
+        <div class="field" v-if="matches.length > 0">
+            <label class="label">Selected Match for {{matchSelectedText}}</label>
+            <div class="control">
+                <div class="select">
+                    <select v-model="matchSelected" v-on:change="selectMatch(matchSelected)">
+                        <option v-for="match in matches" v-bind:key="match.id" v-bind:value="match.address">
+                            0x{{Number(match.address).toString(16).toUpperCase().padStart(8, '0')}} | {{match.bytes}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
         <div class="modal" :class="{'is-active':isPickingMatch}">
             <div class="modal-background"></div>
             <div class="modal-content">
@@ -41,7 +54,9 @@ export default {
             isSearching: false,
             isPickingMatch: false,
             worker : {},
-            matches : []
+            matches : [],
+            matchSelected : "",
+            matchSelectedText : ""
         }
     },
     props: {
@@ -82,7 +97,7 @@ export default {
                     const rom = this.rom;
 
                     if( results.matches.length == 1 ) {
-                        this.$emit('search-finished', results.matches[0], results.searchText);
+                        this.selectMatch();
                     }
                     else {
                         this.isPickingMatch = true;
@@ -105,7 +120,8 @@ export default {
         selectMatch: function(match) {
             this.isPickingMatch = false;
             this.$emit('search-finished', match.address, this.searchText);
-            //todo: display match 
+            this.matchSelected = match.address;
+            this.matchSelectedText = this.searchText; 
         }
     }
 };
