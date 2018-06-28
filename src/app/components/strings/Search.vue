@@ -105,6 +105,7 @@ export default {
         selectMatch: function(match) {
             this.isPickingMatch = false;
             this.$emit('search-finished', match.address, this.searchText);
+            //todo: display match 
         }
     }
 };

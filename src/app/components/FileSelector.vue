@@ -40,6 +40,17 @@ export default {
                 });
             });
         }
+    },
+    created: function() {
+        //todo: if we are in a dev env, hardcode the opening
+        fs.readFile(process.cwd() + "/roms/metroid.gba", (err, data) => {
+            if(err){
+                console.log(err);
+                return;
+            }
+
+            this.$emit('file-picked', data);
+        });
     }
 };
 </script>
