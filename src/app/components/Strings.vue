@@ -7,6 +7,7 @@
             <Search v-if="section == 'Search'" v-bind:rom=rom v-on:search-finished="onSearchFinished"></Search>
             <Dictionary v-if="section == 'Dictionary'" v-bind:rom=rom v-bind:dictionary=dictionaryTextToByte></Dictionary>
             <HexView v-if="section == 'Hex View'" v-bind:rom=rom v-bind:dictionary=dictionaryByteToText v-bind:letterDictionary=dictionaryTextToByte></HexView>
+            <Dump v-if="section == 'Dump'" v-bind:rom=rom v-bind:dictionary=dictionaryByteToText v-bind:letterDictionary=dictionaryTextToByte></Dump>
         </div>
     </div>
 </template>
@@ -16,6 +17,7 @@
 import Search from "./strings/Search.vue";
 import Navbar from "./strings/Navbar.vue";
 import Dictionary from "./strings/Dictionary.vue";
+import Dump from "./strings/Dump.vue";
 import HexView from "./HexView.vue";
 
 export default {
@@ -24,7 +26,8 @@ export default {
         Search,
         Navbar,
         Dictionary,
-        HexView
+        HexView,
+        Dump
     },
     data: function() {
         return {
