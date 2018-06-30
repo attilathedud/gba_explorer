@@ -46,7 +46,7 @@ export default {
             let lastByte = -1;
             this.dumpedStrings = "";
 
-            for( const b of this.rom.slice(Number(parseInt(this.startAddress, 16), Number(parseInt(this.endAddress, 16))))) {
+            for( const b of this.rom.slice(this.getHex(this.startAddress), this.getHex(this.endAddress))) {
                 if( lastByte == -1 ) {
                     lastByte = b;
                 }

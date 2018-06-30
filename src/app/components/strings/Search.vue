@@ -88,6 +88,7 @@ export default {
     },
     methods : {
         startSearch: function() {
+            //todo: fix bug if no result
             this.isSearching = true;
             this.matches = [];
 
@@ -107,7 +108,7 @@ export default {
                             let byte_buffer = [];
     
                             for( var i = 0; i < results.searchText.length * 2; i++ ) {
-                                byte_buffer.push(Number(match_section[i]).toString(16).toUpperCase().padStart(2, '0'));
+                                byte_buffer.push(this.toHexString(match_section[i], 2));                                
                             }
     
                             matches.push({'address' : address, 'bytes' : byte_buffer.join('')});

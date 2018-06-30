@@ -68,33 +68,33 @@ export default {
     },
     created: function() {
         for( var i = 0; i < 4; i++ ) {
-            this.romEntryPoint += Number(this.rom[i]).toString(16).toUpperCase().padStart(2, '0');
+            this.romEntryPoint += this.toHexString(this.rom[i], 2);
         }
 
-        this.debuggingEnabled = Number(this.rom[0x9c]).toString(16).toUpperCase().padStart(2, '0');
+        this.debuggingEnabled = this.toHexString(this.rom[0x9c], 2);
 
         for( var i = 0xa0; i < (0xa0 + 12); i++ ) {
-            this.gameTitleBytes += Number(this.rom[i]).toString(16).toUpperCase().padStart(2, '0') + " ";
+            this.gameTitleBytes += this.toHexString(this.rom[i], 2) + " ";
             if(this.rom[i] !== 0) {
                 this.gameTitle += String.fromCharCode(this.rom[i]);
             }
         }
 
         for( var i = 0xac; i < (0xac + 4); i++ ) {
-            this.gameCodeBytes += Number(this.rom[i]).toString(16).toUpperCase().padStart(2, '0') + " ";
+            this.gameCodeBytes += this.toHexString(this.rom[i], 2); + " ";
             if(this.rom[i] !== 0) {
                 this.gameCode += String.fromCharCode(this.rom[i]);
             }
         }
 
         for( var i = 0xb0; i < (0xb0 + 2); i++ ) {
-            this.makerCodeBytes += Number(this.rom[i]).toString(16).toUpperCase().padStart(2, '0') + " ";
+            this.makerCodeBytes += this.toHexString(this.rom[i], 2); + " ";
             if(this.rom[i] !== 0) {
                 this.makerCode += String.fromCharCode(this.rom[i]);
             }
         }
 
-        this.softwareVersion = Number(this.rom[0xbc]).toString(16).toUpperCase().padStart(2, '0');
+        this.softwareVersion = this.toHexString(this.rom[0xbc], 2);
     }
 };
 </script>

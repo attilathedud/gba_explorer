@@ -20,6 +20,9 @@
 <script>
     import Vue from 'vue';
     import App from './app/App';
+    import HexUtils from './app/mixins/HexUtils';
+
+    Vue.mixin(HexUtils);
 
     const app = new Vue(App).$mount('#app');
 </script>

@@ -10,7 +10,7 @@
             <tbody>
                 <tr v-for="letter in sortedDictionary" v-bind:key="letter.id">
                     <td>{{letter[0]}}</td>
-                    <td>{{ Number(letter[1][0]).toString(16).toUpperCase().padStart(2, '0') + "" + Number(letter[1][1]).toString(16).toUpperCase().padStart(2, '0') }}</td>
+                    <td>{{ toHexString(letter[1][0], 2) + "" + toHexString(letter[1][1], 2) }}</td>
                 </tr>
             </tbody>
         </table>        

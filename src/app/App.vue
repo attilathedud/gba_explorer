@@ -19,24 +19,24 @@ import HexView from "./components/HexView.vue";
 import Strings from "./components/Strings.vue";
 
 export default {
-  components: {
-    FileSelector,
-    Navbar,
-    HeaderInfo,
-    HexView,
-    Strings
-  },
-  data: {
-    romData: Buffer.alloc(0),
-    section: 'Header'
-  },
-  methods: {
-    onFilePicked: function(data) {
-      this.romData = data;
+    components: {
+        FileSelector,
+        Navbar,
+        HeaderInfo,
+        HexView,
+        Strings
     },
-    onItemPicked: function(item) {
-      this.section = item;
+    data: {
+        romData: Buffer.alloc(0),
+        section: 'Header'
+    },
+    methods: {
+        onFilePicked: function(data) {
+            this.romData = data;
+        },
+        onItemPicked: function(item) {
+            this.section = item;
+        }
     }
-  }
 };
 </script>

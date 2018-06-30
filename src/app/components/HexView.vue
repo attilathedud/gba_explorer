@@ -100,26 +100,26 @@ export default {
             if(event.deltaY > 0) {
                 //todo: don't allow scroll past end of byte buffer (this.rom.byteLength)
                 this.addresses.shift();
-                this.addresses.push(Number(parseInt(this.addresses[this.addresses.length - 1],16) + 16).toString(16).toUpperCase().padStart(8, '0'));
+                this.addresses.push(this.toHexString(this.getHex(this.addresses[this.addresses.length - 1]) + 16, 8));
 
-                for( const b of this.rom.slice(Number(parseInt(this.addresses[this.addresses.length - 1],16)), Number(parseInt(this.addresses[this.addresses.length - 1],16) + 16)) ) {
+                for( const b of this.rom.slice(this.getHex(this.addresses[this.addresses.length - 1]), this.getHex(this.addresses[this.addresses.length - 1]) + 16) ) {
                     this.romData.shift();
-                    this.romData.push(Number(b).toString(16).toUpperCase().padStart(2, '0'));
+                    this.romData.push(this.toHexString(b, 2));
 
                     this.ascii.shift();
                     this.translateAscii("push", b);
                 }
             }
             else {
-                if( this.addresses[ 0 ] === Number(0).toString(16).toUpperCase().padStart(8, '0') )
+                if( this.addresses[ 0 ] === this.toHexString(0, 8) )
                     return;
 
                 this.addresses.pop();
-                this.addresses.unshift(Number(parseInt(this.addresses[0],16) - 16).toString(16).toUpperCase().padStart(8, '0'));
+                this.addresses.unshift(this.toHexString(this.getHex(this.addresses[0]) - 16, 8));
 
                 let rom_buffer = [];
 
-                for( const b of this.rom.slice(Number(parseInt(this.addresses[0],16)), Number(parseInt(this.addresses[0],16)) + 16) ) {
+                for( const b of this.rom.slice(Number(this.getHex(this.addresses[0])), Number(this.getHex(this.addresses[0])) + 16) ) {
                     rom_buffer.push(b);
                 }
 
@@ -127,7 +127,7 @@ export default {
 
                 for(var i = 0; i < 16; i++ ) {
                     this.romData.pop();
-                    this.romData.unshift(Number(rom_buffer[i]).toString(16).toUpperCase().padStart(2, '0'));
+                    this.romData.unshift(this.toHexString(rom_buffer[i], 2));
 
                     this.ascii.pop();
                     this.translateAscii("unshift", rom_buffer[i]);
@@ -146,14 +146,14 @@ export default {
             let offset = 0;
 
             if( this.searchType === "Offset") {
-                offset = Number(parseInt(this.searchText, 16));
+                offset = this.getHex(this.searchText, 16);
             }
             else if (this.searchType === "Bytes") {
                 let byte_array = [];
                 let searchTextParsed = this.searchText.match(/.{2}/g);
 
                 for( var byte of searchTextParsed ) {
-                    byte_array.push(Number(parseInt(byte, 16)));
+                    byte_array.push(this.getHex(byte));
                 }
 
                 offset = this.rom.indexOf(Buffer.from(byte_array));
@@ -179,23 +179,23 @@ export default {
             }
 
             for( const b of this.rom.slice(offset, this.initialEntries + offset) ) {
-                this.romData.push(Number(b).toString(16).toUpperCase().padStart(2, '0'));
+                this.romData.push(this.toHexString(b, 2));
                 this.translateAscii("push", b);
             }
 
             for( var i = offset; i < this.initialEntries + offset; i += 16 ) {
-                this.addresses.push(Number(i).toString(16).toUpperCase().padStart(8, '0'));
+                this.addresses.push(this.toHexString(i, 8));
             }
         }
     },
     created: function() {
         for( const b of this.rom.slice(0, this.initialEntries) ) {
-            this.romData.push(Number(b).toString(16).toUpperCase().padStart(2, '0'));
+            this.romData.push(this.toHexString(b, 2));
             this.translateAscii("push", b);
         }
 
         for( var i = 0; i < this.initialEntries; i += 16 ) {
-            this.addresses.push(Number(i).toString(16).toUpperCase().padStart(8, '0'));
+            this.addresses.push(this.toHexString(i, 8));
         }
     },
     mounted: function() {
