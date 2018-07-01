@@ -41,10 +41,10 @@ export default {
     },
     methods: {
         ...mapMutations([
-            'SET_ROM'
+            'setRom'
         ]),
         onFilePicked: function(data) {
-            this.SET_ROM(data);
+            this.setRom(data);
         },
         onItemPicked: function(item) {
             this.section = item;

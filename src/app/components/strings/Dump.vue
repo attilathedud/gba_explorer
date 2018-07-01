@@ -40,12 +40,9 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'rom'
+            'rom',
+            'byteAsText'
         ])
-    },
-    props: {
-        dictionary: {},
-        letterDictionary: {}
     },
     methods: {
         dump: function() {
@@ -57,7 +54,7 @@ export default {
                     lastByte = b;
                 }
                 else {
-                    let translated_byte = this.dictionary[[ lastByte, b ]];
+                    let translated_byte = this.byteAsText[[ lastByte, b ]];
                     if( translated_byte == undefined ) {
                         translated_byte = "";
                     }

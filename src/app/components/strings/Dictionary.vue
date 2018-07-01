@@ -29,16 +29,16 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'rom'
+            'rom',
+            'textAsByte',
+            'byteAsText'
         ])
-    },
-    props: {
-        dictionary: {}
     },
     created: function() {
         //todo: flag if selection is invalid dictionary
-        for( var key in this.dictionary ) {
-            this.sortedDictionary.push([key , this.dictionary[key]]);
+        //todo: change display to squares filled with data
+        for( var key in this.textAsByte ) {
+            this.sortedDictionary.push([key , this.textAsByte[key]]);
         }
         
         this.sortedDictionary.sort();

@@ -4,17 +4,25 @@ import Vuex from 'vuex';
 Vue.use(Vuex);
 
 const state = {
-    rom: Buffer.alloc(0)
+    rom: Buffer.alloc(0),
+    textAsByte : {},
+    byteAsText : {}
 };
 
 const mutations = {
-    SET_ROM(state, romData) {
-        state.rom = romData;
+    setRom(state, rom) {
+        state.rom = rom;
+    },
+    addTextBytePair(state, payload) {
+        state.textAsByte[payload.text] = payload.byte;
+        state.byteAsText[payload.byte] = payload.text;
     }
 };
 
 const getters =  {
-    rom: state => state.rom
+    rom: state => state.rom,
+    textAsByte: state => state.textAsByte,
+    byteAsText: state => state.byteAsText,
 };
 
 export default new Vuex.Store({

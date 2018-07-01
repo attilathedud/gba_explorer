@@ -54,22 +54,20 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'rom'
+            'rom',
+            'textAsByte',
+            'byteAsText'
         ])
-    },
-    props: {
-        dictionary: {},
-        letterDictionary: {}
     },
     methods: {
         translateAscii: function( type, byte ) {
             if( type == "unshift" ) {
-                if( !this.dictionary || Object.keys(this.dictionary).length === 0 ) {
+                if( !this.byteAsText || Object.keys(this.byteAsText).length === 0 ) {
                     this.ascii.unshift(String.fromCharCode(byte));
                 }
                 else {
                     if( this.lastByte !== -1 ) {
-                        let translated_byte = this.dictionary[[byte, this.lastByte]];
+                        let translated_byte = this.byteAsText[[byte, this.lastByte]];
                         if( translated_byte == undefined ) {
                             translated_byte = "";
                         }
@@ -83,12 +81,12 @@ export default {
                 }
             }
             else {
-                if( !this.dictionary || Object.keys(this.dictionary).length === 0 ) {
+                if( !this.byteAsText || Object.keys(this.byteAsText).length === 0 ) {
                     this.ascii.push(String.fromCharCode(byte));
                 }
                 else {
                     if( this.lastByte !== -1 ) {
-                        let translated_byte = this.dictionary[[this.lastByte, byte]];
+                        let translated_byte = this.byteAsText[[this.lastByte, byte]];
                         if( translated_byte == undefined ) {
                             translated_byte = "";
                         }
@@ -166,14 +164,14 @@ export default {
                 offset = this.rom.indexOf(Buffer.from(byte_array));
             }
             else if (this.searchType === "Text") {
-                if( !this.dictionary || Object.keys(this.dictionary).length === 0 ) {
+                if( !this.byteAsText || Object.keys(this.byteAsText).length === 0 ) {
                     offset = this.rom.indexOf(Buffer.from(this.searchText));
                 }
                 else {
                     let byte_array = [];
                     for( var letter of this.searchText ) {
-                        byte_array.push(this.letterDictionary[letter][0]);
-                        byte_array.push(this.letterDictionary[letter][1]);
+                        byte_array.push(this.textAsByte[letter][0]);
+                        byte_array.push(this.textAsByte[letter][1]);
                     }
 
                     offset = this.rom.indexOf(Buffer.from(byte_array));
