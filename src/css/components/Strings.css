@@ -10,4 +10,5 @@
 
 .letter-box {
   margin: 1rem;
-  font-size: large; }
+  font-size: large;
+  cursor: pointer; }

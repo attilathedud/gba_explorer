@@ -69,14 +69,14 @@ export default {
                     if( this.lastByte !== -1 ) {
                         let translated_byte = this.byteAsText[[byte, this.lastByte]];
                         if( translated_byte == undefined ) {
-                            translated_byte = ".";
+                            translated_byte = "␣";
                         }
                         this.ascii.unshift(translated_byte);
                         this.lastByte = -1;
                     }
                     else {
                         this.lastByte = byte;
-                        this.ascii.unshift(".");
+                        this.ascii.unshift("␣");
                     }
                 }
             }
@@ -88,14 +88,14 @@ export default {
                     if( this.lastByte !== -1 ) {
                         let translated_byte = this.byteAsText[[this.lastByte, byte]];
                         if( translated_byte == undefined ) {
-                            translated_byte = ".";
+                            translated_byte = "␣";
                         }
                         this.ascii.push(translated_byte);
                         this.lastByte = -1;
                     }
                     else {
                         this.lastByte = byte;
-                        this.ascii.push(".");
+                        this.ascii.push("␣");
                     }
                 }
             }
