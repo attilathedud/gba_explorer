@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
     name: 'Dump',
     data: function () {
@@ -36,8 +38,12 @@ export default {
             isDumping: false
         }
     },
+    computed: {
+        ...mapGetters([
+            'rom'
+        ])
+    },
     props: {
-        rom : Buffer,
         dictionary: {},
         letterDictionary: {}
     },

@@ -45,6 +45,7 @@
 
 <script>
 import sww from 'simple-web-worker';
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'Search',
@@ -59,8 +60,10 @@ export default {
             matchSelectedText : ""
         }
     },
-    props: {
-        rom : Buffer
+    computed: {
+        ...mapGetters([
+            'rom'
+        ])
     },
     created: function() {
         this.worker = sww.create([{ message: 'search', 
@@ -92,6 +95,8 @@ export default {
             this.isSearching = true;
             this.matches = [];
 
+            let context = this;
+
             this.worker.postMessage('search', [this.rom, this.searchText])
                 .then(results => {
                     const matches = this.matches;
@@ -108,7 +113,7 @@ export default {
                             let byte_buffer = [];
     
                             for( var i = 0; i < results.searchText.length * 2; i++ ) {
-                                byte_buffer.push(this.toHexString(match_section[i], 2));                                
+                                byte_buffer.push(context.toHexString(match_section[i], 2));                                
                             }
     
                             matches.push({'address' : address, 'bytes' : byte_buffer.join('')});

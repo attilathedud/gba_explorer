@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
     name: 'Dictionary',
     data: function() {
@@ -25,8 +27,12 @@ export default {
             sortedDictionary: []
         }
     },
+    computed: {
+        ...mapGetters([
+            'rom'
+        ])
+    },
     props: {
-        rom : Buffer,
         dictionary: {}
     },
     created: function() {

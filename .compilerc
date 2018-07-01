@@ -14,7 +14,8 @@
           "react"
         ],
         "plugins": [
-          "transform-async-to-generator"
+          "transform-async-to-generator",
+          "transform-object-rest-spread"
         ],
         "sourceMaps": "inline"
       }
@@ -33,7 +34,8 @@
           "react"
         ],
         "plugins": [
-          "transform-async-to-generator"
+          "transform-async-to-generator",
+          "transform-object-rest-spread"
         ],
         "sourceMaps": "none"
       }

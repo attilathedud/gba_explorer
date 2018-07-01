@@ -48,6 +48,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
     name: 'HeaderInfo',
     data: function () {
@@ -63,8 +65,10 @@ export default {
             softwareVersion : ''
         }
     },
-    props: {
-        rom : Buffer
+    computed: {
+        ...mapGetters([
+            'rom'
+        ])
     },
     created: function() {
         for( var i = 0; i < 4; i++ ) {
@@ -81,14 +85,14 @@ export default {
         }
 
         for( var i = 0xac; i < (0xac + 4); i++ ) {
-            this.gameCodeBytes += this.toHexString(this.rom[i], 2); + " ";
+            this.gameCodeBytes += this.toHexString(this.rom[i], 2) + " ";
             if(this.rom[i] !== 0) {
                 this.gameCode += String.fromCharCode(this.rom[i]);
             }
         }
 
         for( var i = 0xb0; i < (0xb0 + 2); i++ ) {
-            this.makerCodeBytes += this.toHexString(this.rom[i], 2); + " ";
+            this.makerCodeBytes += this.toHexString(this.rom[i], 2) + " ";
             if(this.rom[i] !== 0) {
                 this.makerCode += String.fromCharCode(this.rom[i]);
             }

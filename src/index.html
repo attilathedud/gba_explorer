@@ -20,11 +20,16 @@
 <script>
     import Vue from 'vue';
     import App from './app/App';
+    import store from './app/store';
     import HexUtils from './app/mixins/HexUtils';
 
     Vue.mixin(HexUtils);
 
-    const app = new Vue(App).$mount('#app');
+    const app = new Vue({
+        el: '#app',
+        store,
+        render: h => h(App)
+    });
 </script>
 
 </html>

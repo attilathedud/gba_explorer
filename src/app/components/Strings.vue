@@ -4,10 +4,10 @@
             <Navbar v-on:item-picked="onItemPicked"></Navbar>
         </div>
         <div class="column">
-            <Search v-if="section == 'Search'" v-bind:rom=rom v-on:search-finished="onSearchFinished"></Search>
-            <Dictionary v-if="section == 'Dictionary'" v-bind:rom=rom v-bind:dictionary=dictionaryTextToByte></Dictionary>
-            <HexView v-if="section == 'Hex View'" v-bind:rom=rom v-bind:dictionary=dictionaryByteToText v-bind:letterDictionary=dictionaryTextToByte></HexView>
-            <Dump v-if="section == 'Dump'" v-bind:rom=rom v-bind:dictionary=dictionaryByteToText v-bind:letterDictionary=dictionaryTextToByte></Dump>
+            <Search v-if="section == 'Search'" v-on:search-finished="onSearchFinished"></Search>
+            <Dictionary v-if="section == 'Dictionary'" v-bind:dictionary=dictionaryTextToByte></Dictionary>
+            <HexView v-if="section == 'Hex View'" v-bind:dictionary=dictionaryByteToText v-bind:letterDictionary=dictionaryTextToByte></HexView>
+            <Dump v-if="section == 'Dump'" v-bind:dictionary=dictionaryByteToText v-bind:letterDictionary=dictionaryTextToByte></Dump>
         </div>
     </div>
 </template>
@@ -19,6 +19,8 @@ import Navbar from "./strings/Navbar.vue";
 import Dictionary from "./strings/Dictionary.vue";
 import Dump from "./strings/Dump.vue";
 import HexView from "./HexView.vue";
+
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'Strings',
@@ -36,8 +38,10 @@ export default {
             dictionaryByteToText: {}
         }
     },
-    props: {
-        rom : Buffer
+    computed: {
+        ...mapGetters([
+            'rom'
+        ])
     },
     methods : {
         onSearchFinished: function(match, searchText) {

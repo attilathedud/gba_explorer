@@ -36,6 +36,8 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
     name: 'HexView',
     data: function() {
@@ -50,8 +52,12 @@ export default {
             lastByte: -1
         }
     },
+    computed: {
+        ...mapGetters([
+            'rom'
+        ])
+    },
     props: {
-        rom : Buffer,
         dictionary: {},
         letterDictionary: {}
     },
@@ -149,6 +155,7 @@ export default {
                 offset = this.getHex(this.searchText, 16);
             }
             else if (this.searchType === "Bytes") {
+                //todo: parse byte array passed
                 let byte_array = [];
                 let searchTextParsed = this.searchText.match(/.{2}/g);
 
