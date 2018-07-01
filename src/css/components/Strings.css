@@ -12,3 +12,6 @@
   margin: 1rem;
   font-size: large;
   cursor: pointer; }
+  .letter-box:hover {
+    transform: scale(1.04);
+    transition: 0.1s; }

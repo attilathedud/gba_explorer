@@ -1,6 +1,6 @@
 <template>
     <div class="dictionary-container">
-        <div class="box letter-box has-text-dark" v-for="letter in sortedDictionary" v-bind:key="letter.id">
+        <div class="box letter-box has-text-dark" v-for="letter in sortedDictionary" v-bind:key="letter.id" v-on:click="editDictionaryItem(letter[0], toHexString(letter[1][0], 2) + '' + toHexString(letter[1][1], 2))">
             <span>{{letter[0]}}</span><br>
             <span>{{ toHexString(letter[1][0], 2) + "" + toHexString(letter[1][1], 2) }}</span>
         </div>
@@ -71,12 +71,17 @@ export default {
         ]),
         createSortedList: function() {
             this.sortedDictionary = [];
-            
+
             for( var key in this.textAsByte ) {
                 this.sortedDictionary.push([key , this.textAsByte[key]]);
             }
             
             this.sortedDictionary.sort();
+        },
+        editDictionaryItem: function(letter, byte) {
+            this.addedLetter = letter;
+            this.addedBytePair = byte;
+            this.isAddingEntry = true;
         },
         addDictionaryItem: function() {
             if( this.addedLetter.length > 1 || this.addedBytePair.length != 4 )
