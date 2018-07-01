@@ -262,7 +262,7 @@ button,
 input,
 select,
 textarea {
-  font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif; }
+  font-family: monospace; }
 
 code,
 pre {
@@ -6437,9 +6437,13 @@ label.panel-block {
 .search-selector {
   cursor: pointer; }
 
-.dictionary-display {
-  height: 80vh;
-  overflow-y: scroll; }
+.dictionary-container {
+  display: flex;
+  flex-wrap: wrap; }
+
+.letter-box {
+  margin: 1rem;
+  font-size: large; }
 
 html {
   background: #282c34; }

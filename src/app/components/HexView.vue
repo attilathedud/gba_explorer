@@ -21,11 +21,11 @@
             <tbody>
                 <tr v-for="(address, index) in addresses" v-bind:key="address.id">
                     <td class="has-text-grey-light">{{address}}</td>
-                    <td v-for="item in romData.slice((index) * 16, ((index) * 16) + 16)" v-bind:key="item.id" v-on:click="byteClicked(item, address)" :class="{'has-background-success':item+address == selected}">
+                    <td v-for="(item, item_index) in romData.slice((index) * 16, ((index) * 16) + 16)" v-bind:key="item.id" v-on:click="byteClicked(item_index, address)" :class="{'has-background-success':getHex(address)+item_index == selected}">
                         {{item}}
                     </td>
                     <td>
-                        <span v-for="letter in ascii.slice((index) * 16, ((index) * 16) + 16)" v-bind:key="letter.id">
+                        <span v-for="(letter, letter_index) in ascii.slice((index) * 16, ((index) * 16) + 16)" v-bind:key="letter.id" :class="{'has-background-success':getHex(address)+letter_index == selected}">
                             {{letter}}
                         </span>
                     </td>
@@ -46,7 +46,7 @@ export default {
             addresses : [],
             ascii: [],
             initialEntries: 400,
-            selected: '',
+            selected: -1,
             searchText: '',
             searchType: 'Offset',
             lastByte: -1
@@ -69,14 +69,14 @@ export default {
                     if( this.lastByte !== -1 ) {
                         let translated_byte = this.byteAsText[[byte, this.lastByte]];
                         if( translated_byte == undefined ) {
-                            translated_byte = "";
+                            translated_byte = ".";
                         }
                         this.ascii.unshift(translated_byte);
                         this.lastByte = -1;
                     }
                     else {
                         this.lastByte = byte;
-                        this.ascii.unshift(" ");
+                        this.ascii.unshift(".");
                     }
                 }
             }
@@ -88,14 +88,14 @@ export default {
                     if( this.lastByte !== -1 ) {
                         let translated_byte = this.byteAsText[[this.lastByte, byte]];
                         if( translated_byte == undefined ) {
-                            translated_byte = "";
+                            translated_byte = ".";
                         }
                         this.ascii.push(translated_byte);
                         this.lastByte = -1;
                     }
                     else {
                         this.lastByte = byte;
-                        this.ascii.push(" ");
+                        this.ascii.push(".");
                     }
                 }
             }
@@ -138,8 +138,8 @@ export default {
                 }
             }
         },
-        byteClicked: function( byte, address ) {
-            this.selected = byte + address;
+        byteClicked: function( index, address ) {
+            this.selected = index + this.getHex(address);
         },
         startSearch: function() {
             //todo: add in search for next element

@@ -6,7 +6,12 @@
     cursor: pointer;
 }
 
-.dictionary-display {
-    height: 80vh;
-    overflow-y: scroll;
+.dictionary-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.letter-box {
+    margin: 1rem;
+    font-size: large;
 }

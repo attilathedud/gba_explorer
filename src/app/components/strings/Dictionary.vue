@@ -1,19 +1,9 @@
 <template>
-    <div class="dictionary-display">
-        <table class="table is-striped is-narrow is-hoverable is-fullwidth">
-            <thead>
-                <tr>
-                    <td class="has-text-grey-darker">Letter</td>
-                    <td class="has-text-grey-darker">Byte</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="letter in sortedDictionary" v-bind:key="letter.id">
-                    <td>{{letter[0]}}</td>
-                    <td>{{ toHexString(letter[1][0], 2) + "" + toHexString(letter[1][1], 2) }}</td>
-                </tr>
-            </tbody>
-        </table>        
+    <div class="dictionary-container">
+        <div class="box letter-box has-text-dark" v-for="letter in sortedDictionary" v-bind:key="letter.id">
+            <span>{{letter[0]}}</span><br>
+            <span>{{ toHexString(letter[1][0], 2) + "" + toHexString(letter[1][1], 2) }}</span>
+        </div>
     </div>
 </template>
 
