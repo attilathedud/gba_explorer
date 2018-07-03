@@ -262,7 +262,7 @@ button,
 input,
 select,
 textarea {
-  font-family: monospace; }
+  font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif; }
 
 code,
 pre {
@@ -6423,6 +6423,7 @@ label.panel-block {
   margin-top: 20px; }
 
 .hex-view-holder {
+  font-family: monospace;
   overflow-y: hidden;
   height: 80vh; }
   .hex-view-holder table {
@@ -6444,7 +6445,8 @@ label.panel-block {
 .letter-box {
   margin: 1rem;
   font-size: large;
-  cursor: pointer; }
+  cursor: pointer;
+  font-family: monospace; }
   .letter-box:hover {
     transform: scale(1.04);
     transition: 0.1s; }

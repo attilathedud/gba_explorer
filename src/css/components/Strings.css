@@ -11,7 +11,8 @@
 .letter-box {
   margin: 1rem;
   font-size: large;
-  cursor: pointer; }
+  cursor: pointer;
+  font-family: monospace; }
   .letter-box:hover {
     transform: scale(1.04);
     transition: 0.1s; }
