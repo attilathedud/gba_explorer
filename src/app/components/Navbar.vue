@@ -13,18 +13,23 @@
 
 <script>
 export default {
-    name: 'Navbar',
-    data: function () {
-        return {
-            categories: [ {title : 'Header', icon: 'fa-file-alt'} , {title : 'Hex View', icon: 'fa-columns'}, {title : 'Strings', icon: 'fa-font'}],
-            selected: 'Header'
-        }
-    },
-    methods: {
-        itemPicked( item ) {
-            this.selected = item;
-            this.$emit('item-picked', item);
-        }
+  name: "Navbar",
+  data: function() {
+    return {
+      categories: [
+        { title: "Header", icon: "fa-file-alt" },
+        { title: "Hex View", icon: "fa-columns" },
+        { title: "Strings", icon: "fa-font" },
+        { title: "Graphics", icon: "fa-image" }
+      ],
+      selected: "Header"
+    };
+  },
+  methods: {
+    itemPicked(item) {
+      this.selected = item;
+      this.$emit("item-picked", item);
     }
+  }
 };
 </script>

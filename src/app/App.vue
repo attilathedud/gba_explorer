@@ -7,6 +7,7 @@
       <HeaderInfo v-if="section == 'Header'"></HeaderInfo>
       <HexView v-if="section == 'Hex View'"></HexView>
       <Strings v-if="section == 'Strings'"></Strings>
+      <Graphics v-if="section == 'Graphics'"></Graphics>
     </div>
 </template>
 
@@ -17,6 +18,7 @@ import Navbar from "./components/Navbar.vue";
 import HeaderInfo from "./components/HeaderInfo.vue";
 import HexView from "./components/HexView.vue";
 import Strings from "./components/Strings.vue";
+import Graphics from "./components/Graphics.vue";
 
 import { mapGetters } from 'vuex';
 import { mapMutations } from 'vuex';
@@ -27,7 +29,8 @@ export default {
         Navbar,
         HeaderInfo,
         HexView,
-        Strings
+        Strings,
+        Graphics
     },
     computed: {
         ...mapGetters([
