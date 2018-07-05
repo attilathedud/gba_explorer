@@ -1,0 +1,14 @@
+.graphics-flex-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.graphics-grid-wrapper {
+    display: grid; 
+    grid-template-columns: repeat(16, 1fr); 
+}
+
+.pixel {
+    height: 8px;
+    width: 8px;
+}

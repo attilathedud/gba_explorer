@@ -6451,6 +6451,18 @@ label.panel-block {
     transform: scale(1.04);
     transition: 0.1s; }
 
+.graphics-flex-wrapper {
+  display: flex;
+  flex-wrap: wrap; }
+
+.graphics-grid-wrapper {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr); }
+
+.pixel {
+  height: 8px;
+  width: 8px; }
+
 html {
   background: #282c34; }
 
