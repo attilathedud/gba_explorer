@@ -37,11 +37,10 @@ export default {
     name: 'Uncompressed',
     data: function () {
         return {
-           bpp4_parts: [],
            pallete: [],
            offsetText: '00000000',
            offset: 0,
-           tileMap: [],
+           tileMap: {},
            entries: 96,
            linesPerRow: 12
         }
@@ -52,11 +51,11 @@ export default {
         ])
     },
     created: function() {
-        this.generatePalleteMap();
-
         for( let i = 0; i < 16; i++ ) {
             this.pallete[i] = "rgb(" + Math.floor(256 * Math.random()) + "," + Math.floor(256 * Math.random()) + "," + Math.floor(256 * Math.random()) + ")";
         }
+
+        this.generatePalleteMap();
     },
     methods: {
         getPalleteColor: function(pixel) {
@@ -67,8 +66,7 @@ export default {
             this.generatePalleteMap();
         },
         generatePalleteMap: function() {
-            this.bpp4_parts = [];
-            this.tileMap = [];
+            this.tileMap = {};
 
             let section = this.rom.slice(this.offset, this.offset + (this.entries * 32));
             let binary_stream = "";
@@ -79,15 +77,14 @@ export default {
 
             let tileIndex = 0;
             let tileOffset = 0;
+            
             this.tileMap[tileIndex] = [];
             this.tileMap[tileIndex][tileOffset] = [];
 
             for( let i = 0, j = 0; i < binary_stream.length; i += 8, j += 2 ) {
-                this.bpp4_parts[j] = parseInt(binary_stream.substr(i + 4, 4), 2);
-                this.bpp4_parts[j+1] = parseInt(binary_stream.substr(i, 4), 2);
+                this.tileMap[tileIndex][tileOffset].push(parseInt(binary_stream.substr(i + 4, 4), 2));
+                this.tileMap[tileIndex][tileOffset].push(parseInt(binary_stream.substr(i, 4), 2));
 
-                this.tileMap[tileIndex][tileOffset].push(this.bpp4_parts[j]);
-                this.tileMap[tileIndex][tileOffset].push(this.bpp4_parts[j+1]);
                 if((j+2) % 8 == 0) {
                     tileOffset++;
                     if( tileOffset != 8 ) {
