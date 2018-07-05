@@ -1,5 +1,8 @@
 <template>
     <div>
+        <div class="centered-horizontal">
+            <a v-if="isLoading" class="button is-loading is-large is-text centered-vertical"></a>
+        </div>
         <div class="graphics-flex-wrapper">
             <div class="graphics-grid-wrapper" :class="gridSize">
                 <div v-for="tile in this.tileMap" v-bind:key="tile.id">
@@ -18,16 +21,19 @@
 
 <script>
 import { mapGetters } from "vuex";
+import sww from 'simple-web-worker';
 
 export default {
     name: "Compressed",
     data: function() {
         return {
             pallete: [],
-            byteStream: [],
             tileMap: {},
             pixelSize: "pixel-2",
-            gridSize: "grid-32"
+            gridSize: "grid-32",
+            compressedSections: [],
+            worker: {},
+            isLoading: false
         };
     },
     computed: {
@@ -38,59 +44,72 @@ export default {
             this.pallete[i] = "rgb(" + i * 16 + "," + i * 16 + "," + i * 16 + ")";
         }
 
+        this.worker = sww.create([{ message: 'uncompress', 
+            func: function (rom) {
+                //This entire thing is Nintenlord's code modified to work in JS
+                let source = 0x577024;
+
+                let byteStream = [];
+
+                if (rom[source++] != 0x10)
+                    return false;
+
+                let stream_pointer = 0;
+                let length = rom[source++] + (rom[source++] << 8) + (rom[source++] << 16);
+
+                while (stream_pointer < length)
+                {
+                    let isCompressed = rom[source++];
+                    for (let i = 0; i < 8; i++)
+                    {
+                        if ((isCompressed & 0x80) != 0)
+                        {
+                            let amountToCopy = 3 + (rom[source] >> 4);
+                            let copyPosition = 1;
+                            copyPosition += (rom[source++] & 0xF) << 8;
+                            copyPosition += rom[source++];
+
+                            if (copyPosition > length)
+                                return false;
+
+                            for (let u = 0; u < amountToCopy; u++)
+                            {
+                                byteStream[stream_pointer] = byteStream[(stream_pointer - u) - copyPosition + (u % copyPosition)];
+                                stream_pointer++;
+                            }
+                        }
+                        else
+                        {
+                            byteStream[stream_pointer++] = rom[source++];
+                        }
+                        if (!(stream_pointer < length))
+                            break;
+
+                        isCompressed <<= 1;
+                    }
+                }
+
+                return byteStream;
+            }
+        }]);
+
         this.uncompress();
-        this.generatePalleteMap();
     },
     methods: {
         getPalleteColor: function(pixel) {
             return this.pallete[pixel];
         },
         uncompress: function() {
-            //This entire thing is Nintenlord's code modified to work in JS
-            let source = 0x577024;
-
-            if (this.rom[source++] != 0x10)
-                return false;
-
-            let stream_pointer = 0;
-            let length = this.rom[source++] + (this.rom[source++] << 8) + (this.rom[source++] << 16);
-
-            while (stream_pointer < length)
-            {
-                let isCompressed = this.rom[source++];
-                for (let i = 0; i < 8; i++)
-                {
-                    if ((isCompressed & 0x80) != 0)
-                    {
-                        let amountToCopy = 3 + (this.rom[source] >> 4);
-                        let copyPosition = 1;
-                        copyPosition += (this.rom[source++] & 0xF) << 8;
-                        copyPosition += this.rom[source++];
-
-                        if (copyPosition > length)
-                            return false;
-
-                        for (let u = 0; u < amountToCopy; u++)
-                        {
-                            this.byteStream[stream_pointer] = this.byteStream[(stream_pointer - u) - copyPosition + (u % copyPosition)];
-                            stream_pointer++;
-                        }
-                    }
-                    else
-                    {
-                        this.byteStream[stream_pointer++] = this.rom[source++];
-                    }
-                    if (!(stream_pointer < length))
-                        break;
-
-                    isCompressed <<= 1;
-                }
-            }
+            this.isLoading = true;
+            this.worker.postMessage('uncompress', [this.rom])
+                .then(results => {
+                    this.generatePalleteMap(results);
+                    this.isLoading = false;
+                });
         },
-        generatePalleteMap: function() {
+        generatePalleteMap: function(section) {
             this.tileMap = {};
 
-            let section = this.byteStream;
             let binary_stream = "";
 
             for( const b of section ) {
