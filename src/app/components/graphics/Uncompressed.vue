@@ -15,11 +15,11 @@
         </div>
         
         <div class="graphics-flex-wrapper">
-            <div class="graphics-grid-wrapper">
+            <div class="graphics-grid-wrapper" :class="gridSize">
                 <div v-for="tile in this.tileMap" v-bind:key="tile.id">
                     <div v-for="row in tile" v-bind:key="row.id">
                         <div class="graphics-flex-wrapper">
-                            <div class="pixel" v-for="pixel in row" v-bind:key="pixel.id" :style="{backgroundColor: getPalleteColor(pixel)}">
+                            <div :class="pixelSize" v-for="pixel in row" v-bind:key="pixel.id" :style="{backgroundColor: getPalleteColor(pixel)}">
                                 
                             </div>
                         </div>
@@ -42,7 +42,9 @@ export default {
            offset: 0,
            tileMap: {},
            entries: 96,
-           linesPerRow: 12
+           linesPerRow: 12,
+           pixelSize: "pixel-8",
+           gridSize: "grid-12"
         }
     },
     computed: {
@@ -52,7 +54,7 @@ export default {
     },
     created: function() {
         for( let i = 0; i < 16; i++ ) {
-            this.pallete[i] = "rgb(" + Math.floor(256 * Math.random()) + "," + Math.floor(256 * Math.random()) + "," + Math.floor(256 * Math.random()) + ")";
+            this.pallete[i] = "rgb(" + i * 16 + "," + i * 16 + "," + i * 16 + ")";
         }
 
         this.generatePalleteMap();

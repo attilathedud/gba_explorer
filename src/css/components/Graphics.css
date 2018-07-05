@@ -3,9 +3,30 @@
   flex-wrap: wrap; }
 
 .graphics-grid-wrapper {
-  display: grid;
+  display: grid; }
+
+.grid-12 {
   grid-template-columns: repeat(12, 1fr); }
 
-.pixel {
+.grid-32 {
+  grid-template-columns: repeat(32, 1fr); }
+
+.pixel-1 {
+  height: 1px;
+  width: 1px; }
+
+.pixel-2 {
+  height: 2px;
+  width: 3px; }
+
+.pixel-3 {
+  height: 4px;
+  width: 4px; }
+
+.pixel-4 {
+  height: 4px;
+  width: 4px; }
+
+.pixel-8 {
   height: 8px;
   width: 8px; }
