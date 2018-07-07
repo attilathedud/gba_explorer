@@ -47,27 +47,30 @@ export default {
         this.worker = sww.create([{ message: 'uncompress', 
             func: function (rom) {
                 //This entire thing is Nintenlord's code modified to work in JS
-                let source = 0x577024;
+                let offset = 0x577024;
 
                 let byteStream = [];
 
-                if (rom[source++] != 0x10)
+                if (rom[offset++] != 0x10)
                     return false;
 
-                let stream_pointer = 0;
-                let length = rom[source++] + (rom[source++] << 8) + (rom[source++] << 16);
+                let length = rom[offset++];
+                length += rom[offset++] << 8;
+                length += rom[offset++] << 16;
 
+                let stream_pointer = 0;
                 while (stream_pointer < length)
                 {
-                    let isCompressed = rom[source++];
-                    for (let i = 0; i < 8; i++)
+                    let isCompressed = rom[offset++];
+
+                    for (let i = 0; i < 8 && stream_pointer < length; i++)
                     {
-                        if ((isCompressed & 0x80) != 0)
+                        if (isCompressed & 0x80)
                         {
-                            let amountToCopy = 3 + (rom[source] >> 4);
+                            let amountToCopy = 3 + (rom[offset] >> 4);
                             let copyPosition = 1;
-                            copyPosition += (rom[source++] & 0xF) << 8;
-                            copyPosition += rom[source++];
+                            copyPosition += (rom[offset++] & 0xF) << 8;
+                            copyPosition += rom[offset++];
 
                             if (copyPosition > length)
                                 return false;
@@ -80,10 +83,9 @@ export default {
                         }
                         else
                         {
-                            byteStream[stream_pointer++] = rom[source++];
+                            byteStream[stream_pointer] = rom[offset++];
+                            stream_pointer++;
                         }
-                        if (!(stream_pointer < length))
-                            break;
 
                         isCompressed <<= 1;
                     }
