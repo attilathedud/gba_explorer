@@ -5,6 +5,10 @@
 .graphics-grid-wrapper {
   display: grid; }
 
+.offset-table {
+  overflow-y: scroll;
+  height: 80vh; }
+
 .grid-12 {
   grid-template-columns: repeat(12, 1fr); }
 
