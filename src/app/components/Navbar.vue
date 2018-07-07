@@ -20,7 +20,8 @@ export default {
         { title: "Header", icon: "fa-file-alt" },
         { title: "Hex View", icon: "fa-columns" },
         { title: "Strings", icon: "fa-font" },
-        { title: "Graphics", icon: "fa-image" }
+        { title: "Graphics", icon: "fa-image" },
+        { title: "Sounds", icon: "fa-music" },
       ],
       selected: "Header"
     };
