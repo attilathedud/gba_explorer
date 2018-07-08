@@ -30,6 +30,7 @@ export default {
     },
     data: function() {
         return {
+            isSearching: false,
             sappyTableOffset: 0,
             songTableOffset: 0,
             songLevels: 0,
@@ -37,7 +38,7 @@ export default {
             mainVolume : 0,
             samplingRateIndex : 0,
             dacBits : 0,
-            isSearching: false,
+            songList : [],
             samplingRateLookup: [
                 "invalid", "5734 Hz", "7884 Hz", "10512 Hz", "13379 Hz", "15768 Hz", "18157 Hz",
                 "21024 Hz", "26758 Hz", "31536 Hz", "36314 Hz", "40137 Hz", "42048 Hz", "invalid", "invalid", "invalid"
@@ -59,6 +60,9 @@ export default {
 
                     this.isSearching = false;
                 });
+        },
+        dumpTrack: function() {
+
         }
     },
     created: function() {
@@ -141,18 +145,30 @@ export default {
                     let songTableOffset = (data2 & 0x3FFFFFF) + 12 * data1;
 
                     let polyphony = (data0 & 0x000F00) >> 8;
-                    let mainVolumne = (data0 & 0x00F000) >> 12;
+                    let mainVolume = (data0 & 0x00F000) >> 12;
                     let samplingRateIndex = (data0 & 0x0F0000) >> 16;
                     let dacBits = ((data0 & 0xF00000) >> 20);
+
+                    let songList = [];
+                    let streamPointer = songTableOffset;
+
+                    let songPointer = 0;
+                    do {
+                        songPointer = reverseIndianness(streamPointer) - 0x8000000;
+                        songList.push(songPointer);
+                        streamPointer += 4;
+                        streamPointer += 4;
+                    } while( songPointer != 0 && songPointer < rom.byteLength );
 
                     return {
                         'sappyTableOffset' : sappyTableOffset, 
                         'songLevels' : data1, 
                         'songTableOffset' : songTableOffset,
                         'polyphony' : polyphony,
-                        'mainVolume' : mainVolumne,
+                        'mainVolume' : mainVolume,
                         'samplingRateIndex' : samplingRateIndex,
-                        'dacBits' : dacBits
+                        'dacBits' : dacBits,
+                        'songList' : songList
                     };
                 }
             }
