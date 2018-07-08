@@ -20,6 +20,9 @@
 <script>
 import { mapGetters } from 'vuex';
 import sww from 'simple-web-worker';
+const fs = require('fs');
+
+import Midi from '../midi/midi.js';
 
 export default {
     name: 'Sounds',    
@@ -65,6 +68,13 @@ export default {
             let offset = 0xdcc6cc;
 
             let tracks = this.rom[offset];
+            
+            let k = new Midi(24);
+            fs.writeFile(process.cwd() + '/midis/test.mid', k.getMidiFile(), (err) => {
+                if (err) {
+                    console.log(err);
+                }
+            });
         }
     },
     created: function() {
@@ -77,6 +87,7 @@ export default {
                     }
 
                     function reverseIndianness(offset) {
+                        //use Buffer read functions
                         return parseInt(toHexString(rom[offset+3],2) + toHexString(rom[offset+2],2) + toHexString(rom[offset+1],2) + toHexString(rom[offset],2), 16);
                     }
 
