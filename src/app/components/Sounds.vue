@@ -4,7 +4,15 @@
             <a v-if="isSearching" class="button is-loading is-large is-text centered-vertical"></a>
         </div>
         <div v-if="!isSearching">
-            <p>Sound engine detected at 0x{{toHexString(sappyTableOffset, 8)}}</p>
+            <div v-if="sappyTableOffset == -1">
+                <p>No sound engine found</p>
+            </div>
+            <div v-else>
+                <p>Sound engine detected at 0x{{toHexString(sappyTableOffset, 8)}}</p>
+                <p>Song table detected at 0x{{toHexString(songTableOffset, 8)}}</p>
+                <p>Song levels {{songLevels}}</p>
+                <p>Polyphony: {{polyphony}}, Main Volume: {{mainVolume}}, Sampling Rate Index: {{samplingRateLookup[samplingRateIndex]}}, dac: {{dacBits}} bits</p>
+            </div>
         </div>
     </div>
 </template>
@@ -23,7 +31,17 @@ export default {
     data: function() {
         return {
             sappyTableOffset: 0,
-            isSearching: false
+            songTableOffset: 0,
+            songLevels: 0,
+            polyphony : 0,
+            mainVolume : 0,
+            samplingRateIndex : 0,
+            dacBits : 0,
+            isSearching: false,
+            samplingRateLookup: [
+                "invalid", "5734 Hz", "7884 Hz", "10512 Hz", "13379 Hz", "15768 Hz", "18157 Hz",
+                "21024 Hz", "26758 Hz", "31536 Hz", "36314 Hz", "40137 Hz", "42048 Hz", "invalid", "invalid", "invalid"
+            ]
         }
     },
     methods: {
@@ -31,7 +49,14 @@ export default {
             this.isSearching = true;
             this.worker.postMessage('scan', [this.rom])
                 .then(results => {
-                    this.sappyTableOffset = results;
+                    this.sappyTableOffset = results.sappyTableOffset;
+                    this.songTableOffset = results.songTableOffset;
+                    this.songLevels = results.songLevels;
+                    this.polyphony = results.polyphony;
+                    this.mainVolume = results.mainVolume;
+                    this.samplingRateIndex = results.samplingRateIndex;
+                    this.dacBits = results.dacBits;
+
                     this.isSearching = false;
                 });
         }
@@ -41,6 +66,14 @@ export default {
             { 
                 message: 'scan', 
                 func: function (rom) {
+                    function toHexString(number, padding) {
+                        return Number(number).toString(16).toUpperCase().padStart(padding, '0')
+                    }
+
+                    function reverseIndianness(offset) {
+                        return parseInt(toHexString(rom[offset+3],2) + toHexString(rom[offset+2],2) + toHexString(rom[offset+1],2) + toHexString(rom[offset],2), 16);
+                    }
+
                     //code is taken from GBA Sappy Engine Detector by Bregalad
                     let sappy_signature_old = [
                         0x00, 0xB5, 0x00, 0x04, 0x07, 0x4A, 0x08, 0x49,
@@ -87,6 +120,10 @@ export default {
                         }
                     }
 
+                    if( selectSongOffset === 0 ) {
+                        return {'sappyTableOffset' : -1};
+                    }
+
                     let sappyTableOffset = selectSongOffset - 1;
                     while( sappyTableOffset > 0 && sappyTableOffset > selectSongOffset - 0x20 ) {
                         if( rom[sappyTableOffset] == 0x00 && rom[sappyTableOffset+1] == 0xB5 ) {
@@ -95,7 +132,28 @@ export default {
                         sappyTableOffset--;
                     }
 
-                    return sappyTableOffset;
+                    let offset = sappyTableOffset - 16;
+
+                    let data0 = reverseIndianness(offset);
+                    let data1 = reverseIndianness(offset + 4);
+                    let data2 = reverseIndianness(offset + 8);
+
+                    let songTableOffset = (data2 & 0x3FFFFFF) + 12 * data1;
+
+                    let polyphony = (data0 & 0x000F00) >> 8;
+                    let mainVolumne = (data0 & 0x00F000) >> 12;
+                    let samplingRateIndex = (data0 & 0x0F0000) >> 16;
+                    let dacBits = ((data0 & 0xF00000) >> 20);
+
+                    return {
+                        'sappyTableOffset' : sappyTableOffset, 
+                        'songLevels' : data1, 
+                        'songTableOffset' : songTableOffset,
+                        'polyphony' : polyphony,
+                        'mainVolume' : mainVolumne,
+                        'samplingRateIndex' : samplingRateIndex,
+                        'dacBits' : dacBits
+                    };
                 }
             }
         ]);
