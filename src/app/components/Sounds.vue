@@ -62,7 +62,9 @@ export default {
                 });
         },
         dumpTrack: function() {
+            let offset = 0xdcc6cc;
 
+            let tracks = this.rom[offset];
         }
     },
     created: function() {
@@ -175,6 +177,7 @@ export default {
         ]);
 
         this.scan();
+        this.dumpTrack();
     }
 };
 </script>
