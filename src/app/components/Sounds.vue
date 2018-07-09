@@ -65,16 +65,64 @@ export default {
                 });
         },
         dumpTrack: function() {
+            let midi = new Midi(24);
+
             let offset = 0xdcc6cc;
 
             let tracks = this.rom[offset];
+            let reverb = this.rom.readInt8(offset + 3);
+
+            let lfo_depth = [];
+            let lfo_delay = [];
+            let lfo_flag = [];
+
+            let track_ptr = [];
+
+            for (let i = 0; i < tracks; i++)
+            {
+                track_ptr[i] = this.rom.readInt32LE(offset + (4 * i) + 8) & 0x3FFFFFF;
+
+                lfo_depth[i] = 0;
+                lfo_delay[i] = 0;
+                lfo_flag[i] = false;
+
+                if (reverb < 0) {
+                    midi.add_controller(i, 91, reverb & 0x7f);
+                }
+            }
+
+            let loop_flag = true;
+            let loop_adr = 0;
+
+            let loop_offset = 0;
+
+            if (tracks > 1)	{
+                loop_offset = track_ptr[1] - 9;
+            }
+            else {
+                loop_offset = offset - 9;
+            }
+
+            for (let i = 0; i < 5; i++) {
+                if(this.rom[loop_offset + i] == 0xb2) {
+                    loop_flag = true;
+                    loop_adr = this.rom.readInt32LE(loop_offset + i + 1) & 0x3FFFFFF;
+                    break;
+                }
+            }
+
             
-            let k = new Midi(24);
+
+            if (loop_flag) {
+                midi.add_marker("loopEnd");
+            }
+
+            /*let k = new Midi(24);
             fs.writeFile(process.cwd() + '/midis/test.mid', k.getMidiFile(), (err) => {
                 if (err) {
                     console.log(err);
                 }
-            });
+            });*/
         }
     },
     created: function() {
