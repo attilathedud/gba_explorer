@@ -22,6 +22,10 @@ export default class Midi {
         this.last_event_type = 0;
     }
 
+    clock() {
+		this.time_ctr += 1;
+	}
+
     getMidiFile() {
         let byteStream = Buffer.alloc(14 + 8 + this.data.length);
 

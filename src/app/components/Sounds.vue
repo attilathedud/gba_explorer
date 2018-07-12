@@ -23,6 +23,7 @@ import sww from 'simple-web-worker';
 const fs = require('fs');
 
 import Midi from '../midi/midi.js';
+import Note from '../midi/note.js';
 
 export default {
     name: 'Sounds',    
@@ -45,7 +46,18 @@ export default {
             samplingRateLookup: [
                 "invalid", "5734 Hz", "7884 Hz", "10512 Hz", "13379 Hz", "15768 Hz", "18157 Hz",
                 "21024 Hz", "26758 Hz", "31536 Hz", "36314 Hz", "40137 Hz", "42048 Hz", "invalid", "invalid", "invalid"
-            ]
+            ],
+            notes_playing: [],
+            tracks: 0,
+            midi: {},
+            track_ptr: [],
+            counter: [],
+            track_completed: [],
+            lfo_depth: [],
+            lfo_delay: [],
+            lfo_flag: [],
+            lfo_type: [],
+            lfo_delay_ctr: []
         }
     },
     methods: {
@@ -64,30 +76,93 @@ export default {
                     this.isSearching = false;
                 });
         },
+        process_event: function(track) {
+
+        },
+        process_lfo: function(track) {
+            if (this.lfo_delay_ctr[track] != 0)
+            {
+                // Decrease counter if it's value was nonzero
+                if (--this.lfo_delay_ctr[track] == 0)
+                {
+                    // If 1->0 transition we need to add a signal to start the LFO
+                    if (this.lfo_type[track] == 0)
+                        // Send a controller 1 if pitch LFO
+                        this.midi.add_controller(track, 1, (this.lfo_depth[track] < 16) ? this.lfo_depth[track] * 8 : 127);
+                    else
+                        // Send a channel aftertouch otherwise
+                        this.midi.add_chanaft(track, (this.lfo_depth[track] < 16) ? this.lfo_depth[track] * 8 : 127);
+                    this.lfo_flag[track] = true;
+                }
+            }
+        },
+        tick: function() {
+            //notes_playing.remove_if (countdown_is_over);
+            this.notes_playing = this.notes_playing.filter(el => !el.countdown_is_over());
+
+            // Process all tracks
+            for (let track = 0; track < this.tracks; track++)
+            {
+                this.counter[track]--;
+                // Process events until counter non-null or pointer null
+                // This might not be executed if counter both are non null.
+                while (this.track_ptr[track] != 0 && this.counter[track] <= 0)
+                {
+                    // Check if we're at loop start point
+                    if (track == 0 && loop_flag && !return_flag[0] && !this.track_completed[0] && this.track_ptr[0] == loop_adr)
+                        this.midi.add_marker("loopStart");
+
+                    this.process_event(track);
+                }
+            }
+
+            for (let track = 0; track < this.tracks; track++)
+            {
+                this.process_lfo(track);
+            }
+
+            // Compute if all still active channels are completely decoded
+            let all_completed_flag = true;
+            for (let i = 0; i < this.tracks; i++) {
+                all_completed_flag &= this.track_completed[i];
+            }
+
+            // If everything is completed, the main program should quit its loop
+            if (all_completed_flag) {
+                return false;
+            }
+
+            // Make note on events for this tick
+            //(it's important they are made after all other events)
+            this.notes_playing.forEach(function(note){
+                note.make_note_on_event();
+            });
+
+            // Increment MIDI time
+            this.midi.clock();
+            
+            return true;
+        },
         dumpTrack: function() {
-            let midi = new Midi(24);
+            this.midi = new Midi(24);
 
             let offset = 0xdcc6cc;
 
-            let tracks = this.rom[offset];
+            this.tracks = this.rom[offset];
             let reverb = this.rom.readInt8(offset + 3);
 
-            let lfo_depth = [];
-            let lfo_delay = [];
-            let lfo_flag = [];
+            this.track_ptr = [];
 
-            let track_ptr = [];
-
-            for (let i = 0; i < tracks; i++)
+            for (let i = 0; i < this.tracks; i++)
             {
-                track_ptr[i] = this.rom.readInt32LE(offset + (4 * i) + 8) & 0x3FFFFFF;
+                this.track_ptr[i] = this.rom.readInt32LE(offset + (4 * i) + 8) & 0x3FFFFFF;
 
-                lfo_depth[i] = 0;
-                lfo_delay[i] = 0;
-                lfo_flag[i] = false;
+                this.lfo_depth[i] = 0;
+                this.lfo_delay[i] = 0;
+                this.lfo_flag[i] = false;
 
                 if (reverb < 0) {
-                    midi.add_controller(i, 91, reverb & 0x7f);
+                    this.midi.add_controller(i, 91, reverb & 0x7f);
                 }
             }
 
@@ -96,8 +171,8 @@ export default {
 
             let loop_offset = 0;
 
-            if (tracks > 1)	{
-                loop_offset = track_ptr[1] - 9;
+            if (this.tracks > 1)	{
+                loop_offset = this.track_ptr[1] - 9;
             }
             else {
                 loop_offset = offset - 9;
@@ -111,14 +186,16 @@ export default {
                 }
             }
 
-            
+            //while (this.tick(this.tracks))
+            //{}            
 
             if (loop_flag) {
-                midi.add_marker("loopEnd");
+                this.midi.add_marker("loopEnd");
             }
 
-            /*let k = new Midi(24);
-            fs.writeFile(process.cwd() + '/midis/test.mid', k.getMidiFile(), (err) => {
+            console.log(this.midi.data.map(d => Number(d).toString(16)));
+
+            /*fs.writeFile(process.cwd() + '/midis/test.mid', k.getMidiFile(), (err) => {
                 if (err) {
                     console.log(err);
                 }
