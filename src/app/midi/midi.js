@@ -27,7 +27,7 @@ export default class Midi {
 	}
 
     getMidiFile() {
-        let byteStream = Buffer.alloc(14 + 8 + this.data.length);
+        let byteStream = Buffer.alloc(14 + 8 + this.data.length + 4);
 
         byteStream.write('MThd');
         byteStream.writeInt32LE(0x06000000, 4);
@@ -36,9 +36,22 @@ export default class Midi {
         byteStream.writeInt16LE((this.delta_time_per_beat << 8) | (this.delta_time_per_beat >> 8), 12);
 		
         byteStream.write('MTrk', 14);
+        let s = this.data.length + 4;
+        byteStream.writeInt32LE((s << 24) | ((s & 0x0000ff00) << 8) | ((s & 0x00ff0000) >> 8) | (s >> 24), 18);
+
+        for(let i = 0; i < this.data.length; i++ ) {
+            if( this.data[i] == -1) {
+                this.data[i] = 0xFF;
+            }
+
+            byteStream.writeUInt8(this.data[i], i + 22);
+        }
+
+        byteStream.writeUInt8(0, this.data.length + 22);
+        byteStream.writeUInt8(0xff, this.data.length + 22 + 1);
+        byteStream.writeUInt8(0x2f, this.data.length + 22 + 2);
+        byteStream.writeUInt8(0, this.data.length + 22 + 3);
         
-        //write rest of data
-        console.log(this.data);
 
         return byteStream;
     }
@@ -161,7 +174,7 @@ export default class Midi {
         let len = text.length;
         this.add_vlength_code(len);
         //Add text itself
-        for( let i = 0; i < len - 1; i++ ) {
+        for( let i = 0; i < len; i++ ) {
             this.data.push(text[i].charCodeAt());
         }
     }
@@ -180,9 +193,15 @@ export default class Midi {
 
     add_tempo(tempo) {
         let t = Math.trunc(60000000.0 / tempo);
-        let t1 = t;
-        let t2 = t>>8;
-        let t3 = t>>16;
+        
+        let t_bits = t.toString(2);
+        let t1 = parseInt(t_bits.substr(t_bits.length - 8), 2);
+        
+        t_bits = (t>>8).toString(2);
+        let t2 = parseInt(t_bits.substr(t_bits.length - 8), 2);
+
+        t_bits = (t>>16).toString(2);
+        let t3 = parseInt(t_bits.substr(t_bits.length - 8), 2);
 
         this.add_delta_time();
         this.data.push(0xff);
