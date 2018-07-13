@@ -436,6 +436,13 @@ export default {
             let offset = 0xdcc6cc;
             //let offset = 0xdcf734;
 
+            //gs stuff
+            let gs_reset_sysex = [0x41, 0x10, 0x42, 0x12, 0x40, 0x00, 0x7f, 0x00, 0x41];
+            this.midi.add_sysex(gs_reset_sysex, gs_reset_sysex.length);
+            // Part 10 to normal
+            let part_10_normal_sysex = [0x41, 0x10, 0x42, 0x12, 0x40, 0x10, 0x15, 0x00, 0x1b];
+            this.midi.add_sysex(part_10_normal_sysex, part_10_normal_sysex.length);
+
             this.tracks = this.rom[offset];
             let reverb = this.rom.readInt8(offset + 3);
 
@@ -444,7 +451,6 @@ export default {
             for (let i = 0; i < this.tracks; i++)
             {
                 this.track_ptr[i] = this.rom.readInt32LE(offset + (4 * i) + 8) & 0x3FFFFFF;
-                //todo: fix location
 
                 this.lfo_depth[i] = 0;
                 this.lfo_delay[i] = 0;
