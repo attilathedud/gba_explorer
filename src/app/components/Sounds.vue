@@ -237,7 +237,7 @@ export default {
                 }
 
                 // Linearise velocity if needed
-                //if (lv) vel = sqrt(127.0 * vel);
+                vel = Math.sqrt(127.0 * vel);
 
                 this.notes_playing.unshift( new Note(this.midi, track, lenTbl[command - 0xd0 + 1] + len_ofs, key + this.key_shift[track], vel, this.lfo_delay, this.lfo_delay_ctr, this.lfo_flag, this.lfo_flag) );
                 return;
@@ -259,7 +259,7 @@ export default {
                 // Set volume
                 case 0xbe:
                 	// Linearise volume if needed
-                    let volume = arg1;
+                    let volume = Math.sqrt(127.0 * arg1);
                     this.midi.add_controller(track, 7, volume);
                 	return;
 
@@ -357,6 +357,8 @@ export default {
                         vel = this.last_vel[track];
                         this.track_ptr[track]--;		// Seek back, as arg 1 is unused and belong to next event !
                     }
+
+                    vel = Math.sqrt(127.0 * vel)
 
                     // Make note of infinite length
                     this.notes_playing.unshift(new Note(this.midi, track, -1, key + this.key_shift[track], vel, this.lfo_delay, this.lfo_delay_ctr, this.lfo_flag, this.lfo_flag));
@@ -457,7 +459,7 @@ export default {
                 this.lfo_flag[i] = false;
 
                 if (reverb < 0) {
-                    this.midi.add_controller(i, 91, reverb & 0x7f);
+                    this.midi.add_controller(i, 91, Math.sqrt((reverb & 0x7f) * 127.0));
                 }
             }
             this.loop_adr = 0;
