@@ -58,6 +58,7 @@ export default {
             lfo_flag: [],
             lfo_type: [],
             lfo_delay_ctr: [],
+            lfo_hack: [],
             loop_adr: 0,
             loop_flag: true,
             return_flag: [],
@@ -90,8 +91,8 @@ export default {
                 this.lfo_delay_ctr[track] = this.lfo_delay[track];
         },
         stop_lfo(track) {
-        // Cancel a LFO if it was playing,
-        if (this.lfo_flag[track])
+            // Cancel a LFO if it was playing,
+            if (this.lfo_flag[track])
             {
                 if (this.lfo_type[track] == 0) {
                     this.midi.add_controller(track, 1, 0);
@@ -237,7 +238,7 @@ export default {
                 }
 
                 // Linearise velocity if needed
-                vel = Math.sqrt(127.0 * vel);
+                vel = Math.trunc(Math.sqrt(127.0 * vel));
 
                 this.notes_playing.unshift( new Note(this.midi, track, lenTbl[command - 0xd0 + 1] + len_ofs, key + this.key_shift[track], vel, this.lfo_delay, this.lfo_delay_ctr, this.lfo_flag, this.lfo_flag) );
                 return;
@@ -259,7 +260,7 @@ export default {
                 // Set volume
                 case 0xbe:
                 	// Linearise volume if needed
-                    let volume = Math.sqrt(127.0 * arg1);
+                    let volume = Math.trunc(Math.sqrt(127.0 * arg1));
                     this.midi.add_controller(track, 7, volume);
                 	return;
 
@@ -275,32 +276,52 @@ export default {
 
                 // Pitch bend range
                 case 0xc1:
-                    this.midi.add_controller(track, 20, arg1);
+                    //this.midi.add_controller(track, 20, arg1); 
+                    arg1_bits = arg1.toString(2);
+                    this.midi.add_RPN(track, 0, parseInt(arg1_bits.substr(arg1_bits.length - 8), 2));
                     return;
 
                 // LFO Speed
                 case 0xc2:
-                    this.midi.add_controller(track, 21, arg1);
+                    //this.midi.add_controller(track, 21, arg1);
+                    this.midi.add_NRPN(track, 136, arg1);
                     return;
 
                 // LFO delay
                 case 0xc3:
-                    this.midi.add_controller(track, 26, arg1);
+                    //this.midi.add_controller(track, 26, arg1);
+                    this.lfo_delay[track] = arg1;
                     return;
 
                 // LFO depth
                 case 0xc4:
-                    this.midi.add_controller(track, 1, arg1);
+                    //this.midi.add_controller(track, 1, arg1);
+                    if (this.lfo_delay[track] == 0 && this.lfo_hack[track])
+                    {
+                        if (this.lfo_type[track]==0)
+                            this.midi.add_controller(track, 1, arg1>12 ? 127 : 10 * arg1);
+                        else
+                            this.midi.add_chanaft(track, arg1>12 ? 127 : 10 * arg1);
+
+                        this.lfo_flag[track] = true;
+                    }
+                    this.lfo_depth[track] = arg1;
+                    // I had a stupid bug with LFO inserting controllers I didn't want at the start of files
+                    // So I made a terrible quick fix for it, in the mean time I can find something better to prevent it.
+                    this.lfo_hack[track] = true;
                     return;
 
                 // LFO type
                 case 0xc5:
-                    this.midi.add_controller(track, 22, arg1);
+                    //this.midi.add_controller(track, 22, arg1);
+                    this.lfo_type[track] = arg1;
                     return;
 
                 // Detune
                 case 0xc8:
-                    this.midi.add_controller(track, 24, arg1);
+                    //this.midi.add_controller(track, 24, arg1);
+                    let arg1_bits = arg1.toString(2);
+                    this.midi.add_RPN(track, 1, parseInt(arg1_bits.substr(arg1_bits.length - 8), 2));
                     return;
 
                 // Key off
@@ -358,7 +379,7 @@ export default {
                         this.track_ptr[track]--;		// Seek back, as arg 1 is unused and belong to next event !
                     }
 
-                    vel = Math.sqrt(127.0 * vel)
+                    vel = Math.trunc(Math.sqrt(127.0 * vel));
 
                     // Make note of infinite length
                     this.notes_playing.unshift(new Note(this.midi, track, -1, key + this.key_shift[track], vel, this.lfo_delay, this.lfo_delay_ctr, this.lfo_flag, this.lfo_flag));
@@ -459,7 +480,7 @@ export default {
                 this.lfo_flag[i] = false;
 
                 if (reverb < 0) {
-                    this.midi.add_controller(i, 91, Math.sqrt((reverb & 0x7f) * 127.0));
+                    this.midi.add_controller(i, 91, Math.trunc(Math.sqrt((reverb & 0x7f) * 127.0)));
                 }
             }
             this.loop_adr = 0;

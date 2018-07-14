@@ -39,13 +39,7 @@ export default class Midi {
         let s = this.data.length + 4;
         byteStream.writeInt32LE((s << 24) | ((s & 0x0000ff00) << 8) | ((s & 0x00ff0000) >> 8) | (s >> 24), 18);
 
-        for(let i = 0; i < this.data.length; i++ ) {
-            if( this.data[i] == -1) {
-                this.data[i] = 0xFF;
-            }
-
-            byteStream.writeUInt8(this.data[i], i + 22);
-        }
+        Buffer.from(this.data).copy(byteStream, 22);
 
         byteStream.writeUInt8(0, this.data.length + 22);
         byteStream.writeUInt8(0xff, this.data.length + 22 + 1);
