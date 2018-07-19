@@ -46,7 +46,6 @@ export default class Midi {
         byteStream.writeUInt8(0x2f, this.data.length + 22 + 2);
         byteStream.writeUInt8(0, this.data.length + 22 + 3);
         
-
         return byteStream;
     }
 
