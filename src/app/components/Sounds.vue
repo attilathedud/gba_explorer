@@ -13,24 +13,36 @@
                 <p>Song levels {{songLevels}}</p>
                 <p>Polyphony: {{polyphony}}, Main Volume: {{mainVolume}}, Sampling Rate Index: {{samplingRateLookup[samplingRateIndex]}}, 
                     dac: {{dacBits}} bits</p>
+                <br>
 
-                <DumpTrack></DumpTrack>
+                <div class="columns">
+                    <div class="column is-one-quarter offset-table">
+                        <table class="table is-striped is-narrow is-hoverable">
+                            <thead></thead>
+                            <tbody>
+                                <tr v-for="song in songList" v-bind:key="song.id" v-on:click="dumpTrack(song)">
+                                    <td>{{toHexString(song, 8)}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="column">
+
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import DumpTrack from "./sounds/DumpTrack.vue";
+import Track from '../midi/track.js';
 
 import { mapGetters } from 'vuex';
 import sww from 'simple-web-worker';
 
 export default {
-    name: 'Sounds',        
-    components: {
-        DumpTrack
-    },
+    name: 'Sounds',
     computed: {
         ...mapGetters([
             'rom'
@@ -50,7 +62,8 @@ export default {
             samplingRateLookup: [
                 "invalid", "5734 Hz", "7884 Hz", "10512 Hz", "13379 Hz", "15768 Hz", "18157 Hz",
                 "21024 Hz", "26758 Hz", "31536 Hz", "36314 Hz", "40137 Hz", "42048 Hz", "invalid", "invalid", "invalid"
-            ]
+            ],
+            track: {}
         }
     },
     methods: {
@@ -69,6 +82,9 @@ export default {
 
                     this.isSearching = false;
                 });
+        },
+        dumpTrack: function(offset) {
+            //console.log(this.track.dumpTrack(offset));
         }
     },
     created: function() {
@@ -181,6 +197,7 @@ export default {
             }
         ]);
 
+        this.track = new Track(this.rom);
         this.scan();
     }
 };
