@@ -20,14 +20,14 @@
                         <table class="table is-striped is-narrow is-hoverable">
                             <thead></thead>
                             <tbody>
-                                <tr v-for="song in songList" v-bind:key="song.id" v-on:click="dumpTrack(song)">
+                                <tr v-for="song in songList" v-bind:key="song.id" v-on:click="dumpTrack(song)" :class="{'is-selected':song == songSelected}">
                                     <td>{{toHexString(song, 8)}}</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="column">
-
+                        <Player v-bind:songData="songSelectedData"></Player>
                     </div>
                 </div>
             </div>
@@ -37,12 +37,16 @@
 
 <script>
 import Track from '../midi/track.js';
+import Player from './sounds/Player.vue';
 
 import { mapGetters } from 'vuex';
 import sww from 'simple-web-worker';
 
 export default {
     name: 'Sounds',
+    components: {
+        Player
+    },
     computed: {
         ...mapGetters([
             'rom'
@@ -51,6 +55,8 @@ export default {
     data: function() {
         return {
             isSearching: false,
+            songSelected: 0,
+            songSelectedData: new Uint8Array(),
             sappyTableOffset: 0,
             songTableOffset: 0,
             songLevels: 0,
@@ -84,7 +90,8 @@ export default {
                 });
         },
         dumpTrack: function(offset) {
-            //console.log(this.track.dumpTrack(offset));
+            this.songSelected = offset;
+            this.songSelectedData = this.track.dumpTrack(offset);
         }
     },
     created: function() {

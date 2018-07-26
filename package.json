@@ -55,7 +55,9 @@
     "electron-compile": "^6.4.2",
     "electron-devtools-installer": "^2.2.4",
     "electron-squirrel-startup": "^1.0.0",
+    "midi-player-js": "^2.0.3",
     "simple-web-worker": "^1.2.0",
+    "soundfont-player": "^0.10.7",
     "vue": "^2.5.16",
     "vuex": "^3.0.1"
   },

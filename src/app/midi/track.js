@@ -218,9 +218,11 @@ export default class Track {
                 return;
             // Pitch bend range
             case 0xc1:
-                arg1_bits = arg1.toString(2);
+            {
+                let arg1_bits = arg1.toString(2);
                 this.midi.add_RPN(track, 0, parseInt(arg1_bits.substr(arg1_bits.length - 8), 2));
                 return;
+            }
             // LFO Speed
             case 0xc2:
                 this.midi.add_NRPN(track, 136, arg1);
@@ -248,15 +250,15 @@ export default class Track {
                 return;
             // LFO type
             case 0xc5:
-                //this.midi.add_controller(track, 22, arg1);
                 this.lfo_type[track] = arg1;
                 return;
             // Detune
             case 0xc8:
-                //this.midi.add_controller(track, 24, arg1);
+            {
                 let arg1_bits = arg1.toString(2);
                 this.midi.add_RPN(track, 1, parseInt(arg1_bits.substr(arg1_bits.length - 8), 2));
                 return;
+            }
             // Key off
             case 0xce:
             {
