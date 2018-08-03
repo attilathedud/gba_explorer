@@ -1,29 +1,29 @@
 //This is Bregalad's code again
 export default class Midi {
-    constructor(delta_time) {
-        this.delta_time_per_beat = delta_time;
+    constructor(deltaTime) {
+        this.deltaTimePerBeat = deltaTime;
 
-        this.last_rpn_type = [];
-        this.last_nrpn_type = [];
-        this.last_type = [];
-        this.chn_reorder = [];
+        this.lastRpnType = [];
+        this.lastNrpnType = [];
+        this.lastType = [];
+        this.chnReorder = [];
 
         for (let i = 15; i >= 0; --i )
         {
-            this.last_rpn_type[i] = -1;
-            this.last_nrpn_type[i] = -1;
-            this.last_type[i] = -1;
-            this.chn_reorder[i] = i;
+            this.lastRpnType[i] = -1;
+            this.lastNrpnType[i] = -1;
+            this.lastType[i] = -1;
+            this.chnReorder[i] = i;
         }
-        this.last_chanel = -1;
-        this.time_ctr = 0;
+        this.lastChanel = -1;
+        this.timeCtr = 0;
 
         this.data = [];
-        this.last_event_type = 0;
+        this.lastEventType = 0;
     }
 
     clock() {
-        this.time_ctr += 1;
+        this.timeCtr += 1;
     }
 
     getMidiFile() {
@@ -33,7 +33,7 @@ export default class Midi {
         byteStream.writeInt32LE(0x06000000, 4);
         byteStream.writeInt16LE(0x0000, 8);
         byteStream.writeInt16LE(0x0100, 10);
-        byteStream.writeInt16LE((this.delta_time_per_beat << 8) | (this.delta_time_per_beat >> 8), 12);
+        byteStream.writeInt16LE((this.deltaTimePerBeat << 8) | (this.deltaTimePerBeat >> 8), 12);
 		
         byteStream.write("MTrk", 14);
         let s = this.data.length + 4;
@@ -49,7 +49,7 @@ export default class Midi {
         return byteStream;
     }
 
-    add_vlength_code(code) {
+    addVlengthCode(code) {
         let word1 = code & 0x7f;
         let word2 = (code >> 7) & 0x7f;
         let word3 = (code >> 14) & 0x7f;
@@ -73,124 +73,124 @@ export default class Midi {
         this.data.push(word1);
     }
 
-    add_delta_time() {
-        this.add_vlength_code(this.time_ctr);
+    addDeltaTime() {
+        this.addVlengthCode(this.timeCtr);
 
-        this.time_ctr = 0;
+        this.timeCtr = 0;
     }
 
-    add_event_type_2(type, chn, param1, param2) {
-        this.add_delta_time();
-        if (chn != this.last_chanel || type != this.last_event_type)
+    addEventTypeMulti(type, chn, param1, param2) {
+        this.addDeltaTime();
+        if (chn != this.lastChanel || type != this.lastEventType)
         {
-            this.last_chanel = chn;
-            this.last_event_type = type;
-            this.data.push((type << 4) | this.chn_reorder[chn]);
+            this.lastChanel = chn;
+            this.lastEventType = type;
+            this.data.push((type << 4) | this.chnReorder[chn]);
         }
         this.data.push(param1);
         this.data.push(param2);
     }
 
-    add_event(type, chn, param) {
-        this.add_delta_time();
-        if (chn != this.last_chanel || type != this.last_event_type)
+    addEventTypeSingle(type, chn, param) {
+        this.addDeltaTime();
+        if (chn != this.lastChanel || type != this.lastEventType)
         {
-            this.last_chanel = chn;
-            this.last_event_type = type;
-            this.data.push((type << 4) | this.chn_reorder[chn]);
+            this.lastChanel = chn;
+            this.lastEventType = type;
+            this.data.push((type << 4) | this.chnReorder[chn]);
         }
         this.data.push(param);
     }
 
-    add_note_on(chn, key, vel) {
-        this.add_event_type_2(9, chn, key, vel);
+    addNoteOn(chn, key, vel) {
+        this.addEventTypeMulti(9, chn, key, vel);
     }
 
-    add_note_off(chn, key, vel) {
-        this.add_event_type_2(8, chn, key, vel);
+    addNoteOff(chn, key, vel) {
+        this.addEventTypeMulti(8, chn, key, vel);
     }
 
-    add_controller(chn, ctrl, value) {
-        this.add_event_type_2(11, chn, ctrl, value);
+    addController(chn, ctrl, value) {
+        this.addEventTypeMulti(11, chn, ctrl, value);
     }
 
-    add_chanaft(chn, value) {
-        this.add_event(13, chn, value);
+    addChanAft(chn, value) {
+        this.addEventTypeSingle(13, chn, value);
     }
 
-    add_pchange(chn, number) {
-        this.add_event(12, chn, number);
+    addPchange(chn, number) {
+        this.addEventTypeSingle(12, chn, number);
     }
 
-    add_pitch_bend(chn, value) {
-        this.add_event_type_2(14, chn, 0, value);
+    addPitchBend(chn, value) {
+        this.addEventTypeMulti(14, chn, 0, value);
     }
 
-    add_RPN(chn, type, value) {
-        if (this.last_rpn_type[chn] != type || this.last_type[chn] != 0)
+    addRPN(chn, type, value) {
+        if (this.lastRpnType[chn] != type || this.lastType[chn] != 0)
         {
-            this.last_rpn_type[chn] = type;
-            this.last_type[chn] = 0;
-            this.add_event_type_2(11, chn, 101, type>>7);
-            this.add_event_type_2(11, chn, 100, type&0x7f);
+            this.lastRpnType[chn] = type;
+            this.lastType[chn] = 0;
+            this.addEventTypeMulti(11, chn, 101, type>>7);
+            this.addEventTypeMulti(11, chn, 100, type&0x7f);
         }
-        this.add_event_type_2(11, chn, 6, value >> 7);
+        this.addEventTypeMulti(11, chn, 6, value >> 7);
 
         if ((value & 0x7f) != 0)
-            this.add_event_type_2(11, chn, 38, value & 0x7f);
+            this.addEventTypeMulti(11, chn, 38, value & 0x7f);
     }
 
-    add_NRPN(chn, type, value) {
-        if (this.last_nrpn_type[chn] != type || this.last_type[chn] != 1)
+    addNRPN(chn, type, value) {
+        if (this.lastNrpnType[chn] != type || this.lastType[chn] != 1)
         {
-            this.last_nrpn_type[chn] = type;
-            this.last_type[chn] = 1;
-            this.add_event_type_2(11, chn, 99, type>>7);
-            this.add_event_type_2(11, chn, 98, type&0x7f);
+            this.lastNrpnType[chn] = type;
+            this.lastType[chn] = 1;
+            this.addEventTypeMulti(11, chn, 99, type>>7);
+            this.addEventTypeMulti(11, chn, 98, type&0x7f);
         }
-        this.add_event_type_2(11, chn, 6, value >> 7);
+        this.addEventTypeMulti(11, chn, 6, value >> 7);
         if ((value & 0x7f) != 0)
-            this.add_event_type_2(11, chn, 38, value & 0x7f);
+            this.addEventTypeMulti(11, chn, 38, value & 0x7f);
     }
 
-    add_marker(text) {
-        this.add_delta_time();
+    addMarker(text) {
+        this.addDeltaTime();
         this.data.push(-1);
         //Add text meta event if marker is false, marker meta even if true
         this.data.push(6);
         let len = text.length;
-        this.add_vlength_code(len);
+        this.addVlengthCode(len);
         //Add text itself
         for( let i = 0; i < len; i++ ) {
             this.data.push(text[i].charCodeAt());
         }
     }
 
-    add_sysex(sysex_data, len) {
-        this.add_delta_time();
+    addSysex(sysexData, len) {
+        this.addDeltaTime();
         this.data.push(0xf0);
         //Actually variable length code
-        this.add_vlength_code(len + 1);
+        this.addVlengthCode(len + 1);
 
         for( let i = 0; i < len; i++ ) {
-            this.data.push(sysex_data[i]);
+            this.data.push(sysexData[i]);
         }
         this.data.push(0xf7);
     }
 
-    add_tempo(tempo) {
+    addTempo(tempo) {
         let t = Math.trunc(60000000.0 / tempo);
         
-        let t_bits = t.toString(2);
-        let t1 = parseInt(t_bits.substr(t_bits.length - 8), 2);
+        let tBits = t.toString(2);
+        let t1 = parseInt(tBits.substr(tBits.length - 8), 2);
         
-        t_bits = (t>>8).toString(2);
-        let t2 = parseInt(t_bits.substr(t_bits.length - 8), 2);
+        tBits = (t>>8).toString(2);
+        let t2 = parseInt(tBits.substr(tBits.length - 8), 2);
 
-        t_bits = (t>>16).toString(2);
-        let t3 = parseInt(t_bits.substr(t_bits.length - 8), 2);
+        tBits = (t>>16).toString(2);
+        let t3 = parseInt(tBits.substr(tBits.length - 8), 2);
 
-        this.add_delta_time();
+        this.addDeltaTime();
         this.data.push(0xff);
         this.data.push(0x51);
         this.data.push(0x03);

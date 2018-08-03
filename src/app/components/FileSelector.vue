@@ -29,7 +29,7 @@ export default {
         //todo: if we are in a dev env, hardcode the opening
         fs.readFile(process.cwd() + "/roms/zelda.gba", (err, data) => {
             if(err){
-                console.log(err);
+                //todo show error
                 return;
             }
 
@@ -45,7 +45,7 @@ export default {
 
                 fs.readFile(files[0], (err, data) => {
                     if(err){
-                        console.log(err);
+                        //todo show error
                         return;
                     }
 
