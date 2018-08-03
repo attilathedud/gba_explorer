@@ -53,11 +53,6 @@ export default {
     components: {
         Player
     },
-    computed: {
-        ...mapGetters([
-            "rom"
-        ])
-    },
     data: function() {
         return {
             isSearching: false,
@@ -78,6 +73,11 @@ export default {
             track: {}
         };
     },
+    computed: {
+        ...mapGetters([
+            "rom"
+        ])
+    },
     created: function() {
         this.worker = sww.create([
             { 
@@ -93,14 +93,14 @@ export default {
                     }
 
                     //code is taken from GBA Sappy Engine Detector by Bregalad
-                    let sappy_signature_old = [
+                    let sappySignatureOld = [
                         0x00, 0xB5, 0x00, 0x04, 0x07, 0x4A, 0x08, 0x49,
                         0x40, 0x0B, 0x40, 0x18, 0x83, 0x88, 0x59, 0x00,
                         0xC9, 0x18, 0x89, 0x00, 0x89, 0x18, 0x0A, 0x68,
                         0x01, 0x68, 0x10, 0x1C, 0x00, 0xF0
                     ];
 
-                    let sappy_signature_new = [
+                    let sappySignatureNew = [
                         0x00, 0xB5, 0x00, 0x04, 0x07, 0x4B, 0x08, 0x49,
                         0x40, 0x0B, 0x40, 0x18, 0x82, 0x88, 0x51, 0x00,
                         0x89, 0x18, 0x89, 0x00, 0xC9, 0x18, 0x0A, 0x68,
@@ -113,26 +113,26 @@ export default {
                     for( let i = 0; i < rom.byteLength; i++ ) {
                         matchScore = 0;
 
-                        for( let j = 0; j < sappy_signature_old.length; j++ ) {
-                            if( sappy_signature_old[j] == rom[i+j] ) {
+                        for( let j = 0; j < sappySignatureOld.length; j++ ) {
+                            if( sappySignatureOld[j] == rom[i+j] ) {
                                 matchScore++;
                             }
                         }
 
-                        if( matchScore == sappy_signature_old.length ) {
+                        if( matchScore == sappySignatureOld.length ) {
                             selectSongOffset = i;
                             break;
                         }
 
                         matchScore = 0;
 
-                        for( let j = 0; j < sappy_signature_new.length; j++ ) {
-                            if( sappy_signature_new[j] == rom[i+j] ) {
+                        for( let j = 0; j < sappySignatureNew.length; j++ ) {
+                            if( sappySignatureNew[j] == rom[i+j] ) {
                                 matchScore++;
                             }
                         }
 
-                        if( matchScore == sappy_signature_new.length ) {
+                        if( matchScore == sappySignatureNew.length ) {
                             selectSongOffset = i;
                             break;
                         }

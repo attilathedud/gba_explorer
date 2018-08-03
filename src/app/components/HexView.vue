@@ -97,11 +97,11 @@ export default {
                 }
                 else {
                     if( this.lastByte !== -1 ) {
-                        let translated_byte = this.byteAsText[[byte, this.lastByte]];
-                        if( translated_byte == undefined ) {
-                            translated_byte = "␣";
+                        let translatedByte = this.byteAsText[[byte, this.lastByte]];
+                        if( translatedByte == undefined ) {
+                            translatedByte = "␣";
                         }
-                        this.ascii.unshift(translated_byte);
+                        this.ascii.unshift(translatedByte);
                         this.lastByte = -1;
                     }
                     else {
@@ -116,11 +116,11 @@ export default {
                 }
                 else {
                     if( this.lastByte !== -1 ) {
-                        let translated_byte = this.byteAsText[[this.lastByte, byte]];
-                        if( translated_byte == undefined ) {
-                            translated_byte = "␣";
+                        let translatedByte = this.byteAsText[[this.lastByte, byte]];
+                        if( translatedByte == undefined ) {
+                            translatedByte = "␣";
                         }
-                        this.ascii.push(translated_byte);
+                        this.ascii.push(translatedByte);
                         this.lastByte = -1;
                     }
                     else {
@@ -151,20 +151,20 @@ export default {
                 this.addresses.pop();
                 this.addresses.unshift(this.toHexString(this.getHex(this.addresses[0]) - 16, 8));
 
-                let rom_buffer = [];
+                let romBuffer = [];
 
                 for( const b of this.rom.slice(Number(this.getHex(this.addresses[0])), Number(this.getHex(this.addresses[0])) + 16) ) {
-                    rom_buffer.push(b);
+                    romBuffer.push(b);
                 }
 
-                rom_buffer.reverse();
+                romBuffer.reverse();
 
                 for(var i = 0; i < 16; i++ ) {
                     this.romData.pop();
-                    this.romData.unshift(this.toHexString(rom_buffer[i], 2));
+                    this.romData.unshift(this.toHexString(romBuffer[i], 2));
 
                     this.ascii.pop();
-                    this.translateAscii("unshift", rom_buffer[i]);
+                    this.translateAscii("unshift", romBuffer[i]);
                 }
             }
         },
@@ -184,27 +184,27 @@ export default {
             }
             else if (this.searchType === "Bytes") {
                 //todo: parse byte array passed
-                let byte_array = [];
+                let byteArray = [];
                 let searchTextParsed = this.searchText.match(/.{2}/g);
 
                 for( var byte of searchTextParsed ) {
-                    byte_array.push(this.getHex(byte));
+                    byteArray.push(this.getHex(byte));
                 }
 
-                offset = this.rom.indexOf(Buffer.from(byte_array));
+                offset = this.rom.indexOf(Buffer.from(byteArray));
             }
             else if (this.searchType === "Text") {
                 if( !this.byteAsText || Object.keys(this.byteAsText).length === 0 ) {
                     offset = this.rom.indexOf(Buffer.from(this.searchText));
                 }
                 else {
-                    let byte_array = [];
+                    let byteArray = [];
                     for( var letter of this.searchText ) {
-                        byte_array.push(this.textAsByte[letter][0]);
-                        byte_array.push(this.textAsByte[letter][1]);
+                        byteArray.push(this.textAsByte[letter][0]);
+                        byteArray.push(this.textAsByte[letter][1]);
                     }
 
-                    offset = this.rom.indexOf(Buffer.from(byte_array));
+                    offset = this.rom.indexOf(Buffer.from(byteArray));
                 }
             }
 

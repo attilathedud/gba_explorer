@@ -86,27 +86,27 @@ export default {
         ])
     },
     created: function() {
-        for( var i = 0; i < 4; i++ ) {
+        for( let i = 0; i < 4; i++ ) {
             this.romEntryPoint += this.toHexString(this.rom[i], 2);
         }
 
         this.debuggingEnabled = this.toHexString(this.rom[0x9c], 2);
 
-        for( var i = 0xa0; i < (0xa0 + 12); i++ ) {
+        for( let i = 0xa0; i < (0xa0 + 12); i++ ) {
             this.gameTitleBytes += this.toHexString(this.rom[i], 2) + " ";
             if(this.rom[i] !== 0) {
                 this.gameTitle += String.fromCharCode(this.rom[i]);
             }
         }
 
-        for( var i = 0xac; i < (0xac + 4); i++ ) {
+        for( let i = 0xac; i < (0xac + 4); i++ ) {
             this.gameCodeBytes += this.toHexString(this.rom[i], 2) + " ";
             if(this.rom[i] !== 0) {
                 this.gameCode += String.fromCharCode(this.rom[i]);
             }
         }
 
-        for( var i = 0xb0; i < (0xb0 + 2); i++ ) {
+        for( let i = 0xb0; i < (0xb0 + 2); i++ ) {
             this.makerCodeBytes += this.toHexString(this.rom[i], 2) + " ";
             if(this.rom[i] !== 0) {
                 this.makerCode += String.fromCharCode(this.rom[i]);

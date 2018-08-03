@@ -38,15 +38,15 @@ export default {
         Sounds,
         About
     },
-    computed: {
-        ...mapGetters([
-            "rom"
-        ])
-    },
     data: function() {
         return {
             section: "Header"
         };
+    },
+    computed: {
+        ...mapGetters([
+            "rom"
+        ])
     },
     methods: {
         ...mapMutations([

@@ -94,16 +94,16 @@ export default {
                 let matches = [];
 
                 for(let i = 0; i < rom.byteLength - searchText.length; i++ ) {
-                    let match_score = 0;
+                    let matchScore = 0;
 
                     for( let c = 0; c < searchText.length - 1; c++ ) {
                         if( rom[ i + ( c * 2 ) ] + ( searchText[ c + 1 ].charCodeAt() - searchText[ c ].charCodeAt() ) == rom[ i + ( c * 2 ) + 2 ] ) {
-                            match_score++;
+                            matchScore++;
                         }
                     }
 
-                    //match_score >= searchText.length - fuzz - 1
-                    if( match_score >= searchText.length - 1 - 1) {
+                    //matchScore >= searchText.length - fuzz - 1
+                    if( matchScore >= searchText.length - 1 - 1) {
                         matches.push(i);
                     }
                 }
@@ -132,14 +132,14 @@ export default {
                         this.isPickingMatch = true;
 
                         results.matches.forEach(function(address) {
-                            let match_section = rom.slice(address, address+results.searchText.length * 2);
-                            let byte_buffer = [];
+                            let matchSection = rom.slice(address, address+results.searchText.length * 2);
+                            let byteBuffer = [];
     
                             for( var i = 0; i < results.searchText.length * 2; i++ ) {
-                                byte_buffer.push(context.toHexString(match_section[i], 2));                                
+                                byteBuffer.push(context.toHexString(matchSection[i], 2));                                
                             }
     
-                            matches.push({"address" : address, "bytes" : byte_buffer.join("")});
+                            matches.push({"address" : address, "bytes" : byteBuffer.join("")});
                         });
                     }
 

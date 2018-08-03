@@ -26,7 +26,7 @@
             class="graphics-grid-wrapper" 
             :class="gridSize">
             <div 
-              v-for="tile in this.tileMap" 
+              v-for="tile in tileMap" 
               :key="tile.id">
               <div 
                 v-for="row in tile" 
@@ -87,12 +87,12 @@ export default {
                     length += rom[offset++] << 8;
                     length += rom[offset++] << 16;
 
-                    let stream_pointer = 0;
-                    while (stream_pointer < length)
+                    let streamPointer = 0;
+                    while (streamPointer < length)
                     {
                         let isCompressed = rom[offset++];
 
-                        for (let i = 0; i < 8 && stream_pointer < length; i++)
+                        for (let i = 0; i < 8 && streamPointer < length; i++)
                         {
                             if (isCompressed & 0x80)
                             {
@@ -106,14 +106,14 @@ export default {
 
                                 for (let u = 0; u < amountToCopy; u++)
                                 {
-                                    byteStream[stream_pointer] = byteStream[(stream_pointer - u) - copyPosition + (u % copyPosition)];
-                                    stream_pointer++;
+                                    byteStream[streamPointer] = byteStream[(streamPointer - u) - copyPosition + (u % copyPosition)];
+                                    streamPointer++;
                                 }
                             }
                             else
                             {
-                                byteStream[stream_pointer] = rom[offset++];
-                                stream_pointer++;
+                                byteStream[streamPointer] = rom[offset++];
+                                streamPointer++;
                             }
 
                             isCompressed <<= 1;
@@ -130,12 +130,12 @@ export default {
                     function isValidCompression(offset, length) {
                         offset += 4;
 
-                        let stream_pointer = 0;
-                        while (stream_pointer < length)
+                        let streamPointer = 0;
+                        while (streamPointer < length)
                         {
                             let isCompressed = rom[offset++];
 
-                            for (let i = 0; i < 8 && stream_pointer < length; i++)
+                            for (let i = 0; i < 8 && streamPointer < length; i++)
                             {
                                 if (isCompressed & 0x80)
                                 {
@@ -144,15 +144,15 @@ export default {
                                     copyPosition += (rom[offset++] & 0xF) << 8;
                                     copyPosition += rom[offset++];
 
-                                    if (copyPosition > stream_pointer)
+                                    if (copyPosition > streamPointer)
                                         return false;
 
-                                    stream_pointer += amountToCopy;
+                                    streamPointer += amountToCopy;
                                 }
                                 else
                                 {
                                     offset++;
-                                    stream_pointer++;
+                                    streamPointer++;
                                 }
 
                                 isCompressed <<= 1;
@@ -211,12 +211,12 @@ export default {
         isValidCompression: function(offset, length) {
             offset += 4;
 
-            let stream_pointer = 0;
-            while (stream_pointer < length)
+            let streamPointer = 0;
+            while (streamPointer < length)
             {
                 let isCompressed = this.rom[offset++];
 
-                for (let i = 0; i < 8 && stream_pointer < length; i++)
+                for (let i = 0; i < 8 && streamPointer < length; i++)
                 {
                     if (isCompressed & 0x80)
                     {
@@ -225,15 +225,15 @@ export default {
                         copyPosition += (this.rom[offset++] & 0xF) << 8;
                         copyPosition += this.rom[offset++];
 
-                        if (copyPosition > stream_pointer)
+                        if (copyPosition > streamPointer)
                             return false;
 
-                        stream_pointer += amountToCopy;
+                        streamPointer += amountToCopy;
                     }
                     else
                     {
                         offset++;
-                        stream_pointer++;
+                        streamPointer++;
                     }
 
                     isCompressed <<= 1;
@@ -245,10 +245,10 @@ export default {
         generatePalleteMap: function(section) {
             this.tileMap = {};
 
-            let binary_stream = "";
+            let binaryStream = "";
 
             for( const b of section ) {
-                binary_stream += Number(b).toString(2).padStart(8, "0");
+                binaryStream += Number(b).toString(2).padStart(8, "0");
             }
 
             let tileIndex = 0;
@@ -257,9 +257,9 @@ export default {
             this.tileMap[tileIndex] = [];
             this.tileMap[tileIndex][tileOffset] = [];
 
-            for( let i = 0, j = 0; i < binary_stream.length; i += 8, j += 2 ) {
-                this.tileMap[tileIndex][tileOffset].push(parseInt(binary_stream.substr(i + 4, 4), 2));
-                this.tileMap[tileIndex][tileOffset].push(parseInt(binary_stream.substr(i, 4), 2));
+            for( let i = 0, j = 0; i < binaryStream.length; i += 8, j += 2 ) {
+                this.tileMap[tileIndex][tileOffset].push(parseInt(binaryStream.substr(i + 4, 4), 2));
+                this.tileMap[tileIndex][tileOffset].push(parseInt(binaryStream.substr(i, 4), 2));
 
                 if((j+2) % 8 == 0) {
                     tileOffset++;

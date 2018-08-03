@@ -22,8 +22,14 @@
 export default {
     name: "SideNavbar",
     props: {
-        categories: Array,
-        selected: ""
+        categories: {
+            type: Array,
+            required: true
+        },
+        selected: {
+            type: String,
+            default: ""
+        }
     },
     methods: {
         itemPicked(item) {

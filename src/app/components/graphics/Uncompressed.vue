@@ -25,7 +25,7 @@
         class="graphics-grid-wrapper" 
         :class="gridSize">
         <div 
-          v-for="tile in this.tileMap" 
+          v-for="tile in tileMap" 
           :key="tile.id">
           <div 
             v-for="row in tile" 
@@ -88,10 +88,10 @@ export default {
             this.tileMap = {};
 
             let section = this.rom.slice(this.offset, this.offset + (this.entries * 32));
-            let binary_stream = "";
+            let binaryStream = "";
 
             for( const b of section ) {
-                binary_stream += Number(b).toString(2).padStart(8, "0");
+                binaryStream += Number(b).toString(2).padStart(8, "0");
             }
 
             let tileIndex = 0;
@@ -100,9 +100,9 @@ export default {
             this.tileMap[tileIndex] = [];
             this.tileMap[tileIndex][tileOffset] = [];
 
-            for( let i = 0, j = 0; i < binary_stream.length; i += 8, j += 2 ) {
-                this.tileMap[tileIndex][tileOffset].push(parseInt(binary_stream.substr(i + 4, 4), 2));
-                this.tileMap[tileIndex][tileOffset].push(parseInt(binary_stream.substr(i, 4), 2));
+            for( let i = 0, j = 0; i < binaryStream.length; i += 8, j += 2 ) {
+                this.tileMap[tileIndex][tileOffset].push(parseInt(binaryStream.substr(i + 4, 4), 2));
+                this.tileMap[tileIndex][tileOffset].push(parseInt(binaryStream.substr(i, 4), 2));
 
                 if((j+2) % 8 == 0) {
                     tileOffset++;

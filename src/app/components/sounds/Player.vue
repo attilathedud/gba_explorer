@@ -12,7 +12,10 @@ var Player;
 export default {
     name: "Player",
     props: {
-        songData: Uint8Array
+        songData: {
+            type: Uint8Array,
+            required: true
+        }
     },
     data: function () {
         return {

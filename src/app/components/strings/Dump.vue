@@ -65,12 +65,12 @@ export default {
                     lastByte = b;
                 }
                 else {
-                    let translated_byte = this.byteAsText[[ lastByte, b ]];
-                    if( translated_byte == undefined ) {
-                        translated_byte = "";
+                    let translatedByte = this.byteAsText[[ lastByte, b ]];
+                    if( translatedByte == undefined ) {
+                        translatedByte = "";
                     }
                     
-                    this.dumpedStrings += translated_byte;
+                    this.dumpedStrings += translatedByte;
                     lastByte = -1;
                 }
             }
