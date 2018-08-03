@@ -1,47 +1,58 @@
 <template>
-    <div>
-        <div class="field">
-            <label class="label">Start Address</label>
-            <div class="control">
-                <input class="input" type="text" v-model="startAddress">
-            </div>
-        </div>
-        <div class="field">
-            <label class="label">End Address</label>
-            <div class="control">
-                <input class="input" type="text" v-model="endAddress">
-            </div>
-        </div>
-        <div class="field">
-            <div class="control">
-                <button class="button" v-on:click="dump" :class="{'is-loading':isDumping}">Dump</button>
-            </div>
-        </div>
-        <div class="field">
-            <div class="control">
-                <textarea v-model="dumpedStrings" class="textarea"></textarea>
-            </div>
-        </div>
+  <div>
+    <div class="field">
+      <label class="label">Start Address</label>
+      <div class="control">
+        <input 
+          v-model="startAddress" 
+          class="input" 
+          type="text">
+      </div>
     </div>
+    <div class="field">
+      <label class="label">End Address</label>
+      <div class="control">
+        <input 
+          v-model="endAddress" 
+          class="input" 
+          type="text">
+      </div>
+    </div>
+    <div class="field">
+      <div class="control">
+        <button 
+          class="button" 
+          :class="{'is-loading':isDumping}" 
+          @click="dump">Dump</button>
+      </div>
+    </div>
+    <div class="field">
+      <div class="control">
+        <textarea 
+          v-model="dumpedStrings" 
+          class="textarea" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 
 export default {
-    name: 'Dump',
+    name: "Dump",
     data: function () {
         return {
             startAddress: "",
             endAddress: "",
             dumpedStrings: "",
             isDumping: false
-        }
+        };
     },
     computed: {
         ...mapGetters([
-            'rom',
-            'byteAsText'
+            "rom",
+            "byteAsText"
         ])
     },
     methods: {

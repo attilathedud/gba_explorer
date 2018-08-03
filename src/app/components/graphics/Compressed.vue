@@ -1,41 +1,55 @@
 <template>
-    <div>
-        <div class="columns">
-            <div class="column is-one-quarter offset-table">
-                <table class="table is-striped is-narrow is-hoverable">
-                    <thead></thead>
-                    <tbody>
-                        <tr v-for="section in compressedSections" v-bind:key="section.id" v-on:click="uncompress(section)" :class="{'is-selected':section == selected}">
-                            <td>{{toHexString(section, 8)}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="column">
-                <div class="centered-horizontal">
-                    <a v-if="isLoading" class="button is-loading is-large is-text centered-vertical"></a>
-                </div>
-                <div class="graphics-flex-wrapper">
-                    <div class="graphics-grid-wrapper" :class="gridSize">
-                        <div v-for="tile in this.tileMap" v-bind:key="tile.id">
-                            <div v-for="row in tile" v-bind:key="row.id">
-                                <div class="graphics-flex-wrapper">
-                                    <div :class="pixelSize" v-for="pixel in row" v-bind:key="pixel.id" :style="{backgroundColor: getPalleteColor(pixel)}">
-                                        
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+  <div>
+    <div class="columns">
+      <div class="column is-one-quarter offset-table">
+        <table class="table is-striped is-narrow is-hoverable">
+          <thead />
+          <tbody>
+            <tr 
+              v-for="section in compressedSections" 
+              :key="section.id" 
+              :class="{'is-selected':section == selected}" 
+              @click="uncompress(section)">
+              <td>{{ toHexString(section, 8) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="column">
+        <div class="centered-horizontal">
+          <a 
+            v-if="isLoading" 
+            class="button is-loading is-large is-text centered-vertical" />
         </div>
+        <div class="graphics-flex-wrapper">
+          <div 
+            class="graphics-grid-wrapper" 
+            :class="gridSize">
+            <div 
+              v-for="tile in this.tileMap" 
+              :key="tile.id">
+              <div 
+                v-for="row in tile" 
+                :key="row.id">
+                <div class="graphics-flex-wrapper">
+                  <div 
+                    v-for="pixel in row" 
+                    :key="pixel.id" 
+                    :class="pixelSize" 
+                    :style="{backgroundColor: getPalleteColor(pixel)}" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import sww from 'simple-web-worker';
+import sww from "simple-web-worker";
 
 export default {
     name: "Compressed",
@@ -61,7 +75,7 @@ export default {
 
         this.worker = sww.create([
             { 
-                message: 'uncompress', 
+                message: "uncompress", 
                 func: function (rom, offset) {
                     //This entire thing is Nintenlord's code modified to work in JS
                     let byteStream = [];
@@ -110,7 +124,7 @@ export default {
                 }
             },
             { 
-                message: 'scan',
+                message: "scan",
                 func: function (rom) {
                     //This entire thing is Nintenlord's code modified to work in JS
                     function isValidCompression(offset, length) {
@@ -179,7 +193,7 @@ export default {
             this.tileMap = {};
             this.selected = offset;
             this.isLoading = true;
-            this.worker.postMessage('uncompress', [this.rom, offset])
+            this.worker.postMessage("uncompress", [this.rom, offset])
                 .then(results => {
                     this.generatePalleteMap(results);
                     this.isLoading = false;
@@ -187,7 +201,7 @@ export default {
         },
         scan: function() {
             this.isLoading = true;
-            this.worker.postMessage('scan', [this.rom])
+            this.worker.postMessage("scan", [this.rom])
                 .then(results => {
                     this.compressedSections = results;
                     this.isLoading = false;
@@ -234,7 +248,7 @@ export default {
             let binary_stream = "";
 
             for( const b of section ) {
-                binary_stream += Number(b).toString(2).padStart(8, '0');
+                binary_stream += Number(b).toString(2).padStart(8, "0");
             }
 
             let tileIndex = 0;

@@ -1,15 +1,20 @@
 <template>
-    <div class="columns">
-        <div class="column is-one-quarter">
-            <SideNavbar v-bind:categories="categories" v-bind:selected="section" v-on:item-picked="onItemPicked"></SideNavbar>
-        </div>
-        <div class="column">
-            <Search v-if="section == 'Search'" v-on:search-finished="onSearchFinished"></Search>
-            <Dictionary v-if="section == 'Dictionary'"></Dictionary>
-            <HexView v-if="section == 'Hex View'"></HexView>
-            <Dump v-if="section == 'Dump'"></Dump>
-        </div>
+  <div class="columns">
+    <div class="column is-one-quarter">
+      <SideNavbar 
+        :categories="categories" 
+        :selected="section" 
+        @item-picked="onItemPicked" />
     </div>
+    <div class="column">
+      <Search 
+        v-if="section == 'Search'" 
+        @search-finished="onSearchFinished" />
+      <Dictionary v-if="section == 'Dictionary'" />
+      <HexView v-if="section == 'Hex View'" />
+      <Dump v-if="section == 'Dump'" />
+    </div>
+  </div>
 </template>
 
 
@@ -24,97 +29,97 @@ import { mapGetters } from "vuex";
 import { mapMutations } from "vuex";
 
 export default {
-  name: "Strings",
-  components: {
-    Search,
-    SideNavbar,
-    Dictionary,
-    HexView,
-    Dump
-  },
-  data: function() {
-    return {
-      section: "Search",
-      categories: [
-        {
-          title: "Search",
-          icon: "fa-search",
-          sub: "Search for string within the game"
-        },
-        {
-          title: "Dictionary",
-          icon: "fa-clipboard-list",
-          sub: "The mapped translation file for bytes to letters"
-        },
-        {
-          title: "Hex View",
-          icon: "fa-th-list",
-          sub: "Hex View with translated bytes"
-        },
-        {
-          title: "Dump",
-          icon: "fa-copy",
-          sub: "Dump sections of text for easy editing"
-        }
-      ]
-    }
-  },
-  computed: {
-    ...mapGetters(["rom", "textAsByte", "byteAsText"])
-  },
-  methods: {
-    ...mapMutations(["addTextBytePair"]),
-    onSearchFinished: function(match, searchText) {
-      this.generateMatchDictionaryFromSearchText(
-        this.rom.slice(match, match + searchText.length * 2),
-        searchText
-      );
-      this.fillMatchDictionary(searchText);
+    name: "Strings",
+    components: {
+        Search,
+        SideNavbar,
+        Dictionary,
+        HexView,
+        Dump
     },
-    onItemPicked: function(item) {
-      this.section = item;
+    data: function() {
+        return {
+            section: "Search",
+            categories: [
+                {
+                    title: "Search",
+                    icon: "fa-search",
+                    sub: "Search for string within the game"
+                },
+                {
+                    title: "Dictionary",
+                    icon: "fa-clipboard-list",
+                    sub: "The mapped translation file for bytes to letters"
+                },
+                {
+                    title: "Hex View",
+                    icon: "fa-th-list",
+                    sub: "Hex View with translated bytes"
+                },
+                {
+                    title: "Dump",
+                    icon: "fa-copy",
+                    sub: "Dump sections of text for easy editing"
+                }
+            ]
+        };
     },
-    generateMatchDictionaryFromSearchText: function(bytes, searchText) {
-      for (var i = 0; i < searchText.length - 1; i++) {
-        this.addTextBytePair({
-          text: searchText[i],
-          byte: [bytes[i * 2], bytes[i * 2 + 1]]
-        });
-      }
+    computed: {
+        ...mapGetters(["rom", "textAsByte", "byteAsText"])
     },
-    fillMatchDictionary: function(searchText) {
-      let lowerCaseMatches = searchText.match(/[a-z]/g);
-      if (lowerCaseMatches.length > 0) {
-        for (let i = 0; i < 26; i++) {
-          let letter = String.fromCharCode(97 + i);
+    methods: {
+        ...mapMutations(["addTextBytePair"]),
+        onSearchFinished: function(match, searchText) {
+            this.generateMatchDictionaryFromSearchText(
+                this.rom.slice(match, match + searchText.length * 2),
+                searchText
+            );
+            this.fillMatchDictionary(searchText);
+        },
+        onItemPicked: function(item) {
+            this.section = item;
+        },
+        generateMatchDictionaryFromSearchText: function(bytes, searchText) {
+            for (var i = 0; i < searchText.length - 1; i++) {
+                this.addTextBytePair({
+                    text: searchText[i],
+                    byte: [bytes[i * 2], bytes[i * 2 + 1]]
+                });
+            }
+        },
+        fillMatchDictionary: function(searchText) {
+            let lowerCaseMatches = searchText.match(/[a-z]/g);
+            if (lowerCaseMatches.length > 0) {
+                for (let i = 0; i < 26; i++) {
+                    let letter = String.fromCharCode(97 + i);
 
-          this.addTextBytePair({
-            text: letter,
-            byte: [
-              this.textAsByte[lowerCaseMatches[0]][0] +
+                    this.addTextBytePair({
+                        text: letter,
+                        byte: [
+                            this.textAsByte[lowerCaseMatches[0]][0] +
                 (letter.codePointAt() - lowerCaseMatches[0].codePointAt()),
-              this.textAsByte[lowerCaseMatches[0]][1]
-            ]
-          });
-        }
-      }
+                            this.textAsByte[lowerCaseMatches[0]][1]
+                        ]
+                    });
+                }
+            }
 
-      let upperCaseMatches = searchText.match(/[A-Z]/g);
-      if (upperCaseMatches.length > 0) {
-        for (let i = 0; i < 26; i++) {
-          let letter = String.fromCharCode(65 + i);
+            let upperCaseMatches = searchText.match(/[A-Z]/g);
+            if (upperCaseMatches.length > 0) {
+                for (let i = 0; i < 26; i++) {
+                    let letter = String.fromCharCode(65 + i);
 
-          this.addTextBytePair({
-            text: letter,
-            byte: [
-              this.textAsByte[upperCaseMatches[0]][0] +
+                    this.addTextBytePair({
+                        text: letter,
+                        byte: [
+                            this.textAsByte[upperCaseMatches[0]][0] +
                 (letter.codePointAt() - upperCaseMatches[0].codePointAt()),
-              this.textAsByte[upperCaseMatches[0]][1]
-            ]
-          });
+                            this.textAsByte[upperCaseMatches[0]][1]
+                        ]
+                    });
+                }
+            }
         }
-      }
     }
-  }
 };
 </script>

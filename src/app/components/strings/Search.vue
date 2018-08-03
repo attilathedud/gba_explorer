@@ -1,72 +1,95 @@
 <template>
-    <div v-on:keyup.esc="isPickingMatch=false">
-        <p>Search for a string that exists within the game.</p><br>
-        <div class="field">
-            <div class="control">
-                <input class="input" type="text" v-model="searchText" v-on:keyup.enter="startSearch">
-            </div>
-        </div>
-        <div class="control">
-            <button class="button is-medium" v-on:click="startSearch" :class="{'is-loading':isSearching}">Search</button>
-        </div>
-        <br>
-        <div class="field" v-if="matches.length > 0">
-            <label class="label">Selected Match for {{matchSelectedText}}</label>
-            <div class="control">
-                <div class="select">
-                    <select v-model="matchSelected" v-on:change="selectMatch(matchSelected)">
-                        <option v-for="match in matches" v-bind:key="match.id" v-bind:value="match.address">
-                            0x{{Number(match.address).toString(16).toUpperCase().padStart(8, '0')}} | {{match.bytes}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="modal" :class="{'is-active':isPickingMatch}">
-            <div class="modal-background"></div>
-            <div class="modal-content">
-                <div class="box">
-                    <p class="has-text-grey-dark">There were multiple matches for the search. Please choose one to use.</p>
-                    <table class="table is-striped is-narrow is-hoverable is-fullwidth">
-                        <tbody>
-                            <tr class="search-selector" v-for="match in matches" v-bind:key="match.id" v-on:click="selectMatch(match)">
-                                <td>0x{{Number(match.address).toString(16).toUpperCase().padStart(8, '0')}}</td>
-                                <td>{{match.bytes}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <button class="modal-close is-large" aria-label="close" v-on:click="isPickingMatch=false"></button>
-        </div>
+  <div @keyup.esc="isPickingMatch=false">
+    <p>Search for a string that exists within the game.</p><br>
+    <div class="field">
+      <div class="control">
+        <input 
+          v-model="searchText" 
+          class="input" 
+          type="text" 
+          @keyup.enter="startSearch">
+      </div>
     </div>
+    <div class="control">
+      <button 
+        class="button is-medium" 
+        :class="{'is-loading':isSearching}" 
+        @click="startSearch">Search</button>
+    </div>
+    <br>
+    <div 
+      v-if="matches.length > 0" 
+      class="field">
+      <label class="label">Selected Match for {{ matchSelectedText }}</label>
+      <div class="control">
+        <div class="select">
+          <select 
+            v-model="matchSelected" 
+            @change="selectMatch(matchSelected)">
+            <option 
+              v-for="match in matches" 
+              :key="match.id" 
+              :value="match.address">
+              0x{{ Number(match.address).toString(16).toUpperCase().padStart(8, '0') }} | {{ match.bytes }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div 
+      class="modal" 
+      :class="{'is-active':isPickingMatch}">
+      <div class="modal-background" />
+      <div class="modal-content">
+        <div class="box">
+          <p class="has-text-grey-dark">There were multiple matches for the search. Please choose one to use.</p>
+          <table class="table is-striped is-narrow is-hoverable is-fullwidth">
+            <tbody>
+              <tr 
+                v-for="match in matches" 
+                :key="match.id" 
+                class="search-selector" 
+                @click="selectMatch(match)">
+                <td>0x{{ Number(match.address).toString(16).toUpperCase().padStart(8, '0') }}</td>
+                <td>{{ match.bytes }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <button 
+        class="modal-close is-large" 
+        aria-label="close" 
+        @click="isPickingMatch=false" />
+    </div>
+  </div>
 </template>
 
 
 <script>
-import sww from 'simple-web-worker';
-import { mapGetters } from 'vuex';
+import sww from "simple-web-worker";
+import { mapGetters } from "vuex";
 
 export default {
-    name: 'Search',
+    name: "Search",
     data: function() {
         return {
-            searchText: '',
+            searchText: "",
             isSearching: false,
             isPickingMatch: false,
             worker : {},
             matches : [],
             matchSelected : "",
             matchSelectedText : ""
-        }
+        };
     },
     computed: {
         ...mapGetters([
-            'rom'
+            "rom"
         ])
     },
     created: function() {
-        this.worker = sww.create([{ message: 'search', 
+        this.worker = sww.create([{ message: "search", 
             func: function (rom, searchText) {
                 let matches = [];
 
@@ -85,7 +108,7 @@ export default {
                     }
                 }
 
-                return {'matches': matches, 'searchText' : searchText};
+                return {"matches": matches, "searchText" : searchText};
             }
         }]);
     },
@@ -97,7 +120,7 @@ export default {
 
             let context = this;
 
-            this.worker.postMessage('search', [this.rom, this.searchText])
+            this.worker.postMessage("search", [this.rom, this.searchText])
                 .then(results => {
                     const matches = this.matches;
                     const rom = this.rom;
@@ -116,7 +139,7 @@ export default {
                                 byte_buffer.push(context.toHexString(match_section[i], 2));                                
                             }
     
-                            matches.push({'address' : address, 'bytes' : byte_buffer.join('')});
+                            matches.push({"address" : address, "bytes" : byte_buffer.join("")});
                         });
                     }
 
@@ -125,7 +148,7 @@ export default {
         },
         selectMatch: function(match) {
             this.isPickingMatch = false;
-            this.$emit('search-finished', match.address, this.searchText);
+            this.$emit("search-finished", match.address, this.searchText);
             this.matchSelected = match.address;
             this.matchSelectedText = this.searchText; 
         }

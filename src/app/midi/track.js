@@ -1,5 +1,5 @@
-import Midi from '../midi/midi.js';
-import Note from '../midi/note.js';
+import Midi from "../midi/midi.js";
+import Note from "../midi/note.js";
 
 export default class Track {
     constructor(rom) {
@@ -98,50 +98,50 @@ export default class Track {
         }
         else {
             switch( command ) {
-                // End track command
-                case 0xb1:
-                    // Null pointer
-                    this.track_ptr[track] = 0;
-                    this.track_completed[track] = true;
-                    return;
+            // End track command
+            case 0xb1:
+                // Null pointer
+                this.track_ptr[track] = 0;
+                this.track_completed[track] = true;
+                return;
                 // Jump command
-                case 0xb2:
-                    this.track_ptr[track] = this.rom.readInt32LE(this.track_ptr[track]) & 0x3FFFFFF;
+            case 0xb2:
+                this.track_ptr[track] = this.rom.readInt32LE(this.track_ptr[track]) & 0x3FFFFFF;
 
-                    // detect the end track
-                    this.track_completed[track] = true;
-                    return;
+                // detect the end track
+                this.track_completed[track] = true;
+                return;
                 // Call command
-                case 0xb3:
-                    let addr = this.rom.readInt32LE(this.track_ptr[track]) & 0x3FFFFFF;
+            case 0xb3:
+                let addr = this.rom.readInt32LE(this.track_ptr[track]) & 0x3FFFFFF;
 
-                    // Return address for the track
-                    this.return_ptr[track] = this.track_ptr[track] + 4;
-                    // Now points to called address
-                    this.track_ptr[track] = addr;
-                    this.return_flag[track] = true;
-                    return;
+                // Return address for the track
+                this.return_ptr[track] = this.track_ptr[track] + 4;
+                // Now points to called address
+                this.track_ptr[track] = addr;
+                this.return_flag[track] = true;
+                return;
                 // Return command
-                case 0xb4:
-                    if (this.return_flag[track])
-                    {
-                        this.track_ptr[track] = this.return_ptr[track];
-                        this.return_flag[track] = false;
-                    }
-                    return;
+            case 0xb4:
+                if (this.return_flag[track])
+                {
+                    this.track_ptr[track] = this.return_ptr[track];
+                    this.return_flag[track] = false;
+                }
+                return;
                 // Tempo change
-                case 0xbb:
-                    let tempo = 2 * this.rom.readUInt8(this.track_ptr[track]);
-                    this.track_ptr[track]++;
-                    this.midi.add_tempo(tempo);
-                    return;
-                default:
-                    // Normal command
-                    this.last_cmd[track] = command;
-                    // Need argument
-                    arg1 = this.rom.readUInt8(this.track_ptr[track]);
-                    this.track_ptr[track]++;
-                    break;
+            case 0xbb:
+                let tempo = 2 * this.rom.readUInt8(this.track_ptr[track]);
+                this.track_ptr[track]++;
+                this.midi.add_tempo(tempo);
+                return;
+            default:
+                // Normal command
+                this.last_cmd[track] = command;
+                // Need argument
+                arg1 = this.rom.readUInt8(this.track_ptr[track]);
+                this.track_ptr[track]++;
+                break;
             }
         }
 
@@ -194,134 +194,134 @@ export default class Track {
 
         // Other commands
         switch (command) {
-            // Key shift
-            case 0xbc:
-                this.key_shift[track] = arg1;
-                return;
+        // Key shift
+        case 0xbc:
+            this.key_shift[track] = arg1;
+            return;
             // Set instrument
-            case 0xbd:
-                this.midi.add_pchange(track, arg1);
-                return;
+        case 0xbd:
+            this.midi.add_pchange(track, arg1);
+            return;
             // Set volume
-            case 0xbe:
-                // Linearise volume if needed
-                let volume = Math.trunc(Math.sqrt(127.0 * arg1));
-                this.midi.add_controller(track, 7, volume);
-                return;
+        case 0xbe:
+            // Linearise volume if needed
+            let volume = Math.trunc(Math.sqrt(127.0 * arg1));
+            this.midi.add_controller(track, 7, volume);
+            return;
             // Set panning
-            case 0xbf:
-                this.midi.add_controller(track, 10, arg1);
-                return;
+        case 0xbf:
+            this.midi.add_controller(track, 10, arg1);
+            return;
             // Pitch bend
-            case 0xc0:
-                this.midi.add_pitch_bend(track, arg1);
-                return;
+        case 0xc0:
+            this.midi.add_pitch_bend(track, arg1);
+            return;
             // Pitch bend range
-            case 0xc1:
-            {
-                let arg1_bits = arg1.toString(2);
-                this.midi.add_RPN(track, 0, parseInt(arg1_bits.substr(arg1_bits.length - 8), 2));
-                return;
-            }
-            // LFO Speed
-            case 0xc2:
-                this.midi.add_NRPN(track, 136, arg1);
-                return;
+        case 0xc1:
+        {
+            let arg1_bits = arg1.toString(2);
+            this.midi.add_RPN(track, 0, parseInt(arg1_bits.substr(arg1_bits.length - 8), 2));
+            return;
+        }
+        // LFO Speed
+        case 0xc2:
+            this.midi.add_NRPN(track, 136, arg1);
+            return;
             // LFO delay
-            case 0xc3:
-                this.lfo_delay[track] = arg1;
-                return;
+        case 0xc3:
+            this.lfo_delay[track] = arg1;
+            return;
             // LFO depth
-            case 0xc4:
-                if (this.lfo_delay[track] == 0 && this.lfo_hack[track]) {
-                    if (this.lfo_type[track]==0) {
-                        this.midi.add_controller(track, 1, arg1>12 ? 127 : 10 * arg1);
-                    }
-                    else {
-                        this.midi.add_chanaft(track, arg1>12 ? 127 : 10 * arg1);
-                    }
-
-                    this.lfo_flag[track] = true;
-                }
-                this.lfo_depth[track] = arg1;
-                // I had a stupid bug with LFO inserting controllers I didn't want at the start of files
-                // So I made a terrible quick fix for it, in the mean time I can find something better to prevent it.
-                this.lfo_hack[track] = true;
-                return;
-            // LFO type
-            case 0xc5:
-                this.lfo_type[track] = arg1;
-                return;
-            // Detune
-            case 0xc8:
-            {
-                let arg1_bits = arg1.toString(2);
-                this.midi.add_RPN(track, 1, parseInt(arg1_bits.substr(arg1_bits.length - 8), 2));
-                return;
-            }
-            // Key off
-            case 0xce:
-            {
-                let key = 0;
-                let vel = 0;
-
-                // Is arg1 a key value ?
-                if (arg1 < 0x80) {	
-                    // Yes -> use new key value
-                    key = arg1;
-                    this.last_key[track] = key;
-                }
-                else {	
-                    // No -> use last value
-                    key = this.last_key[track];
-                    vel = this.last_vel[track];
-                    this.track_ptr[track]--;		// Seek back, as arg 1 is unused and belong to next event !
-                }
-
-                this.midi.add_note_off(track, key + this.key_shift[track], vel);
-                this.stop_lfo(track);
-                return;
-            }
-            // Key on
-            case 0xcf:
-            {
-                let key = 0;
-                let vel = 0;
-                // Is arg1 a key value ?
-                if (arg1 < 0x80) {
-                    // Yes -> use new key value
-                    key = arg1;
-                    this.last_key[track] = key;
-
-                    let arg2 = this.rom.readUInt8(this.track_ptr[track]);
-                    // Is arg2 a velocity ?
-                    if (arg2 < 0x80) {
-                        // Yes -> use new velocity value
-                        vel = arg2;
-                        this.last_vel[track] = vel;
-                        this.track_ptr[track]++;
-                    }
-                    else {
-                    	// No -> use previous velocity value
-                        vel = this.last_vel[track];
-                    }
+        case 0xc4:
+            if (this.lfo_delay[track] == 0 && this.lfo_hack[track]) {
+                if (this.lfo_type[track]==0) {
+                    this.midi.add_controller(track, 1, arg1>12 ? 127 : 10 * arg1);
                 }
                 else {
-                    // No -> use last value
-                    key = this.last_key[track];
-                    vel = this.last_vel[track];
-                    this.track_ptr[track]--;		// Seek back, as arg 1 is unused and belong to next event !
+                    this.midi.add_chanaft(track, arg1>12 ? 127 : 10 * arg1);
                 }
 
-                vel = Math.trunc(Math.sqrt(127.0 * vel));
+                this.lfo_flag[track] = true;
+            }
+            this.lfo_depth[track] = arg1;
+            // I had a stupid bug with LFO inserting controllers I didn't want at the start of files
+            // So I made a terrible quick fix for it, in the mean time I can find something better to prevent it.
+            this.lfo_hack[track] = true;
+            return;
+            // LFO type
+        case 0xc5:
+            this.lfo_type[track] = arg1;
+            return;
+            // Detune
+        case 0xc8:
+        {
+            let arg1_bits = arg1.toString(2);
+            this.midi.add_RPN(track, 1, parseInt(arg1_bits.substr(arg1_bits.length - 8), 2));
+            return;
+        }
+        // Key off
+        case 0xce:
+        {
+            let key = 0;
+            let vel = 0;
 
-                // Make note of infinite length
-                this.notes_playing.unshift(new Note(this.midi, track, -1, key + this.key_shift[track], vel, this.lfo_delay, this.lfo_delay_ctr, this.lfo_flag, this.lfo_type));
-                return;
+            // Is arg1 a key value ?
+            if (arg1 < 0x80) {	
+                // Yes -> use new key value
+                key = arg1;
+                this.last_key[track] = key;
+            }
+            else {	
+                // No -> use last value
+                key = this.last_key[track];
+                vel = this.last_vel[track];
+                this.track_ptr[track]--;		// Seek back, as arg 1 is unused and belong to next event !
             }
 
-            default :
-                break;
+            this.midi.add_note_off(track, key + this.key_shift[track], vel);
+            this.stop_lfo(track);
+            return;
+        }
+        // Key on
+        case 0xcf:
+        {
+            let key = 0;
+            let vel = 0;
+            // Is arg1 a key value ?
+            if (arg1 < 0x80) {
+                // Yes -> use new key value
+                key = arg1;
+                this.last_key[track] = key;
+
+                let arg2 = this.rom.readUInt8(this.track_ptr[track]);
+                // Is arg2 a velocity ?
+                if (arg2 < 0x80) {
+                    // Yes -> use new velocity value
+                    vel = arg2;
+                    this.last_vel[track] = vel;
+                    this.track_ptr[track]++;
+                }
+                else {
+                    	// No -> use previous velocity value
+                    vel = this.last_vel[track];
+                }
+            }
+            else {
+                // No -> use last value
+                key = this.last_key[track];
+                vel = this.last_vel[track];
+                this.track_ptr[track]--;		// Seek back, as arg 1 is unused and belong to next event !
+            }
+
+            vel = Math.trunc(Math.sqrt(127.0 * vel));
+
+            // Make note of infinite length
+            this.notes_playing.unshift(new Note(this.midi, track, -1, key + this.key_shift[track], vel, this.lfo_delay, this.lfo_delay_ctr, this.lfo_flag, this.lfo_type));
+            return;
+        }
+
+        default :
+            break;
         }
     }
 

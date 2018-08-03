@@ -16,17 +16,17 @@ export default class Note {
     }
 
     tick()
-	{
-		if (this.counter > 0 && --this.counter == 0)
-		{
-			this.midi.add_note_off(this.chn, this.key, this.vel);
-			this.stop_lfo(this.chn);
-			return true;
-		}
-		else {
+    {
+        if (this.counter > 0 && --this.counter == 0)
+        {
+            this.midi.add_note_off(this.chn, this.key, this.vel);
+            this.stop_lfo(this.chn);
+            return true;
+        }
+        else {
             return false;
         }
-	}
+    }
 
     countdown_is_over() {
         return this.tick() || this.counter < 0;

@@ -1,16 +1,16 @@
 <template>
-    <div v-if="rom.length == 0">
-        <FileSelector v-on:file-picked="onFilePicked"></FileSelector>
-    </div>
-    <div v-else>
-      <Navbar v-on:item-picked="onItemPicked"></Navbar>
-      <HeaderInfo v-if="section == 'Header'"></HeaderInfo>
-      <HexView v-if="section == 'Hex View'"></HexView>
-      <Strings v-if="section == 'Strings'"></Strings>
-      <Graphics v-if="section == 'Graphics'"></Graphics>
-      <Sounds v-if="section == 'Sounds'"></Sounds>
-      <About v-if="section == 'About'"></About>
-    </div>
+  <div v-if="rom.length == 0">
+    <FileSelector @file-picked="onFilePicked" />
+  </div>
+  <div v-else>
+    <Navbar @item-picked="onItemPicked" />
+    <HeaderInfo v-if="section == 'Header'" />
+    <HexView v-if="section == 'Hex View'" />
+    <Strings v-if="section == 'Strings'" />
+    <Graphics v-if="section == 'Graphics'" />
+    <Sounds v-if="section == 'Sounds'" />
+    <About v-if="section == 'About'" />
+  </div>
 </template>
 
 <script>
@@ -24,8 +24,8 @@ import Graphics from "./components/Graphics.vue";
 import Sounds from "./components/Sounds.vue";
 import About from "./components/About.vue";
 
-import { mapGetters } from 'vuex';
-import { mapMutations } from 'vuex';
+import { mapGetters } from "vuex";
+import { mapMutations } from "vuex";
 
 export default {
     components: {
@@ -40,17 +40,17 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'rom'
+            "rom"
         ])
     },
     data: function() {
         return {
-            section: 'Header'
-        }
+            section: "Header"
+        };
     },
     methods: {
         ...mapMutations([
-            'setRom'
+            "setRom"
         ]),
         onFilePicked: function(data) {
             this.setRom(data);

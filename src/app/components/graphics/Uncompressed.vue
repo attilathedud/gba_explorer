@@ -1,55 +1,69 @@
 <template>
-    <div id="graphics-view">
-        <div class="field has-addons">
-            <p class="control">
-                <a class="button is-static">
-                    Offset
-                </a>
-            </p>
-            <p class="control is-expanded">
-                <input class="input" type="text" v-model="offsetText" v-on:keyup.enter="startSearch">
-            </p>
-            <p class="control">
-                <a class="button" v-on:click="startSearch">Search</a>
-            </p>
-        </div>
-        
-        <div class="graphics-flex-wrapper">
-            <div class="graphics-grid-wrapper" :class="gridSize">
-                <div v-for="tile in this.tileMap" v-bind:key="tile.id">
-                    <div v-for="row in tile" v-bind:key="row.id">
-                        <div class="graphics-flex-wrapper">
-                            <div :class="pixelSize" v-for="pixel in row" v-bind:key="pixel.id" :style="{backgroundColor: getPalleteColor(pixel)}">
-                                
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div id="graphics-view">
+    <div class="field has-addons">
+      <p class="control">
+        <a class="button is-static">
+          Offset
+        </a>
+      </p>
+      <p class="control is-expanded">
+        <input 
+          v-model="offsetText" 
+          class="input" 
+          type="text" 
+          @keyup.enter="startSearch">
+      </p>
+      <p class="control">
+        <a 
+          class="button" 
+          @click="startSearch">Search</a>
+      </p>
     </div>
+        
+    <div class="graphics-flex-wrapper">
+      <div 
+        class="graphics-grid-wrapper" 
+        :class="gridSize">
+        <div 
+          v-for="tile in this.tileMap" 
+          :key="tile.id">
+          <div 
+            v-for="row in tile" 
+            :key="row.id">
+            <div class="graphics-flex-wrapper">
+              <div 
+                v-for="pixel in row" 
+                :key="pixel.id" 
+                :class="pixelSize" 
+                :style="{backgroundColor: getPalleteColor(pixel)}" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 
 export default {
-    name: 'Uncompressed',
+    name: "Uncompressed",
     data: function () {
         return {
-           pallete: [],
-           offsetText: '00000000',
-           offset: 0,
-           tileMap: {},
-           entries: 96,
-           linesPerRow: 12,
-           pixelSize: "pixel-8",
-           gridSize: "grid-12"
-        }
+            pallete: [],
+            offsetText: "00000000",
+            offset: 0,
+            tileMap: {},
+            entries: 96,
+            linesPerRow: 12,
+            pixelSize: "pixel-8",
+            gridSize: "grid-12"
+        };
     },
     computed: {
         ...mapGetters([
-            'rom'
+            "rom"
         ])
     },
     created: function() {
@@ -58,6 +72,9 @@ export default {
         }
 
         this.generatePalleteMap();
+    },
+    mounted: function() {
+        document.getElementById("graphics-view").addEventListener("wheel", this.handleScroll);
     },
     methods: {
         getPalleteColor: function(pixel) {
@@ -74,7 +91,7 @@ export default {
             let binary_stream = "";
 
             for( const b of section ) {
-                binary_stream += Number(b).toString(2).padStart(8, '0');
+                binary_stream += Number(b).toString(2).padStart(8, "0");
             }
 
             let tileIndex = 0;
@@ -117,11 +134,8 @@ export default {
             this.generatePalleteMap();
         }
     },
-    mounted: function() {
-        document.getElementById('graphics-view').addEventListener('wheel', this.handleScroll);
-    },
     unmounted: function () {
-        document.getElementById('graphics-view').removeEventListener('wheel', this.handleScroll);
+        document.getElementById("graphics-view").removeEventListener("wheel", this.handleScroll);
     }
 };
 </script>

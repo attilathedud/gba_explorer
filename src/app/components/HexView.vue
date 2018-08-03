@@ -1,45 +1,62 @@
 <template>
-    <div class="hex-view-holder">
-        <div class="field has-addons">
-            <p class="control">
-                <span class="select">
-                <select v-model="searchType">
-                    <option>Offset</option>
-                    <option>Bytes</option>
-                    <option>Text</option>
-                </select>
-                </span>
-            </p>
-            <p class="control is-expanded">
-                <input class="input" type="text" v-model="searchText" v-on:keyup.enter="startSearch">
-            </p>
-            <p class="control">
-                <a class="button" v-on:click="startSearch">Search</a>
-            </p>
-        </div>
-        <table id="hex-view" class="table is-striped is-narrow is-hoverable">
-            <tbody>
-                <tr v-for="(address, index) in addresses" v-bind:key="address.id">
-                    <td class="has-text-grey-light">{{address}}</td>
-                    <td v-for="(item, item_index) in romData.slice((index) * 16, ((index) * 16) + 16)" v-bind:key="item.id" v-on:click="byteClicked(item_index, address)" :class="{'has-background-success':getHex(address)+item_index == selected}">
-                        {{item}}
-                    </td>
-                    <td>
-                        <span v-for="(letter, letter_index) in ascii.slice((index) * 16, ((index) * 16) + 16)" v-bind:key="letter.id" :class="{'has-background-success':getHex(address)+letter_index == selected}">
-                            {{letter}}
-                        </span>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+  <div class="hex-view-holder">
+    <div class="field has-addons">
+      <p class="control">
+        <span class="select">
+          <select v-model="searchType">
+            <option>Offset</option>
+            <option>Bytes</option>
+            <option>Text</option>
+          </select>
+        </span>
+      </p>
+      <p class="control is-expanded">
+        <input 
+          v-model="searchText" 
+          class="input" 
+          type="text" 
+          @keyup.enter="startSearch">
+      </p>
+      <p class="control">
+        <a 
+          class="button" 
+          @click="startSearch">Search</a>
+      </p>
     </div>
+    <table 
+      id="hex-view" 
+      class="table is-striped is-narrow is-hoverable">
+      <tbody>
+        <tr 
+          v-for="(address, index) in addresses" 
+          :key="address.id">
+          <td class="has-text-grey-light">{{ address }}</td>
+          <td 
+            v-for="(item, item_index) in romData.slice((index) * 16, ((index) * 16) + 16)" 
+            :key="item.id" 
+            :class="{'has-background-success':getHex(address)+item_index == selected}" 
+            @click="byteClicked(item_index, address)">
+            {{ item }}
+          </td>
+          <td>
+            <span 
+              v-for="(letter, letter_index) in ascii.slice((index) * 16, ((index) * 16) + 16)" 
+              :key="letter.id" 
+              :class="{'has-background-success':getHex(address)+letter_index == selected}">
+              {{ letter }}
+            </span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 
 export default {
-    name: 'HexView',
+    name: "HexView",
     data: function() {
         return {
             romData : [],
@@ -47,17 +64,30 @@ export default {
             ascii: [],
             initialEntries: 400,
             selected: -1,
-            searchText: '',
-            searchType: 'Offset',
+            searchText: "",
+            searchType: "Offset",
             lastByte: -1
-        }
+        };
     },
     computed: {
         ...mapGetters([
-            'rom',
-            'textAsByte',
-            'byteAsText'
+            "rom",
+            "textAsByte",
+            "byteAsText"
         ])
+    },
+    created: function() {
+        for( const b of this.rom.slice(0, this.initialEntries) ) {
+            this.romData.push(this.toHexString(b, 2));
+            this.translateAscii("push", b);
+        }
+
+        for( var i = 0; i < this.initialEntries; i += 16 ) {
+            this.addresses.push(this.toHexString(i, 8));
+        }
+    },
+    mounted: function() {
+        document.getElementById("hex-view").addEventListener("wheel", this.handleScroll);
     },
     methods: {
         translateAscii: function( type, byte ) {
@@ -193,21 +223,8 @@ export default {
             }
         }
     },
-    created: function() {
-        for( const b of this.rom.slice(0, this.initialEntries) ) {
-            this.romData.push(this.toHexString(b, 2));
-            this.translateAscii("push", b);
-        }
-
-        for( var i = 0; i < this.initialEntries; i += 16 ) {
-            this.addresses.push(this.toHexString(i, 8));
-        }
-    },
-    mounted: function() {
-        document.getElementById('hex-view').addEventListener('wheel', this.handleScroll);
-    },
     unmounted: function () {
-        document.getElementById('hex-view').removeEventListener('wheel', this.handleScroll);
+        document.getElementById("hex-view").removeEventListener("wheel", this.handleScroll);
     }
 };
 </script>

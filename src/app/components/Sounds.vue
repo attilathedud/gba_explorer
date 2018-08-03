@@ -1,55 +1,61 @@
 <template>
-    <div>
-        <div class="centered-horizontal">
-            <a v-if="isSearching" class="button is-loading is-large is-text centered-vertical"></a>
-        </div>
-        <div v-if="!isSearching">
-            <div v-if="sappyTableOffset == -1">
-                <p>No sound engine found</p>
-            </div>
-            <div v-else>
-                <p>Sound engine detected at 0x{{toHexString(sappyTableOffset, 8)}}</p>
-                <p>Song table detected at 0x{{toHexString(songTableOffset, 8)}}</p>
-                <p>Song levels {{songLevels}}</p>
-                <p>Polyphony: {{polyphony}}, Main Volume: {{mainVolume}}, Sampling Rate Index: {{samplingRateLookup[samplingRateIndex]}}, 
-                    dac: {{dacBits}} bits</p>
-                <br>
-
-                <div class="columns">
-                    <div class="column is-one-quarter offset-table">
-                        <table class="table is-striped is-narrow is-hoverable">
-                            <thead></thead>
-                            <tbody>
-                                <tr v-for="song in songList" v-bind:key="song.id" v-on:click="dumpTrack(song)" :class="{'is-selected':song == songSelected}">
-                                    <td>{{toHexString(song, 8)}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="column">
-                        <Player v-bind:songData="songSelectedData"></Player>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div>
+    <div class="centered-horizontal">
+      <a 
+        v-if="isSearching" 
+        class="button is-loading is-large is-text centered-vertical" />
     </div>
+    <div v-if="!isSearching">
+      <div v-if="sappyTableOffset == -1">
+        <p>No sound engine found</p>
+      </div>
+      <div v-else>
+        <p>Sound engine detected at 0x{{ toHexString(sappyTableOffset, 8) }}</p>
+        <p>Song table detected at 0x{{ toHexString(songTableOffset, 8) }}</p>
+        <p>Song levels {{ songLevels }}</p>
+        <p>Polyphony: {{ polyphony }}, Main Volume: {{ mainVolume }}, Sampling Rate Index: {{ samplingRateLookup[samplingRateIndex] }}, 
+        dac: {{ dacBits }} bits</p>
+        <br>
+
+        <div class="columns">
+          <div class="column is-one-quarter offset-table">
+            <table class="table is-striped is-narrow is-hoverable">
+              <thead />
+              <tbody>
+                <tr 
+                  v-for="song in songList" 
+                  :key="song.id" 
+                  :class="{'is-selected':song == songSelected}" 
+                  @click="dumpTrack(song)">
+                  <td>{{ toHexString(song, 8) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="column">
+            <Player :song-data="songSelectedData" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import Track from '../midi/track.js';
-import Player from './sounds/Player.vue';
+import Track from "../midi/track.js";
+import Player from "./sounds/Player.vue";
 
-import { mapGetters } from 'vuex';
-import sww from 'simple-web-worker';
+import { mapGetters } from "vuex";
+import sww from "simple-web-worker";
 
 export default {
-    name: 'Sounds',
+    name: "Sounds",
     components: {
         Player
     },
     computed: {
         ...mapGetters([
-            'rom'
+            "rom"
         ])
     },
     data: function() {
@@ -70,37 +76,15 @@ export default {
                 "21024 Hz", "26758 Hz", "31536 Hz", "36314 Hz", "40137 Hz", "42048 Hz", "invalid", "invalid", "invalid"
             ],
             track: {}
-        }
-    },
-    methods: {
-        scan: function() {
-            this.isSearching = true;
-            this.worker.postMessage('scan', [this.rom])
-                .then(results => {
-                    this.sappyTableOffset = results.sappyTableOffset;
-                    this.songTableOffset = results.songTableOffset;
-                    this.songLevels = results.songLevels;
-                    this.polyphony = results.polyphony;
-                    this.mainVolume = results.mainVolume;
-                    this.samplingRateIndex = results.samplingRateIndex;
-                    this.dacBits = results.dacBits;
-                    this.songList = results.songList;
-
-                    this.isSearching = false;
-                });
-        },
-        dumpTrack: function(offset) {
-            this.songSelected = offset;
-            this.songSelectedData = this.track.dumpTrack(offset);
-        }
+        };
     },
     created: function() {
         this.worker = sww.create([
             { 
-                message: 'scan', 
+                message: "scan", 
                 func: function (rom) {
                     function toHexString(number, padding) {
-                        return Number(number).toString(16).toUpperCase().padStart(padding, '0')
+                        return Number(number).toString(16).toUpperCase().padStart(padding, "0");
                     }
 
                     function reverseIndianness(offset) {
@@ -155,7 +139,7 @@ export default {
                     }
 
                     if( selectSongOffset === 0 ) {
-                        return {'sappyTableOffset' : -1};
+                        return {"sappyTableOffset" : -1};
                     }
 
                     let sappyTableOffset = selectSongOffset - 1;
@@ -191,14 +175,14 @@ export default {
                     } while( songPointer != 0 && songPointer < rom.byteLength );
 
                     return {
-                        'sappyTableOffset' : sappyTableOffset, 
-                        'songLevels' : data1, 
-                        'songTableOffset' : songTableOffset,
-                        'polyphony' : polyphony,
-                        'mainVolume' : mainVolume,
-                        'samplingRateIndex' : samplingRateIndex,
-                        'dacBits' : dacBits,
-                        'songList' : songList
+                        "sappyTableOffset" : sappyTableOffset, 
+                        "songLevels" : data1, 
+                        "songTableOffset" : songTableOffset,
+                        "polyphony" : polyphony,
+                        "mainVolume" : mainVolume,
+                        "samplingRateIndex" : samplingRateIndex,
+                        "dacBits" : dacBits,
+                        "songList" : songList
                     };
                 }
             }
@@ -206,6 +190,28 @@ export default {
 
         this.track = new Track(this.rom);
         this.scan();
-    }
+    },
+    methods: {
+        scan: function() {
+            this.isSearching = true;
+            this.worker.postMessage("scan", [this.rom])
+                .then(results => {
+                    this.sappyTableOffset = results.sappyTableOffset;
+                    this.songTableOffset = results.songTableOffset;
+                    this.songLevels = results.songLevels;
+                    this.polyphony = results.polyphony;
+                    this.mainVolume = results.mainVolume;
+                    this.samplingRateIndex = results.samplingRateIndex;
+                    this.dacBits = results.dacBits;
+                    this.songList = results.songList;
+
+                    this.isSearching = false;
+                });
+        },
+        dumpTrack: function(offset) {
+            this.songSelected = offset;
+            this.songSelectedData = this.track.dumpTrack(offset);
+        }
+    },
 };
 </script>

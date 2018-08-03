@@ -1,73 +1,88 @@
 <template>
-    <div>
-        <div class="field">
-            <label class="label">ROM Entry Point</label>
-            <div class="control">
-                <input class="input" type="text" v-model="romEntryPoint">
-            </div>
-        </div>
-        <div class="field">
-            <label class="label">Debugging Enabled</label>
-            <div class="control">
-                <div class="select">
-                <select v-model="debuggingEnabled">
-                    <option value="21">21 (Disabled)</option>
-                    <option value="A5">A5 (Enabled)</option>
-                </select>
-                </div>
-            </div>
-        </div>
-        <div class="field">
-            <label class="label">Game Title</label>
-            <div class="control">
-                <input class="input" type="text" v-model="gameTitle">
-                <p class="help">{{gameTitleBytes}}</p>
-            </div>
-        </div>
-        <div class="field">
-            <label class="label">Game Code</label>
-            <div class="control">
-                <input class="input" type="text" v-model="gameCode">
-                <p class="help">{{gameCodeBytes}}</p>
-            </div>
-        </div>
-        <div class="field">
-            <label class="label">Maker Code</label>
-            <div class="control">
-                <input class="input" type="text" v-model="makerCode">
-                <p class="help">{{makerCodeBytes}}</p>
-            </div>
-        </div>
-        <div class="field">
-            <label class="label">Software Version</label>
-            <div class="control">
-                <input class="input" type="text" v-model="softwareVersion">
-            </div>
-        </div>
+  <div>
+    <div class="field">
+      <label class="label">ROM Entry Point</label>
+      <div class="control">
+        <input 
+          v-model="romEntryPoint" 
+          class="input" 
+          type="text">
+      </div>
     </div>
+    <div class="field">
+      <label class="label">Debugging Enabled</label>
+      <div class="control">
+        <div class="select">
+          <select v-model="debuggingEnabled">
+            <option value="21">21 (Disabled)</option>
+            <option value="A5">A5 (Enabled)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="label">Game Title</label>
+      <div class="control">
+        <input 
+          v-model="gameTitle" 
+          class="input" 
+          type="text">
+        <p class="help">{{ gameTitleBytes }}</p>
+      </div>
+    </div>
+    <div class="field">
+      <label class="label">Game Code</label>
+      <div class="control">
+        <input 
+          v-model="gameCode" 
+          class="input" 
+          type="text">
+        <p class="help">{{ gameCodeBytes }}</p>
+      </div>
+    </div>
+    <div class="field">
+      <label class="label">Maker Code</label>
+      <div class="control">
+        <input 
+          v-model="makerCode" 
+          class="input" 
+          type="text">
+        <p class="help">{{ makerCodeBytes }}</p>
+      </div>
+    </div>
+    <div class="field">
+      <label class="label">Software Version</label>
+      <div class="control">
+        <input 
+          v-model="softwareVersion" 
+          class="input" 
+          type="text">
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 
 export default {
-    name: 'HeaderInfo',
+    name: "HeaderInfo",
     data: function () {
         return {
-            romEntryPoint : '',
-            debuggingEnabled : '',
-            gameTitleBytes : '',
-            gameTitle : '',
-            gameCodeBytes : '',
-            gameCode : '',
-            makerCodeBytes : '',
-            makerCode : '',
-            softwareVersion : ''
-        }
+            romEntryPoint : "",
+            debuggingEnabled : "",
+            gameTitleBytes : "",
+            gameTitle : "",
+            gameCodeBytes : "",
+            gameCode : "",
+            makerCodeBytes : "",
+            makerCode : "",
+            softwareVersion : ""
+        };
     },
     computed: {
         ...mapGetters([
-            'rom'
+            "rom"
         ])
     },
     created: function() {

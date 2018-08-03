@@ -23,19 +23,19 @@ export default class Midi {
     }
 
     clock() {
-		this.time_ctr += 1;
-	}
+        this.time_ctr += 1;
+    }
 
     getMidiFile() {
         let byteStream = Buffer.alloc(14 + 8 + this.data.length + 4);
 
-        byteStream.write('MThd');
+        byteStream.write("MThd");
         byteStream.writeInt32LE(0x06000000, 4);
         byteStream.writeInt16LE(0x0000, 8);
         byteStream.writeInt16LE(0x0100, 10);
         byteStream.writeInt16LE((this.delta_time_per_beat << 8) | (this.delta_time_per_beat >> 8), 12);
 		
-        byteStream.write('MTrk', 14);
+        byteStream.write("MTrk", 14);
         let s = this.data.length + 4;
         byteStream.writeInt32LE((s << 24) | ((s & 0x0000ff00) << 8) | ((s & 0x00ff0000) >> 8) | (s >> 24), 18);
 
@@ -120,12 +120,6 @@ export default class Midi {
 
     add_pchange(chn, number) {
         this.add_event(12, chn, number);
-    }
-
-    add_pitch_bend(chn, value) {
-        let lo = value & 0x7f;
-        let hi = (value>>7) & 0x7f;
-        this.add_event_type_2(14, chn, lo, hi);
     }
 
     add_pitch_bend(chn, value) {
