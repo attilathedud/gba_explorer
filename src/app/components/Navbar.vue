@@ -3,7 +3,7 @@
         <ul>
             <li v-for="item in categories" v-bind:key="item.title" v-on:click="itemPicked(item.title)" :class="{'is-active':item.title == selected}">
                 <a>
-                    <span class="icon is-small"><i class="fas" :class="item.icon" aria-hidden="true"></i></span>
+                    <span class="icon is-small"><i :class="item.icon" aria-hidden="true"></i></span>
                     <span>{{item.title}}</span>
                 </a>
             </li>
@@ -17,11 +17,12 @@ export default {
   data: function() {
     return {
       categories: [
-        { title: "Header", icon: "fa-file-alt" },
-        { title: "Hex View", icon: "fa-columns" },
-        { title: "Strings", icon: "fa-font" },
-        { title: "Graphics", icon: "fa-image" },
-        { title: "Sounds", icon: "fa-music" },
+        { title: "Header", icon: "fas fa-file-alt" },
+        { title: "Hex View", icon: "fas fa-columns" },
+        { title: "Strings", icon: "fas fa-font" },
+        { title: "Graphics", icon: "far fa-image" },
+        { title: "Sounds", icon: "fas fa-music" },
+        { title: "About", icon: "fas fa-info" }
       ],
       selected: "Header"
     };

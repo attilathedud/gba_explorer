@@ -6489,7 +6489,8 @@ label.panel-block {
   width: 8px; }
 
 html {
-  background: #282c34; }
+  background: #282c34;
+  background-image: url("../images/background.png"); }
 
 .centered-horizontal {
   display: flex;

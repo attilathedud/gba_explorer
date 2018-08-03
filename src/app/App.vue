@@ -9,6 +9,7 @@
       <Strings v-if="section == 'Strings'"></Strings>
       <Graphics v-if="section == 'Graphics'"></Graphics>
       <Sounds v-if="section == 'Sounds'"></Sounds>
+      <About v-if="section == 'About'"></About>
     </div>
 </template>
 
@@ -21,6 +22,7 @@ import HexView from "./components/HexView.vue";
 import Strings from "./components/Strings.vue";
 import Graphics from "./components/Graphics.vue";
 import Sounds from "./components/Sounds.vue";
+import About from "./components/About.vue";
 
 import { mapGetters } from 'vuex';
 import { mapMutations } from 'vuex';
@@ -33,7 +35,8 @@ export default {
         HexView,
         Strings,
         Graphics,
-        Sounds
+        Sounds,
+        About
     },
     computed: {
         ...mapGetters([

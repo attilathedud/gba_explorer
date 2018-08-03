@@ -3,5 +3,4 @@ out
 
 # Used for loading roms while developing
 roms
-# Used for storing test midis while developing
-midis
+
