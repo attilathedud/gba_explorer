@@ -169,7 +169,9 @@ export default {
                     let songPointer = 0;
                     do {
                         songPointer = reverseIndianness(streamPointer) - 0x8000000;
-                        songList.push(songPointer);
+                        if( songPointer > 0 ) {
+                            songList.push(songPointer);
+                        }
                         streamPointer += 4;
                         streamPointer += 4;
                     } while( songPointer != 0 && songPointer < rom.byteLength );
