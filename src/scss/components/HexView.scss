@@ -1,7 +1,7 @@
 .hex-view-holder {
     font-family: monospace;
     overflow-y: hidden;
-    height: 80vh;
+    height: 79vh;
 
     & table {
         width: 100%;
@@ -9,6 +9,19 @@
         > tbody > tr > td {
             cursor: pointer;
             user-select: none;
+            border: none;
+
+            &.is-divider {
+                border-right: 1px solid #dbdbdb;
+            }
+
+            @media screen and (max-width: 1280px) {
+                padding: 0.5em 0.4em !important;
+            }
+
+            @media screen and (max-width: 1000px) {
+                padding: 0.5em 0.2em !important;
+            }
         }
     }
 

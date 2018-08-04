@@ -1,9 +1,18 @@
 .hex-view-holder {
   font-family: monospace;
   overflow-y: hidden;
-  height: 80vh; }
+  height: 79vh; }
   .hex-view-holder table {
     width: 100%; }
     .hex-view-holder table > tbody > tr > td {
       cursor: pointer;
-      user-select: none; }
+      user-select: none;
+      border: none; }
+      .hex-view-holder table > tbody > tr > td.is-divider {
+        border-right: 1px solid #dbdbdb; }
+      @media screen and (max-width: 1280px) {
+        .hex-view-holder table > tbody > tr > td {
+          padding: 0.5em 0.4em !important; } }
+      @media screen and (max-width: 1000px) {
+        .hex-view-holder table > tbody > tr > td {
+          padding: 0.5em 0.2em !important; } }

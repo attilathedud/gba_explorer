@@ -27,7 +27,7 @@ export default {
     name: "FileSelector",
     created: function() {
         //todo: if we are in a dev env, hardcode the opening
-        fs.readFile(process.cwd() + "/roms/zelda.gba", (err, data) => {
+        fs.readFile(process.cwd() + "/roms/metroid.gba", (err, data) => {
             if(err){
                 //todo show error
                 return;

@@ -23,14 +23,12 @@
           @click="startSearch">Search</a>
       </p>
     </div>
-    <table 
-      id="hex-view" 
-      class="table is-striped is-narrow is-hoverable">
+    <table class="table is-striped is-narrow is-hoverable">
       <tbody>
         <tr 
           v-for="(address, index) in addresses" 
           :key="address.id">
-          <td class="has-text-grey-light">{{ address }}</td>
+          <td class="has-text-grey-light is-divider">{{ address }}</td>
           <td 
             v-for="(item, item_index) in romData.slice((index) * 16, ((index) * 16) + 16)" 
             :key="item.id" 
@@ -38,11 +36,14 @@
             @click="byteClicked(item_index, address)">
             {{ item }}
           </td>
+          <td class="is-divider"></td>
+          <td></td>
           <td>
             <span 
               v-for="(letter, letter_index) in ascii.slice((index) * 16, ((index) * 16) + 16)" 
               :key="letter.id" 
-              :class="{'has-background-success':getHex(address)+letter_index == selected}">
+              :class="{'has-background-success':getHex(address)+letter_index == selected}"
+              @click="byteClicked(letter_index, address)">
               {{ letter }}
             </span>
           </td>
@@ -87,7 +88,8 @@ export default {
         }
     },
     mounted: function() {
-        document.getElementById("hex-view").addEventListener("wheel", this.handleScroll);
+        window.addEventListener("wheel", this.handleScroll);
+        window.addEventListener("keydown", this.handleKeypress);
     },
     methods: {
         translateAscii: function( type, byte ) {
@@ -130,49 +132,62 @@ export default {
                 }
             }
         },
+        scrollDown: function() {
+            //todo: don't allow scroll past end of byte buffer (this.rom.byteLength)
+            this.addresses.shift();
+            this.addresses.push(this.toHexString(this.getHex(this.addresses[this.addresses.length - 1]) + 16, 8));
+
+            for( const b of this.rom.slice(this.getHex(this.addresses[this.addresses.length - 1]), this.getHex(this.addresses[this.addresses.length - 1]) + 16) ) {
+                this.romData.shift();
+                this.romData.push(this.toHexString(b, 2));
+
+                this.ascii.shift();
+                this.translateAscii("push", b);
+            }
+        },
+        scrollUp: function() {
+            if( this.addresses[ 0 ] === this.toHexString(0, 8) )
+                return;
+
+            this.addresses.pop();
+            this.addresses.unshift(this.toHexString(this.getHex(this.addresses[0]) - 16, 8));
+
+            let romBuffer = [];
+
+            for( const b of this.rom.slice(Number(this.getHex(this.addresses[0])), Number(this.getHex(this.addresses[0])) + 16) ) {
+                romBuffer.push(b);
+            }
+
+            romBuffer.reverse();
+
+            for(var i = 0; i < 16; i++ ) {
+                this.romData.pop();
+                this.romData.unshift(this.toHexString(romBuffer[i], 2));
+
+                this.ascii.pop();
+                this.translateAscii("unshift", romBuffer[i]);
+            }
+        },
+        handleKeypress: function(event) {
+            if( event.which == 40 ) {
+                this.scrollDown();
+            }
+            else if( event.which == 38 ) {
+                this.scrollUp();
+            }
+        },
         handleScroll: function(event) {
             if(event.deltaY > 0) {
-                //todo: don't allow scroll past end of byte buffer (this.rom.byteLength)
-                this.addresses.shift();
-                this.addresses.push(this.toHexString(this.getHex(this.addresses[this.addresses.length - 1]) + 16, 8));
-
-                for( const b of this.rom.slice(this.getHex(this.addresses[this.addresses.length - 1]), this.getHex(this.addresses[this.addresses.length - 1]) + 16) ) {
-                    this.romData.shift();
-                    this.romData.push(this.toHexString(b, 2));
-
-                    this.ascii.shift();
-                    this.translateAscii("push", b);
-                }
+                this.scrollDown();
             }
             else {
-                if( this.addresses[ 0 ] === this.toHexString(0, 8) )
-                    return;
-
-                this.addresses.pop();
-                this.addresses.unshift(this.toHexString(this.getHex(this.addresses[0]) - 16, 8));
-
-                let romBuffer = [];
-
-                for( const b of this.rom.slice(Number(this.getHex(this.addresses[0])), Number(this.getHex(this.addresses[0])) + 16) ) {
-                    romBuffer.push(b);
-                }
-
-                romBuffer.reverse();
-
-                for(var i = 0; i < 16; i++ ) {
-                    this.romData.pop();
-                    this.romData.unshift(this.toHexString(romBuffer[i], 2));
-
-                    this.ascii.pop();
-                    this.translateAscii("unshift", romBuffer[i]);
-                }
+                this.scrollUp();
             }
         },
         byteClicked: function( index, address ) {
             this.selected = index + this.getHex(address);
         },
         startSearch: function() {
-            //todo: add in search for next element
             this.addresses = [];
             this.romData = [];
             this.ascii = [];
@@ -212,6 +227,9 @@ export default {
             if( offset < 0 ) {
                 offset = 0;
             }
+            else if( offset > this.rom.byteLength) {
+                offset = this.rom.byteLength - (this.rom.byteLength % 16);
+            }
 
             for( const b of this.rom.slice(offset, this.initialEntries + offset) ) {
                 this.romData.push(this.toHexString(b, 2));
@@ -224,7 +242,8 @@ export default {
         }
     },
     unmounted: function () {
-        document.getElementById("hex-view").removeEventListener("wheel", this.handleScroll);
+        window.removeEventListener("wheel", this.handleScroll);
+        window.removeEventListener("keydown", this.handleKeypress);
     }
 };
 </script>
