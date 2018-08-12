@@ -36,7 +36,7 @@
             @click="byteClicked(item_index, address)">
             {{ item }}
           </td>
-          <td class="is-divider"></td>
+          <td class="is-divider" />
           <td>
             <span 
               v-for="(letter, letter_index) in ascii.slice((index) * 16, ((index) * 16) + 16)" 
@@ -57,6 +57,12 @@ import { mapGetters } from "vuex";
 
 export default {
     name: "HexView",
+    props: {
+        useDictionary: {
+            type: Boolean,
+            default: false
+        }
+    },
     data: function() {
         return {
             romData : [],
@@ -94,7 +100,7 @@ export default {
         translateAscii: function( type, byte ) {
             //todo: don't display translated on hex view
             if( type == "unshift" ) {
-                if( !this.byteAsText || Object.keys(this.byteAsText).length === 0 ) {
+                if( !this.useDictionary ) {
                     this.ascii.unshift(String.fromCharCode(byte));
                 }
                 else {
@@ -113,7 +119,7 @@ export default {
                 }
             }
             else {
-                if( !this.byteAsText || Object.keys(this.byteAsText).length === 0 ) {
+                if( !this.useDictionary ) {
                     this.ascii.push(String.fromCharCode(byte));
                 }
                 else {
@@ -212,7 +218,7 @@ export default {
                 offset = this.rom.indexOf(Buffer.from(byteArray));
             }
             else if (this.searchType === "Text") {
-                if( !this.byteAsText || Object.keys(this.byteAsText).length === 0 ) {
+                if( !this.useDictionary ) {
                     offset = this.rom.indexOf(Buffer.from(this.searchText));
                 }
                 else {

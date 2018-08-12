@@ -11,7 +11,9 @@
         v-if="section == 'Search'" 
         @search-finished="onSearchFinished" />
       <Dictionary v-if="section == 'Dictionary'" />
-      <HexView v-if="section == 'Hex View'" />
+      <HexView 
+        v-if="section == 'Hex View'"
+        :use-dictionary="true" />
       <Dump v-if="section == 'Dump'" />
     </div>
   </div>
