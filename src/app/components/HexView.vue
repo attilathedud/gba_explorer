@@ -1,5 +1,9 @@
 <template>
   <div class="hex-view-holder">
+    <div class="notification is-danger" v-if="!showNoResults" >
+        <button class="delete" @click="showNoResults=true"></button>
+        No matches found.
+    </div>
     <div class="field has-addons">
       <p class="control">
         <span class="select">
@@ -72,7 +76,8 @@ export default {
             selected: -1,
             searchText: "",
             searchType: "Offset",
-            lastByte: -1
+            lastByte: -1,
+            showNoResults: true
         };
     },
     computed: {
@@ -231,8 +236,9 @@ export default {
         },
         startSearch: function() {
             //todo allow next after first search
-            //todo show no results feedback
-            let offset = 0;
+            //todo fix crash when searching in strings section with no valid translation dict
+            let offset = -1;
+            this.showNoResults = true;
 
             if( this.searchType === "Offset") {
                 offset = this.getHex(this.searchText, 16);
@@ -260,6 +266,10 @@ export default {
 
                     offset = this.rom.indexOf(Buffer.from(byteArray));
                 }
+            }
+
+            if( offset == -1 ) {
+                this.showNoResults = false;
             }
 
             offset = offset - (offset % 16);
