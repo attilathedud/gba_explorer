@@ -83,14 +83,7 @@ export default {
         ])
     },
     created: function() {
-        for( const b of this.rom.slice(0, this.initialEntries) ) {
-            this.romData.push(this.toHexString(b, 2));
-            this.translateAscii("push", b);
-        }
-
-        for( var i = 0; i < this.initialEntries; i += 16 ) {
-            this.addresses.push(this.toHexString(i, 8));
-        }
+        this.populateAtOffset(0);
     },
     mounted: function() {
         window.addEventListener("wheel", this.handleScroll);
@@ -98,7 +91,6 @@ export default {
     },
     methods: {
         translateAscii: function( type, byte ) {
-            //todo: don't display translated on hex view
             if( type == "unshift" ) {
                 if( !this.useDictionary ) {
                     this.ascii.unshift(String.fromCharCode(byte));
@@ -138,6 +130,20 @@ export default {
                 }
             }
         },
+        populateAtOffset: function(offset) {
+            this.romData = [];
+            this.addresses = [];
+            this.ascii = [];
+
+            for( const b of this.rom.slice(offset, this.initialEntries + offset) ) {
+                this.romData.push(this.toHexString(b, 2));
+                this.translateAscii("push", b);
+            }
+
+            for( var i = offset; i < this.initialEntries + offset; i += 16 ) {
+                this.addresses.push(this.toHexString(i, 8));
+            }
+        },
         scrollDown: function() {
             if( this.getHex(this.addresses[0]) + 16 > this.rom.byteLength )
                 return;
@@ -154,7 +160,7 @@ export default {
             }
         },
         scrollUp: function() {
-            if( this.addresses[ 0 ] === this.toHexString(0, 8) )
+            if( this.getHex(this.addresses[0]) === 0 )
                 return;
 
             this.addresses.pop();
@@ -176,15 +182,41 @@ export default {
                 this.translateAscii("unshift", romBuffer[i]);
             }
         },
+        pageDown: function() {
+            let offset = this.getHex(this.addresses[0]) + this.initialEntries;
+            if( offset + this.initialEntries > this.rom.byteLength) {
+                offset = this.rom.byteLength - (this.initialEntries + this.rom.byteLength % 16);
+            }
+                
+            this.populateAtOffset(offset);
+        },
+        pageUp: function() {
+            let offset = this.getHex(this.addresses[0]) - this.initialEntries;
+            if( offset < 0 ) 
+                offset = 0;
+                
+            this.populateAtOffset(offset);
+        },
         handleKeypress: function(event) {
-            //todo: use constants
-            if( event.which == 40 ) {
+            const KEY_LEFT = 37;
+            const KEY_UP = 38;
+            const KEY_RIGHT = 39;
+            const KEY_DOWN = 40;
+
+            switch( event.which ) {
+            case KEY_DOWN:
                 this.scrollDown();
-            }
-            else if( event.which == 38 ) {
+                break;
+            case KEY_UP:
                 this.scrollUp();
+                break;
+            case KEY_LEFT:
+                this.pageUp();
+                break;
+            case KEY_RIGHT:
+                this.pageDown();
+                break;
             }
-            //todo: allow paging by 1000 addresses
         },
         handleScroll: function(event) {
             if(event.deltaY > 0) {
@@ -198,10 +230,8 @@ export default {
             this.selected = index + this.getHex(address);
         },
         startSearch: function() {
-            this.addresses = [];
-            this.romData = [];
-            this.ascii = [];
-
+            //todo allow next after first search
+            //todo show no results feedback
             let offset = 0;
 
             if( this.searchType === "Offset") {
@@ -240,14 +270,7 @@ export default {
                 offset = this.rom.byteLength - (this.initialEntries + this.rom.byteLength % 16);
             }
 
-            for( const b of this.rom.slice(offset, this.initialEntries + offset) ) {
-                this.romData.push(this.toHexString(b, 2));
-                this.translateAscii("push", b);
-            }
-
-            for( var i = offset; i < this.initialEntries + offset; i += 16 ) {
-                this.addresses.push(this.toHexString(i, 8));
-            }
+            this.populateAtOffset(offset);
         }
     },
     unmounted: function () {
