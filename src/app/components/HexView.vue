@@ -37,7 +37,6 @@
             {{ item }}
           </td>
           <td class="is-divider"></td>
-          <td></td>
           <td>
             <span 
               v-for="(letter, letter_index) in ascii.slice((index) * 16, ((index) * 16) + 16)" 
@@ -93,6 +92,7 @@ export default {
     },
     methods: {
         translateAscii: function( type, byte ) {
+            //todo: don't display translated on hex view
             if( type == "unshift" ) {
                 if( !this.byteAsText || Object.keys(this.byteAsText).length === 0 ) {
                     this.ascii.unshift(String.fromCharCode(byte));
@@ -133,7 +133,9 @@ export default {
             }
         },
         scrollDown: function() {
-            //todo: don't allow scroll past end of byte buffer (this.rom.byteLength)
+            if( this.getHex(this.addresses[0]) + 16 > this.rom.byteLength )
+                return;
+
             this.addresses.shift();
             this.addresses.push(this.toHexString(this.getHex(this.addresses[this.addresses.length - 1]) + 16, 8));
 
@@ -169,12 +171,14 @@ export default {
             }
         },
         handleKeypress: function(event) {
+            //todo: use constants
             if( event.which == 40 ) {
                 this.scrollDown();
             }
             else if( event.which == 38 ) {
                 this.scrollUp();
             }
+            //todo: allow paging by 1000 addresses
         },
         handleScroll: function(event) {
             if(event.deltaY > 0) {
@@ -227,8 +231,8 @@ export default {
             if( offset < 0 ) {
                 offset = 0;
             }
-            else if( offset > this.rom.byteLength) {
-                offset = this.rom.byteLength - (this.rom.byteLength % 16);
+            else if( offset + this.initialEntries > this.rom.byteLength) {
+                offset = this.rom.byteLength - (this.initialEntries + this.rom.byteLength % 16);
             }
 
             for( const b of this.rom.slice(offset, this.initialEntries + offset) ) {

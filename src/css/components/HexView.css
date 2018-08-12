@@ -7,12 +7,13 @@
     .hex-view-holder table > tbody > tr > td {
       cursor: pointer;
       user-select: none;
-      border: none; }
+      border: none;
+      padding: 0.5em 0.0em !important; }
       .hex-view-holder table > tbody > tr > td.is-divider {
         border-right: 1px solid #dbdbdb; }
-      @media screen and (max-width: 1280px) {
-        .hex-view-holder table > tbody > tr > td {
-          padding: 0.5em 0.4em !important; } }
-      @media screen and (max-width: 1000px) {
-        .hex-view-holder table > tbody > tr > td {
-          padding: 0.5em 0.2em !important; } }
+      .hex-view-holder table > tbody > tr > td:nth-child(1) {
+        padding-left: 0.5em !important; }
+      .hex-view-holder table > tbody > tr > td:nth-child(2) {
+        padding-left: 0.5em !important; }
+      .hex-view-holder table > tbody > tr > td:nth-child(19) {
+        padding-left: 0.5em !important; }

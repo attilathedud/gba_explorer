@@ -10,17 +10,22 @@
             cursor: pointer;
             user-select: none;
             border: none;
+            padding: 0.5em 0.0em !important;
 
             &.is-divider {
                 border-right: 1px solid #dbdbdb;
             }
 
-            @media screen and (max-width: 1280px) {
-                padding: 0.5em 0.4em !important;
+            &:nth-child(1) {
+                padding-left: 0.5em !important;
             }
 
-            @media screen and (max-width: 1000px) {
-                padding: 0.5em 0.2em !important;
+            &:nth-child(2) {
+                padding-left: 0.5em !important;
+            }
+
+            &:nth-child(19) {
+                padding-left: 0.5em !important;
             }
         }
     }
