@@ -202,9 +202,8 @@ export default {
                 offset = this.getHex(this.searchText, 16);
             }
             else if (this.searchType === "Bytes") {
-                //todo: parse byte array passed
                 let byteArray = [];
-                let searchTextParsed = this.searchText.match(/.{2}/g);
+                let searchTextParsed = this.searchText.replace(" ", "").match(/.{2}/g);
 
                 for( var byte of searchTextParsed ) {
                     byteArray.push(this.getHex(byte));
