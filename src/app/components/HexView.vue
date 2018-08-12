@@ -1,8 +1,12 @@
 <template>
   <div class="hex-view-holder">
-    <div class="notification is-danger" v-if="!showNoResults" >
-        <button class="delete" @click="showNoResults=true"></button>
-        No matches found.
+    <div 
+      v-if="!showNoResults" 
+      class="notification is-danger">
+      <button 
+        class="delete" 
+        @click="showNoResults=true" />
+      No matches found.
     </div>
     <div class="field has-addons">
       <p class="control">
@@ -75,6 +79,7 @@ export default {
             initialEntries: 400,
             selected: -1,
             searchText: "",
+            lastSearchText: "",
             searchType: "Offset",
             lastByte: -1,
             showNoResults: true
@@ -235,10 +240,16 @@ export default {
             this.selected = index + this.getHex(address);
         },
         startSearch: function() {
-            //todo allow next after first search
             //todo fix crash when searching in strings section with no valid translation dict
             let offset = -1;
+            let fromIndex = 0;
+
             this.showNoResults = true;
+
+            if( this.lastSearchText === this.searchText ) {
+                fromIndex = this.getHex(this.addresses[1]);
+            }
+            this.lastSearchText = this.searchText;
 
             if( this.searchType === "Offset") {
                 offset = this.getHex(this.searchText, 16);
@@ -251,11 +262,11 @@ export default {
                     byteArray.push(this.getHex(byte));
                 }
 
-                offset = this.rom.indexOf(Buffer.from(byteArray));
+                offset = this.rom.indexOf(Buffer.from(byteArray), fromIndex);
             }
             else if (this.searchType === "Text") {
                 if( !this.useDictionary ) {
-                    offset = this.rom.indexOf(Buffer.from(this.searchText));
+                    offset = this.rom.indexOf(Buffer.from(this.searchText), fromIndex);
                 }
                 else {
                     let byteArray = [];
@@ -264,7 +275,7 @@ export default {
                         byteArray.push(this.textAsByte[letter][1]);
                     }
 
-                    offset = this.rom.indexOf(Buffer.from(byteArray));
+                    offset = this.rom.indexOf(Buffer.from(byteArray), fromIndex);
                 }
             }
 
