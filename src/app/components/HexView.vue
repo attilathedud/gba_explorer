@@ -240,7 +240,6 @@ export default {
             this.selected = index + this.getHex(address);
         },
         startSearch: function() {
-            //todo fix crash when searching in strings section with no valid translation dict
             let offset = -1;
             let fromIndex = 0;
 
@@ -268,7 +267,7 @@ export default {
                 if( !this.useDictionary ) {
                     offset = this.rom.indexOf(Buffer.from(this.searchText), fromIndex);
                 }
-                else {
+                else if( Object.keys(this.byteAsText).length !== 0 ) {
                     let byteArray = [];
                     for( var letter of this.searchText ) {
                         byteArray.push(this.textAsByte[letter][0]);
