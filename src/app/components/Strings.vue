@@ -46,28 +46,37 @@ export default {
                 {
                     title: "Search",
                     icon: "fa-search",
-                    sub: "Search for string within the game"
+                    sub: "Search for string within the game",
+                    enabled: true
                 },
                 {
                     title: "Dictionary",
                     icon: "fa-clipboard-list",
-                    sub: "The mapped translation file for bytes to letters"
+                    sub: "The mapped translation file for bytes to letters",
+                    enabled: true
                 },
                 {
                     title: "Hex View",
                     icon: "fa-th-list",
-                    sub: "Hex View with translated bytes"
+                    sub: "Hex View with translated bytes",
+                    enabled: false
                 },
                 {
                     title: "Dump",
                     icon: "fa-copy",
-                    sub: "Dump sections of text for easy editing"
+                    sub: "Dump sections of text for easy editing",
+                    enabled: false
                 }
             ]
         };
     },
     computed: {
         ...mapGetters(["rom", "textAsByte", "byteAsText"])
+    },
+    mounted: function() {
+        if( Object.keys(this.textAsByte).length > 0 ) {
+            this.categories.forEach(x=>x.enabled = true);
+        }
     },
     methods: {
         ...mapMutations(["addTextBytePair"]),
@@ -77,6 +86,7 @@ export default {
                 searchText
             );
             this.fillMatchDictionary(searchText);
+            this.categories.forEach(x=>x.enabled = true);
         },
         onItemPicked: function(item) {
             this.section = item;

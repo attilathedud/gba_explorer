@@ -2,6 +2,11 @@
     font-size: smaller;
 }
 
+.menu-item-disabled {
+    opacity: .4;
+    pointer-events: none;
+}
+
 .search-selector {
     cursor: pointer;
 }

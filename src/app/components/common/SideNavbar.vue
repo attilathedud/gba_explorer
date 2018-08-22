@@ -3,7 +3,8 @@
     <ul class="menu-list">
       <li 
         v-for="item in categories" 
-        :key="item.title" 
+        :key="item.title"
+        :class="{'menu-item-disabled':!item.enabled}" 
         @click="itemPicked(item.title)">
         <a :class="{'is-active':item.title == selected}">
           <span class="icon is-small"><i 

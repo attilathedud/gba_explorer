@@ -105,6 +105,9 @@ export default {
             this.isAddingEntry = true;
         },
         addDictionaryItem: function() {
+            //todo remove whitespace
+            //todo toggle enabled items when item added
+            //todo display error if not correct length
             if( this.addedLetter.length > 1 || this.addedBytePair.length != 4 )
                 return;
 
