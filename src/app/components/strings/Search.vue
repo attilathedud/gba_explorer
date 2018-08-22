@@ -1,22 +1,20 @@
 <template>
   <div @keyup.esc="isPickingMatch=false">
-    <div class="box">
-        <p class="has-text-dark">Search for a string that exists within the game.</p><br>
-        <div class="field">
-            <div class="control">
-                <input 
-                v-model="searchText" 
-                class="input" 
-                type="text" 
-                @keyup.enter="startSearch">
-            </div>
-        </div>
-        <div class="control">
-            <button 
-                class="button is-primary is-medium" 
-                :class="{'is-loading':isSearching}" 
-                @click="startSearch">Search</button>
-            </div>
+    <p>Search for a string that exists within the game.</p><br>
+    <div class="field has-addons">
+      <div class="control is-expanded">
+        <input 
+          v-model="searchText" 
+          class="input" 
+          type="text" 
+          @keyup.enter="startSearch">
+      </div>
+    <div class="control">
+      <button 
+        class="button" 
+        :class="{'is-loading':isSearching}" 
+        @click="startSearch">Search</button>
+    </div>
     </div>
     <br>
     <div 
