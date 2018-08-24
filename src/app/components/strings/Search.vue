@@ -18,16 +18,16 @@
           @keyup.enter="startSearch">
       </div>
       <div class="control">
-          <div class="select">
-            <select v-model="fuzz">
-                <option
-                    v-for="n in 10"
-                    :key="n.id"
-                    :value="n">
-                Fuzz: {{n}}
-                </option>
-            </select>
-          </div>
+        <div class="select">
+          <select v-model="fuzz">
+            <option
+              v-for="n in 10"
+              :key="n.id"
+              :value="n">
+              Fuzz: {{ n }}
+            </option>
+          </select>
+        </div>
       </div>
       <div class="control">
         <button 
@@ -63,6 +63,7 @@
       <div class="modal-content">
         <div class="box">
           <p class="has-text-grey-dark">There were multiple matches for the search. Please choose one to use.</p>
+          <hr>
           <table class="table is-striped is-narrow is-hoverable is-fullwidth">
             <tbody>
               <tr 
@@ -71,7 +72,7 @@
                 class="search-selector" 
                 @click="selectMatch(match)">
                 <td>0x{{ Number(match.address).toString(16).toUpperCase().padStart(8, '0') }}</td>
-                <td>{{ match.bytes }}</td>
+                <td>{{ match.bytes.replace(/(.{4})/g, '$1 ').trim() }}</td>
               </tr>
             </tbody>
           </table>
@@ -113,7 +114,7 @@ export default {
     },
     created: function() {
         this.searchText = this.lastSearchText;
-        
+
         this.worker = sww.create([
             {
                 message: "search",
