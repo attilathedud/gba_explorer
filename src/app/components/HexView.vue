@@ -93,6 +93,7 @@ export default {
         ])
     },
     created: function() {
+        //todo: save last viewed offset
         this.populateAtOffset(0);
     },
     mounted: function() {

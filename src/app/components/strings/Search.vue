@@ -40,7 +40,7 @@
     <div 
       v-if="matches.length > 0" 
       class="field">
-      <label class="label">Selected Match for "{{ matchSelectedText }}"</label>
+      <label class="label">Selected Match for "{{ lastSearchText }}"</label>
       <div class="control">
         <div class="select">
           <select 
@@ -70,7 +70,7 @@
                 v-for="match in matches" 
                 :key="match.id" 
                 class="search-selector" 
-                @click="selectMatch(match)">
+                @click="selectMatch(match.address)">
                 <td>0x{{ Number(match.address).toString(16).toUpperCase().padStart(8, '0') }}</td>
                 <td>{{ match.bytes.replace(/(.{4})/g, '$1 ').trim() }}</td>
               </tr>
@@ -103,17 +103,18 @@ export default {
             worker: {},
             matches: [],
             matchSelected: "",
-            matchSelectedText: "",
             showErrorOnSearch: false,
             errorMessage: "",
             fuzz: 1
         };
     },
     computed: {
-        ...mapGetters(["rom", "lastSearchText"])
+        ...mapGetters(["rom", "lastSearchText", "lastSearchMatches", "lastSearchSelectedMatch"])
     },
     created: function() {
         this.searchText = this.lastSearchText;
+        this.matches = this.lastSearchMatches;
+        this.matchSelected = this.lastSearchSelectedMatch;
 
         this.worker = sww.create([
             {
@@ -152,7 +153,7 @@ export default {
         ]);
     },
     methods: {
-        ...mapMutations(["setSearchText"]),
+        ...mapMutations(["setSearchText", "setSearchMatches", "setSelectedMatch"]),
         startSearch: function() {
             this.showErrorOnSearch = false;
 
@@ -202,13 +203,14 @@ export default {
                     }
 
                     this.isSearching = false;
+                    this.setSearchMatches(matches);
                 });
         },
         selectMatch: function(match) {
             this.isPickingMatch = false;
             this.$emit("search-finished", match.address, this.searchText);
-            this.matchSelected = match.address;
-            this.matchSelectedText = this.searchText;
+            this.matchSelected = match;
+            this.setSelectedMatch( this.matchSelected );
         }
     }
 };

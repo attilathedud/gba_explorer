@@ -7,7 +7,9 @@ const state = {
     rom: Buffer.alloc(0),
     textAsByte : {},
     byteAsText : {},
-    lastSearchText: ""
+    lastSearchText: "",
+    lastSearchMatches: [],
+    lastSearchSelectedMatch: {}
 };
 
 const mutations = {
@@ -20,6 +22,12 @@ const mutations = {
     },
     setSearchText(state, text) {
         state.lastSearchText = text;
+    },
+    setSearchMatches(state, matches) {
+        state.lastSearchMatches = matches;
+    },
+    setSelectedMatch(state, match) {
+        state.lastSearchSelectedMatch = match;
     }
 };
 
@@ -27,7 +35,9 @@ const getters =  {
     rom: state => state.rom,
     textAsByte: state => state.textAsByte,
     byteAsText: state => state.byteAsText,
-    lastSearchText: state => state.lastSearchText
+    lastSearchText: state => state.lastSearchText,
+    lastSearchMatches: state => state.lastSearchMatches,
+    lastSearchSelectedMatch: state => state.lastSearchSelectedMatch
 };
 
 export default new Vuex.Store({
