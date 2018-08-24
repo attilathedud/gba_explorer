@@ -142,7 +142,7 @@ export default {
                             matches.push(i);
                         }
 
-                        if( matches.length > maxMatches ) {
+                        if( matches.length >= maxMatches ) {
                             break;
                         } 
                     }
@@ -180,12 +180,10 @@ export default {
                         this.showErrorOnSearch = true;
                         this.errorMessage = "No results found, try another string or increase the fuzz amount.";
                     }
-                    else if (results.matches.length == 1) {
-                        //todo: fix crash if only one result
-                        this.selectMatch();
-                    } 
                     else {
-                        this.isPickingMatch = true;
+                        if( results.matches.length > 1 ) {
+                            this.isPickingMatch = true;
+                        }
 
                         results.matches.forEach(function(address) {
                             let matchSection = rom.slice(
@@ -200,6 +198,10 @@ export default {
 
                             matches.push({ address: address, bytes: byteBuffer.join("") });
                         });
+
+                        if( results.matches.length == 1 ) {
+                            this.selectMatch(results.matches[0]);
+                        }
                     }
 
                     this.isSearching = false;
