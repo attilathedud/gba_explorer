@@ -6,9 +6,9 @@
       <button 
         class="delete" 
         @click="showErrorOnSearch=false" />
-        {{errorMessage}}
+      {{ errorMessage }}
     </div>
-    <p>Search for a string that exists within the game.</p><br>
+    <p>Search for a string that exists within the game. Fuzz is the amount of "mistakes" allowed in a possible match.</p><br>
     <div class="field has-addons">
       <div class="control is-expanded">
         <input 
@@ -16,6 +16,18 @@
           class="input" 
           type="text" 
           @keyup.enter="startSearch">
+      </div>
+      <div class="control">
+          <div class="select">
+            <select v-model="fuzz">
+                <option
+                    v-for="n in 10"
+                    :key="n.id"
+                    :value="n">
+                Fuzz: {{n}}
+                </option>
+            </select>
+          </div>
       </div>
       <div class="control">
         <button 
@@ -76,7 +88,9 @@
 
 <script>
 import sww from "simple-web-worker";
+
 import { mapGetters } from "vuex";
+import { mapMutations } from "vuex";
 
 export default {
     name: "Search",
@@ -90,17 +104,20 @@ export default {
             matchSelected: "",
             matchSelectedText: "",
             showErrorOnSearch: false,
-            errorMessage: ""
+            errorMessage: "",
+            fuzz: 1
         };
     },
     computed: {
-        ...mapGetters(["rom"])
+        ...mapGetters(["rom", "lastSearchText"])
     },
     created: function() {
+        this.searchText = this.lastSearchText;
+        
         this.worker = sww.create([
             {
                 message: "search",
-                func: function(rom, searchText) {
+                func: function(rom, searchText, fuzz) {
                     const maxMatches = 25;
 
                     let matches = [];
@@ -119,8 +136,7 @@ export default {
                             }
                         }
 
-                        //matchScore >= searchText.length - fuzz - 1
-                        if (matchScore >= searchText.length - 1 - 1) {
+                        if (matchScore >= searchText.length - fuzz - 1) {
                             matches.push(i);
                         }
 
@@ -135,6 +151,7 @@ export default {
         ]);
     },
     methods: {
+        ...mapMutations(["setSearchText"]),
         startSearch: function() {
             this.showErrorOnSearch = false;
 
@@ -144,13 +161,15 @@ export default {
                 return;
             }
 
+            this.setSearchText(this.searchText);
+
             this.isSearching = true;
             this.matches = [];
 
             let context = this;
 
             this.worker
-                .postMessage("search", [this.rom, this.searchText])
+                .postMessage("search", [this.rom, this.searchText, this.fuzz])
                 .then(results => {
                     const matches = this.matches;
                     const rom = this.rom;

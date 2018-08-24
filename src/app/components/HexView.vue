@@ -242,6 +242,7 @@ export default {
         startSearch: function() {
             //todo: fix bug when no text
             //todo: fix weird logic with shownoresults
+            //todo: fix bug with no results on text search
             let offset = -1;
             let fromIndex = 0;
 
