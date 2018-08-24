@@ -40,7 +40,7 @@
     <div 
       v-if="matches.length > 0" 
       class="field">
-      <label class="label">Selected Match for {{ matchSelectedText }}</label>
+      <label class="label">Selected Match for "{{ matchSelectedText }}"</label>
       <div class="control">
         <div class="select">
           <select 
@@ -50,7 +50,7 @@
               v-for="match in matches" 
               :key="match.id" 
               :value="match.address">
-              0x{{ Number(match.address).toString(16).toUpperCase().padStart(8, '0') }} | {{ match.bytes }}
+              0x{{ Number(match.address).toString(16).toUpperCase().padStart(8, '0') }} | {{ match.bytes.replace(/(.{4})/g, '$1 ').trim() }}
             </option>
           </select>
         </div>
@@ -180,6 +180,7 @@ export default {
                         this.errorMessage = "No results found, try another string or increase the fuzz amount.";
                     }
                     else if (results.matches.length == 1) {
+                        //todo: fix crash if only one result
                         this.selectMatch();
                     } 
                     else {
