@@ -240,6 +240,8 @@ export default {
             this.selected = index + this.getHex(address);
         },
         startSearch: function() {
+            //todo: fix bug when no text
+            //todo: fix weird logic with shownoresults
             let offset = -1;
             let fromIndex = 0;
 
