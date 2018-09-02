@@ -1,4 +1,13 @@
 <template>
+    <div>
+        <div 
+        v-if="showErrorInvalidDictionary" 
+        class="notification is-danger">
+        <button 
+            class="delete" 
+            @click="showErrorInvalidDictionary=false" />
+        This appears to be an invalid mapping. Try another match.
+        </div>
   <div class="dictionary-container">
     <h1 v-if="uppercaseMappings.length > 0">UPPER</h1>
     <div 
@@ -87,6 +96,7 @@
         @click="toggleDictionaryPanel()" />
     </div>
   </div>
+    </div>
 </template>
 
 <script>
@@ -103,7 +113,8 @@ export default {
             isAddingEntry: false,
             addedLetter: "",
             addedBytePair: "",
-            showErrorOnAdd: false
+            showErrorOnAdd: false,
+            showErrorInvalidDictionary: false
         };
     },
     computed: {
@@ -114,7 +125,6 @@ export default {
         ])
     },
     created: function() {
-        //todo: flag if selection is invalid dictionary
         this.createSortedMappings();
     },
     methods : {
@@ -122,11 +132,18 @@ export default {
             "addTextBytePair"
         ]),
         createSortedMappings: function() {
+            let previousMatches = [];
+
+            this.showErrorInvalidDictionary = false;
+
             this.uppercaseMappings = [];
             this.lowercaseMappings = [];
             this.symbolMappings = [];
 
             for( var key in this.textAsByte ) {
+                previousMatches.forEach(m => (m[0] == this.textAsByte[key][0] && m[1] == this.textAsByte[key][1]) ? this.showErrorInvalidDictionary = true : 0);
+                previousMatches.push(this.textAsByte[key]);
+
                 if( key == key.toUpperCase() && key != key.toLowerCase() ) {
                     this.uppercaseMappings.push([key , this.textAsByte[key]]);
                 }
@@ -137,7 +154,7 @@ export default {
                     this.symbolMappings.push([key , this.textAsByte[key]]);
                 }
             }
-            
+
             this.uppercaseMappings.sort();
             this.lowercaseMappings.sort();
             this.symbolMappings.sort();
@@ -155,6 +172,8 @@ export default {
         },
         addDictionaryItem: function() {
             let possibleBytePair = this.addedBytePair.replace(/ /g, "");
+
+            this.showErrorOnAdd = false;
 
             if( this.addedLetter.length != 1 || possibleBytePair.length != 4 ) {
                 this.showErrorOnAdd = true;
