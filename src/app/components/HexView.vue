@@ -94,6 +94,8 @@ export default {
     },
     created: function() {
         //todo: save last viewed offset
+        //todo default to text search in strings
+        //todo only allow text search on %2 byte boundries
         this.populateAtOffset(0);
     },
     mounted: function() {

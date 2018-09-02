@@ -14,16 +14,21 @@
 .dictionary-container {
     display: flex;
     flex-wrap: wrap;
-}
 
-.letter-box {
-    margin: 1rem !important;
-    font-size: large;
-    cursor: pointer;
-    font-family: monospace;
+    >h1 {
+        flex-basis: 100%;
+    }
 
-    &:hover {
-        transform: scale(1.04);
-        transition: 0.1s;
+    >.letter-box {
+        margin: 1rem !important;
+        border-radius: 2px !important;
+        font-size: large;
+        cursor: pointer;
+        font-family: monospace;
+    
+        &:hover {
+            transform: scale(1.04);
+            transition: 0.1s;
+        }
     }
 }

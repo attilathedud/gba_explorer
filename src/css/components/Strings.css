@@ -11,12 +11,14 @@
 .dictionary-container {
   display: flex;
   flex-wrap: wrap; }
-
-.letter-box {
-  margin: 1rem !important;
-  font-size: large;
-  cursor: pointer;
-  font-family: monospace; }
-  .letter-box:hover {
-    transform: scale(1.04);
-    transition: 0.1s; }
+  .dictionary-container > h1 {
+    flex-basis: 100%; }
+  .dictionary-container > .letter-box {
+    margin: 1rem !important;
+    border-radius: 2px !important;
+    font-size: large;
+    cursor: pointer;
+    font-family: monospace; }
+    .dictionary-container > .letter-box:hover {
+      transform: scale(1.04);
+      transition: 0.1s; }

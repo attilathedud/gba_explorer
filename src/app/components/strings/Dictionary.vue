@@ -1,13 +1,33 @@
 <template>
   <div class="dictionary-container">
+    <h1 v-if="uppercaseMappings.length > 0">UPPER</h1>
     <div 
-      v-for="letter in sortedDictionary" 
+      v-for="letter in uppercaseMappings" 
       :key="letter.id" 
       class="box letter-box has-text-dark" 
       @click="editDictionaryItem(letter[0], toHexString(letter[1][0], 2) + '' + toHexString(letter[1][1], 2))">
       <span>{{ letter[0] }}</span><br>
       <span>{{ toHexString(letter[1][0], 2) + "" + toHexString(letter[1][1], 2) }}</span>
     </div>
+    <h1 v-if="lowercaseMappings.length > 0">LOWER</h1>
+    <div 
+      v-for="letter in lowercaseMappings" 
+      :key="letter.id" 
+      class="box letter-box has-text-dark" 
+      @click="editDictionaryItem(letter[0], toHexString(letter[1][0], 2) + '' + toHexString(letter[1][1], 2))">
+      <span>{{ letter[0] }}</span><br>
+      <span>{{ toHexString(letter[1][0], 2) + "" + toHexString(letter[1][1], 2) }}</span>
+    </div>
+    <h1 v-if="symbolMappings.length > 0">SYMBOLS</h1>
+    <div 
+      v-for="letter in symbolMappings" 
+      :key="letter.id" 
+      class="box letter-box has-text-dark" 
+      @click="editDictionaryItem(letter[0], toHexString(letter[1][0], 2) + '' + toHexString(letter[1][1], 2))">
+      <span>{{ letter[0] }}</span><br>
+      <span>{{ toHexString(letter[1][0], 2) + "" + toHexString(letter[1][1], 2) }}</span>
+    </div>
+    <h1>&nbsp;</h1>
     <div 
       class="box letter-box has-text-dark" 
       @click="toggleDictionaryPanel()">
@@ -21,6 +41,14 @@
       <div class="modal-background" />
       <div class="modal-content">
         <div class="box">
+            <div 
+            v-if="showErrorOnAdd" 
+            class="notification is-danger">
+            <button 
+                class="delete" 
+                @click="showErrorOnAdd=false" />
+            Error adding the mapping. Ensure there is only one letter and two hex bytes.
+            </div>
           <div class="field">
             <label class="label has-text-dark">Letter</label>
             <div class="control">
@@ -69,10 +97,13 @@ export default {
     name: "Dictionary",
     data: function() {
         return {
-            sortedDictionary: [],
+            uppercaseMappings: [],
+            lowercaseMappings: [],
+            symbolMappings: [],
             isAddingEntry: false,
             addedLetter: "",
-            addedBytePair: ""
+            addedBytePair: "",
+            showErrorOnAdd: false
         };
     },
     computed: {
@@ -84,20 +115,32 @@ export default {
     },
     created: function() {
         //todo: flag if selection is invalid dictionary
-        this.createSortedList();
+        this.createSortedMappings();
     },
     methods : {
         ...mapMutations([
             "addTextBytePair"
         ]),
-        createSortedList: function() {
-            this.sortedDictionary = [];
+        createSortedMappings: function() {
+            this.uppercaseMappings = [];
+            this.lowercaseMappings = [];
+            this.symbolMappings = [];
 
             for( var key in this.textAsByte ) {
-                this.sortedDictionary.push([key , this.textAsByte[key]]);
+                if( key == key.toUpperCase() && key != key.toLowerCase() ) {
+                    this.uppercaseMappings.push([key , this.textAsByte[key]]);
+                }
+                else if( key == key.toLowerCase() && key != key.toUpperCase() ) {
+                    this.lowercaseMappings.push([key , this.textAsByte[key]]);
+                }
+                else {
+                    this.symbolMappings.push([key , this.textAsByte[key]]);
+                }
             }
             
-            this.sortedDictionary.sort();
+            this.uppercaseMappings.sort();
+            this.lowercaseMappings.sort();
+            this.symbolMappings.sort();
         },
         toggleDictionaryPanel: function() {
             this.addedLetter = "";
@@ -111,18 +154,20 @@ export default {
             this.addedBytePair = byte;
         },
         addDictionaryItem: function() {
-            //todo remove whitespace
             //todo toggle enabled items when item added
-            //todo display error if not correct length
-            if( this.addedLetter.length > 1 || this.addedBytePair.length != 4 )
+            let possibleBytePair = this.addedBytePair.replace(/ /g, "");
+
+            if( this.addedLetter.length != 1 || possibleBytePair.length != 4 ) {
+                this.showErrorOnAdd = true;
                 return;
+            }
 
             this.addTextBytePair({"text" : this.addedLetter, 
-                "byte" : [this.getHex(this.addedBytePair.substr(0, 2)), this.getHex(this.addedBytePair.substr(2, 2))]});
+                "byte" : [this.getHex(possibleBytePair.substr(0, 2)), this.getHex(possibleBytePair.substr(2, 2))]});
 
             this.toggleDictionaryPanel();
 
-            this.createSortedList();
+            this.createSortedMappings();
         }
     }
 };
