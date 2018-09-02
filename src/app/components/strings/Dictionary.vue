@@ -41,14 +41,14 @@
       <div class="modal-background" />
       <div class="modal-content">
         <div class="box">
-            <div 
+          <div 
             v-if="showErrorOnAdd" 
             class="notification is-danger">
             <button 
-                class="delete" 
-                @click="showErrorOnAdd=false" />
+              class="delete" 
+              @click="showErrorOnAdd=false" />
             Error adding the mapping. Ensure there is only one letter and two hex bytes.
-            </div>
+          </div>
           <div class="field">
             <label class="label has-text-dark">Letter</label>
             <div class="control">
@@ -154,7 +154,6 @@ export default {
             this.addedBytePair = byte;
         },
         addDictionaryItem: function() {
-            //todo toggle enabled items when item added
             let possibleBytePair = this.addedBytePair.replace(/ /g, "");
 
             if( this.addedLetter.length != 1 || possibleBytePair.length != 4 ) {
@@ -168,6 +167,7 @@ export default {
             this.toggleDictionaryPanel();
 
             this.createSortedMappings();
+            this.$emit("item-added");
         }
     }
 };

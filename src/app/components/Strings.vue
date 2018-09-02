@@ -10,7 +10,9 @@
       <Search 
         v-if="section == 'Search'" 
         @search-finished="onSearchFinished" />
-      <Dictionary v-if="section == 'Dictionary'" />
+      <Dictionary 
+        v-if="section == 'Dictionary'"
+        @item-added="onItemAdded" />
       <HexView 
         v-if="section == 'Hex View'"
         :use-dictionary="true" />
@@ -90,6 +92,9 @@ export default {
         },
         onItemPicked: function(item) {
             this.section = item;
+        },
+        onItemAdded: function() {
+            this.categories.forEach(x=>x.enabled = true);
         },
         generateMatchDictionaryFromSearchText: function(bytes, searchText) {
             for (var i = 0; i < searchText.length - 1; i++) {
