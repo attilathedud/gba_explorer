@@ -210,7 +210,7 @@ export default {
         },
         selectMatch: function(match) {
             this.isPickingMatch = false;
-            this.$emit("search-finished", match.address, this.searchText);
+            this.$emit("search-finished", match, this.searchText);
             this.matchSelected = match;
             this.setSelectedMatch( this.matchSelected );
         }

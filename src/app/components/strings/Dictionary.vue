@@ -10,7 +10,7 @@
     </div>
     <div 
       class="box letter-box has-text-dark" 
-      @click="isAddingEntry = true">
+      @click="toggleDictionaryPanel()">
       <span class="icon is-large">
         <i class="fas fa-3x fa-plus" />
       </span>
@@ -48,7 +48,7 @@
             <div class="control">
               <button 
                 class="button is-medium" 
-                @click="isAddingEntry=false">Cancel</button>
+                @click="toggleDictionaryPanel()">Cancel</button>
             </div>
           </div>
         </div>
@@ -56,7 +56,7 @@
       <button 
         class="modal-close is-large" 
         aria-label="close" 
-        @click="isAddingEntry=false" />
+        @click="toggleDictionaryPanel()" />
     </div>
   </div>
 </template>
@@ -99,10 +99,16 @@ export default {
             
             this.sortedDictionary.sort();
         },
+        toggleDictionaryPanel: function() {
+            this.addedLetter = "";
+            this.addedBytePair = "";
+
+            this.isAddingEntry = !this.isAddingEntry;
+        },
         editDictionaryItem: function(letter, byte) {
+            this.toggleDictionaryPanel();
             this.addedLetter = letter;
             this.addedBytePair = byte;
-            this.isAddingEntry = true;
         },
         addDictionaryItem: function() {
             //todo remove whitespace
@@ -114,7 +120,7 @@ export default {
             this.addTextBytePair({"text" : this.addedLetter, 
                 "byte" : [this.getHex(this.addedBytePair.substr(0, 2)), this.getHex(this.addedBytePair.substr(2, 2))]});
 
-            this.isAddingEntry = false;
+            this.toggleDictionaryPanel();
 
             this.createSortedList();
         }
