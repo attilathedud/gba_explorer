@@ -33,12 +33,14 @@ export default {
                 {
                     title: "Compressed",
                     icon: "fa-file-archive",
-                    sub: "LZ77 compressed data"
+                    sub: "LZ77 compressed data",
+                    enabled: true
                 },
                 {
                     title: "Uncompressed",
                     icon: "fa-bars",
-                    sub: "Raw view of the graphics data"
+                    sub: "Raw view of the graphics data",
+                    enabled: true
                 }
             ]
         };

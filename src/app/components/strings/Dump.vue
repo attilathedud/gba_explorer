@@ -19,13 +19,13 @@
       </div>
     </div>
     <div class="field">
-        <label class="label">Break Bytes (optional)</label>
-        <div class="control">
-            <input 
-            v-model="breakBytes" 
-            class="input" 
-            type="text">
-        </div>
+      <label class="label">Break Bytes (optional)</label>
+      <div class="control">
+        <input 
+          v-model="breakBytes" 
+          class="input" 
+          type="text">
+      </div>
     </div>
     <div class="field">
       <div class="control">
@@ -36,8 +36,8 @@
       </div>
     </div>
     <div
-        v-if="dumpedStrings.length > 0"
-        class="field">
+      v-if="dumpedStrings.length > 0"
+      class="field">
       <div class="control">
         <textarea 
           v-model="dumpedStrings" 
