@@ -23,6 +23,7 @@
           v-model="searchText" 
           class="input" 
           type="text" 
+          id="search-input"
           @keyup.enter="startSearch">
       </p>
       <p class="control">
@@ -221,11 +222,13 @@ export default {
             this.populateAtOffset(offset);
         },
         handleKeypress: function(event) {
-            //todo only page if search box has no focus
             const KEY_LEFT = 37;
             const KEY_UP = 38;
             const KEY_RIGHT = 39;
             const KEY_DOWN = 40;
+
+            if( document.getElementById("search-input") == document.activeElement )
+                return;
 
             switch( event.which ) {
             case KEY_DOWN:
