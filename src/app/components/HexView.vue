@@ -62,6 +62,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { mapMutations } from "vuex";
 
 export default {
     name: "HexView",
@@ -88,21 +89,24 @@ export default {
     computed: {
         ...mapGetters([
             "rom",
+            "lastHexPosition",
             "textAsByte",
             "byteAsText"
         ])
     },
     created: function() {
-        //todo: save last viewed offset
-        //todo default to text search in strings
-        //todo only allow text search on %2 byte boundries
-        this.populateAtOffset(0);
+        if( this.useDictionary ) {
+            this.searchType = "Text";
+        }
+        
+        this.populateAtOffset(this.lastHexPosition);
     },
     mounted: function() {
         window.addEventListener("wheel", this.handleScroll);
         window.addEventListener("keydown", this.handleKeypress);
     },
     methods: {
+        ...mapMutations(["setHexPosition"]),
         translateAscii: function( type, byte ) {
             if( type == "unshift" ) {
                 if( !this.useDictionary ) {
@@ -156,6 +160,8 @@ export default {
             for( var i = offset; i < this.initialEntries + offset; i += 16 ) {
                 this.addresses.push(this.toHexString(i, 8));
             }
+
+            this.setHexPosition(this.addresses[0]);
         },
         scrollDown: function() {
             if( this.getHex(this.addresses[0]) + 16 > this.rom.byteLength )
@@ -171,6 +177,8 @@ export default {
                 this.ascii.shift();
                 this.translateAscii("push", b);
             }
+
+            this.setHexPosition(this.addresses[0]);
         },
         scrollUp: function() {
             if( this.getHex(this.addresses[0]) === 0 )
@@ -194,6 +202,8 @@ export default {
                 this.ascii.pop();
                 this.translateAscii("unshift", romBuffer[i]);
             }
+
+            this.setHexPosition(this.addresses[0]);
         },
         pageDown: function() {
             let offset = this.getHex(this.addresses[0]) + this.initialEntries;
@@ -244,8 +254,9 @@ export default {
         },
         startSearch: function() {
             //todo: fix bug when no text
+            //todo keep position unless successful search
             //todo: fix weird logic with shownoresults
-            //todo: fix bug with no results on text search
+            //todo only allow text search on %2 byte boundries
             let offset = -1;
             let fromIndex = 0;
 

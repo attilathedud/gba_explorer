@@ -5,6 +5,7 @@ Vue.use(Vuex);
 
 const state = {
     rom: Buffer.alloc(0),
+    lastHexPosition: 0,
     textAsByte : {},
     byteAsText : {},
     lastSearchText: "",
@@ -15,6 +16,9 @@ const state = {
 const mutations = {
     setRom(state, rom) {
         state.rom = rom;
+    },
+    setHexPosition(state, position) {
+        state.lastHexPosition = parseInt(position, 16);
     },
     addTextBytePair(state, payload) {
         state.textAsByte[payload.text] = payload.byte;
@@ -33,6 +37,7 @@ const mutations = {
 
 const getters =  {
     rom: state => state.rom,
+    lastHexPosition: state => state.lastHexPosition,
     textAsByte: state => state.textAsByte,
     byteAsText: state => state.byteAsText,
     lastSearchText: state => state.lastSearchText,
