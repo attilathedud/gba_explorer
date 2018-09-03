@@ -20,10 +20,10 @@
       </p>
       <p class="control is-expanded">
         <input 
+          id="search-input" 
           v-model="searchText" 
           class="input" 
-          type="text" 
-          id="search-input"
+          type="text"
           @keyup.enter="startSearch">
       </p>
       <p class="control">

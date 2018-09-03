@@ -19,6 +19,15 @@
       </div>
     </div>
     <div class="field">
+        <label class="label">Break Bytes (optional)</label>
+        <div class="control">
+            <input 
+            v-model="breakBytes" 
+            class="input" 
+            type="text">
+        </div>
+    </div>
+    <div class="field">
       <div class="control">
         <button 
           class="button" 
@@ -26,7 +35,9 @@
           @click="dump">Dump</button>
       </div>
     </div>
-    <div class="field">
+    <div
+        v-if="dumpedStrings.length > 0"
+        class="field">
       <div class="control">
         <textarea 
           v-model="dumpedStrings" 
@@ -38,6 +49,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { mapMutations } from "vuex";
 
 export default {
     name: "Dump",
@@ -45,6 +57,7 @@ export default {
         return {
             startAddress: "",
             endAddress: "",
+            breakBytes: "",
             dumpedStrings: "",
             isDumping: false
         };
@@ -52,10 +65,21 @@ export default {
     computed: {
         ...mapGetters([
             "rom",
-            "byteAsText"
+            "byteAsText",
+            "lastDumpStartAddress",
+            "lastDumpEndAddress",
+            "lastDumpBreakBytes",
+            "lastDumpStrings"
         ])
     },
+    created: function() {
+        this.startAddress = this.lastDumpStartAddress;
+        this.endAddress = this.lastDumpEndAddress;
+        this.breakBytes = this.lastDumpBreakBytes;
+        this.dumpedStrings = this.lastDumpStrings;
+    },
     methods: {
+        ...mapMutations(["setDumpInfo"]),
         dump: function() {
             let lastByte = -1;
             this.dumpedStrings = "";
@@ -70,10 +94,20 @@ export default {
                         translatedByte = "";
                     }
                     
+                    if( (this.toHexString(lastByte, 2) + this.toHexString(b, 2)).toLowerCase() == this.breakBytes.replace(/ /g, "").toLowerCase() ) {
+                        this.dumpedStrings += "\n\n";
+                    }
                     this.dumpedStrings += translatedByte;
                     lastByte = -1;
                 }
             }
+
+            this.setDumpInfo({
+                startAddress: this.startAddress,
+                endAddress: this.endAddress,
+                breakBytes: this.breakBytes,
+                dumpStrings: this.dumpedStrings
+            });
         }
     }
 };
