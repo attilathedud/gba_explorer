@@ -1,11 +1,11 @@
 <template>
   <div class="hex-view-holder">
     <div 
-      v-if="!showNoResults" 
+      v-if="showErrorNoResults" 
       class="notification is-danger">
       <button 
         class="delete" 
-        @click="showNoResults=true" />
+        @click="showErrorNoResults=false" />
       No matches found.
     </div>
     <div class="field has-addons">
@@ -83,7 +83,7 @@ export default {
             lastSearchText: "",
             searchType: "Offset",
             lastByte: -1,
-            showNoResults: true
+            showErrorNoResults: false
         };
     },
     computed: {
@@ -221,6 +221,7 @@ export default {
             this.populateAtOffset(offset);
         },
         handleKeypress: function(event) {
+            //todo only page if search box has no focus
             const KEY_LEFT = 37;
             const KEY_UP = 38;
             const KEY_RIGHT = 39;
@@ -253,14 +254,10 @@ export default {
             this.selected = index + this.getHex(address);
         },
         startSearch: function() {
-            //todo: fix bug when no text
-            //todo keep position unless successful search
-            //todo: fix weird logic with shownoresults
-            //todo only allow text search on %2 byte boundries
             let offset = -1;
             let fromIndex = 0;
 
-            this.showNoResults = true;
+            this.showErrorNoResults = false;
 
             if( this.lastSearchText === this.searchText ) {
                 fromIndex = this.getHex(this.addresses[1]);
@@ -296,7 +293,8 @@ export default {
             }
 
             if( offset == -1 ) {
-                this.showNoResults = false;
+                this.showErrorNoResults = true;
+                return;
             }
 
             offset = offset - (offset % 16);
