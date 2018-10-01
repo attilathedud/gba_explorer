@@ -88,14 +88,11 @@ export default {
                     length += rom[offset++] << 16;
 
                     let streamPointer = 0;
-                    while (streamPointer < length)
-                    {
+                    while (streamPointer < length) {
                         let isCompressed = rom[offset++];
 
-                        for (let i = 0; i < 8 && streamPointer < length; i++)
-                        {
-                            if (isCompressed & 0x80)
-                            {
+                        for (let i = 0; i < 8 && streamPointer < length; i++) {
+                            if (isCompressed & 0x80) {
                                 let amountToCopy = 3 + (rom[offset] >> 4);
                                 let copyPosition = 1;
                                 copyPosition += (rom[offset++] & 0xF) << 8;
@@ -104,14 +101,12 @@ export default {
                                 if (copyPosition > length)
                                     return false;
 
-                                for (let u = 0; u < amountToCopy; u++)
-                                {
+                                for (let u = 0; u < amountToCopy; u++) {
                                     byteStream[streamPointer] = byteStream[(streamPointer - u) - copyPosition + (u % copyPosition)];
                                     streamPointer++;
                                 }
                             }
-                            else
-                            {
+                            else {
                                 byteStream[streamPointer] = rom[offset++];
                                 streamPointer++;
                             }
@@ -131,14 +126,11 @@ export default {
                         offset += 4;
 
                         let streamPointer = 0;
-                        while (streamPointer < length)
-                        {
+                        while (streamPointer < length) {
                             let isCompressed = rom[offset++];
 
-                            for (let i = 0; i < 8 && streamPointer < length; i++)
-                            {
-                                if (isCompressed & 0x80)
-                                {
+                            for (let i = 0; i < 8 && streamPointer < length; i++) {
+                                if (isCompressed & 0x80) {
                                     let amountToCopy = 3 + (rom[offset] >> 4);
                                     let copyPosition = 1;
                                     copyPosition += (rom[offset++] & 0xF) << 8;
@@ -149,8 +141,7 @@ export default {
 
                                     streamPointer += amountToCopy;
                                 }
-                                else
-                                {
+                                else {
                                     offset++;
                                     streamPointer++;
                                 }
@@ -212,14 +203,11 @@ export default {
             offset += 4;
 
             let streamPointer = 0;
-            while (streamPointer < length)
-            {
+            while (streamPointer < length) {
                 let isCompressed = this.rom[offset++];
 
-                for (let i = 0; i < 8 && streamPointer < length; i++)
-                {
-                    if (isCompressed & 0x80)
-                    {
+                for (let i = 0; i < 8 && streamPointer < length; i++) {
+                    if (isCompressed & 0x80)  {
                         let amountToCopy = 3 + (this.rom[offset] >> 4);
                         let copyPosition = 1;
                         copyPosition += (this.rom[offset++] & 0xF) << 8;
@@ -230,8 +218,7 @@ export default {
 
                         streamPointer += amountToCopy;
                     }
-                    else
-                    {
+                    else {
                         offset++;
                         streamPointer++;
                     }
