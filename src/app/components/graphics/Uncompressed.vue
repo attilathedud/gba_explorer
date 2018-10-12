@@ -74,7 +74,8 @@ export default {
         this.generatePalleteMap();
     },
     mounted: function() {
-        document.getElementById("graphics-view").addEventListener("wheel", this.handleScroll);
+        window.addEventListener("wheel", this.handleScroll);
+        window.addEventListener("keydown", this.handleKeypress);
     },
     methods: {
         getPalleteColor: function(pixel) {
@@ -118,24 +119,56 @@ export default {
                 }
             }
         },
-        handleScroll: function(event) {
-            if(event.deltaY > 0) {
-                //todo: don't allow scroll past end of byte buffer (this.rom.byteLength)
-                this.offset+= this.linesPerRow * 32;
-            }
-            else {
-                if( this.offset === 0 )
-                    return;
+        scrollDown: function() {
+            if( this.offset + this.linesPerRow * 32 > this.rom.byteLength )
+                return;
 
-                this.offset -= this.linesPerRow * 32;
-            }
+            this.offset += this.linesPerRow * 32;
 
             this.offsetText = this.toHexString(this.offset, 8);
             this.generatePalleteMap();
+        },
+        scrollUp: function() {
+            if( this.offset === 0 )
+                return;
+
+            this.offset -= this.linesPerRow * 32;
+
+            this.offsetText = this.toHexString(this.offset, 8);
+            this.generatePalleteMap(); 
+        },
+        handleScroll: function(event) {
+            if(event.deltaY > 0) {
+                this.scrollDown();
+            }
+            else {
+                this.scrollUp();
+            }
+        },
+        handleKeypress: function(event) {
+            const KEY_LEFT = 37;
+            const KEY_UP = 38;
+            const KEY_RIGHT = 39;
+            const KEY_DOWN = 40;
+
+            if( document.getElementById("search-input") == document.activeElement )
+                return;
+
+            switch( event.which ) {
+            case KEY_DOWN:
+            case KEY_RIGHT:
+                this.scrollDown();
+                break;
+            case KEY_UP:
+            case KEY_LEFT:
+                this.scrollUp();
+                break;
+            } 
         }
     },
     unmounted: function () {
-        document.getElementById("graphics-view").removeEventListener("wheel", this.handleScroll);
+        window.removeEventListener("wheel", this.handleScroll);
+        window.removeEventListener("keydown", this.handleKeypress);
     }
 };
 </script>
