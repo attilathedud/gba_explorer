@@ -33,13 +33,25 @@
             <div class="graphics-flex-wrapper">
               <div 
                 v-for="pixel in row" 
-                :key="pixel.id" 
-                :class="pixelSize" 
-                :style="{backgroundColor: getPalleteColor(pixel)}" />
+                :key="pixel.id"  
+                :style="{backgroundColor: getPalleteColor(pixel), width: pixelSizes[pixelSize] + 'px', height: pixelSizes[pixelSize] + 'px'}" />
             </div>
           </div>
         </div>
       </div>
+    </div>
+
+    <div class="graphics-zoom">
+      <span class="icon is-large">
+        <i 
+          class="fas fa-2x fa-minus-circle"
+          @click="zoomOut" />
+      </span>
+      <span class="icon is-large"> 
+        <i 
+          class="fas fa-2x fa-plus-circle"
+          @click="zoomIn" />
+      </span> 
     </div>
   </div>
 </template>
@@ -57,7 +69,8 @@ export default {
             tileMap: {},
             entries: 96,
             linesPerRow: 12,
-            pixelSize: "pixel-8",
+            pixelSize: 3,
+            pixelSizes: [1, 2, 4, 8],
             gridSize: "grid-12"
         };
     },
@@ -164,6 +177,20 @@ export default {
                 this.scrollUp();
                 break;
             } 
+        },
+        zoomIn: function() {
+            /*
+            this.gridSize = "grid-32";
+            this.entries = 768;
+            this.linesPerRow = 32;
+            this.generatePalleteMap();
+            */
+            if( this.pixelSize < 3 )
+                this.pixelSize++;
+        },
+        zoomOut: function() {
+            if( this.pixelSize > 0 )
+                this.pixelSize--;
         }
     },
     unmounted: function () {
