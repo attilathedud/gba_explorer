@@ -23,7 +23,7 @@
     <div class="graphics-flex-wrapper">
       <div 
         class="graphics-grid-wrapper" 
-        :class="gridSize">
+        :style="{gridTemplateColumns: 'repeat(' + linesPerRow + ', 1fr)'}">
         <div 
           v-for="tile in tileMap" 
           :key="tile.id">
@@ -67,11 +67,9 @@ export default {
             offsetText: "00000000",
             offset: 0,
             tileMap: {},
-            entries: 96,
             linesPerRow: 12,
             pixelSize: 3,
-            pixelSizes: [1, 2, 4, 8],
-            gridSize: "grid-12"
+            pixelSizes: [1, 2, 4, 8]
         };
     },
     computed: {
@@ -101,7 +99,7 @@ export default {
         generatePalleteMap: function() {
             this.tileMap = {};
 
-            let section = this.rom.slice(this.offset, this.offset + (this.entries * 32));
+            let section = this.rom.slice(this.offset, this.offset + (this.linesPerRow * 8 * 32));
             let binaryStream = "";
 
             for( const b of section ) {
@@ -178,19 +176,19 @@ export default {
                 break;
             } 
         },
-        zoomIn: function() {
-            /*
-            this.gridSize = "grid-32";
-            this.entries = 768;
-            this.linesPerRow = 32;
-            this.generatePalleteMap();
-            */
-            if( this.pixelSize < 3 )
+        zoomIn: function() { 
+            if( this.pixelSize < 3 ) {
                 this.pixelSize++;
+                this.linesPerRow /= 2;
+                this.generatePalleteMap();
+            }
         },
         zoomOut: function() {
-            if( this.pixelSize > 0 )
+            if( this.pixelSize > 0 ) {
                 this.pixelSize--;
+                this.linesPerRow *= 2;
+                this.generatePalleteMap();
+            }
         }
     },
     unmounted: function () {
