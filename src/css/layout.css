@@ -6487,12 +6487,6 @@ label.panel-block {
     user-select: none;
     cursor: pointer; }
 
-.grid-12 {
-  grid-template-columns: repeat(12, 1fr); }
-
-.grid-32 {
-  grid-template-columns: repeat(32, 1fr); }
-
 html {
   background: #282c34;
   background-image: url("../images/background.png"); }

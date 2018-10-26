@@ -97,38 +97,33 @@ export default {
             this.generatePalleteMap();
         },
         generatePalleteMap: function() {
-            this.tileMap = {};
-
             let section = this.rom.slice(this.offset, this.offset + (this.linesPerRow * 8 * 32));
-            let binaryStream = "";
-
-            for( const b of section ) {
-                binaryStream += Number(b).toString(2).padStart(8, "0");
-            }
-
-            let tileIndex = 0;
-            let tileOffset = 0;
             
-            this.tileMap[tileIndex] = [];
-            this.tileMap[tileIndex][tileOffset] = [];
+            this.tileMap = {};
+            
+            let blockIndex = 0;
+            let rowIndex = 0;
+            
+            this.tileMap[blockIndex] = [];
+            this.tileMap[blockIndex][rowIndex] = [];
 
-            for( let i = 0, j = 0; i < binaryStream.length; i += 8, j += 2 ) {
-                this.tileMap[tileIndex][tileOffset].push(parseInt(binaryStream.substr(i + 4, 4), 2));
-                this.tileMap[tileIndex][tileOffset].push(parseInt(binaryStream.substr(i, 4), 2));
+            for( let i = 0; i < section.length; i++ ) {
+                this.tileMap[blockIndex][rowIndex].push(section[i] & 0b00001111);
+                this.tileMap[blockIndex][rowIndex].push((section[i] & 0b11110000) >> 4);
 
-                if((j+2) % 8 == 0) {
-                    tileOffset++;
-                    if( tileOffset != 8 ) {
-                        this.tileMap[tileIndex][tileOffset] = [];
+                if(((i*2)+2) % 8 == 0) {
+                    rowIndex++;
+                    if( rowIndex != 8 ) {
+                        this.tileMap[blockIndex][rowIndex] = [];
                     }
                 }
-                if( tileOffset == 8 ) {
-                    tileIndex++;
-                    tileOffset = 0;
-                    this.tileMap[tileIndex] = [];
-                    this.tileMap[tileIndex][tileOffset] = [];
+                if( rowIndex == 8 ) {
+                    blockIndex++;
+                    rowIndex = 0;
+                    this.tileMap[blockIndex] = [];
+                    this.tileMap[blockIndex][rowIndex] = [];
                 }
-            }
+            } 
         },
         scrollDown: function() {
             if( this.offset + this.linesPerRow * 32 > this.rom.byteLength )
