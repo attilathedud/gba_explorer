@@ -6487,6 +6487,10 @@ label.panel-block {
     user-select: none;
     cursor: pointer; }
 
+#canvas {
+  width: 100%;
+  height: 100%; }
+
 html {
   background: #282c34;
   background-image: url("../images/background.png"); }
