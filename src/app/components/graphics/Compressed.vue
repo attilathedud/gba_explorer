@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="columns">
-      <div class="column is-one-quarter offset-table">
+      <div class="column is-one-fifth offset-table">
         <table class="table is-striped is-narrow is-hoverable">
           <thead />
           <tbody>
@@ -21,27 +21,8 @@
             v-if="isLoading" 
             class="button is-loading is-large is-text centered-vertical" />
         </div>
-        <div class="graphics-flex-wrapper">
-          <div 
-            class="graphics-grid-wrapper" 
-            :class="gridSize">
-            <div 
-              v-for="tile in tileMap" 
-              :key="tile.id">
-              <div 
-                v-for="row in tile" 
-                :key="row.id">
-                <div class="graphics-flex-wrapper">
-                  <div 
-                    v-for="pixel in row" 
-                    :key="pixel.id" 
-                    :class="pixelSize" 
-                    :style="{backgroundColor: getPalleteColor(pixel)}" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+
+        <canvas id="canvas" />
       </div>
     </div>
   </div>
@@ -57,12 +38,16 @@ export default {
         return {
             pallete: [],
             tileMap: {},
-            pixelSize: "pixel-1",
-            gridSize: "grid-32",
             compressedSections: [],
             worker: {},
             isLoading: false,
-            selected: 0
+            selected: 0,
+            tilesPerRow: 32,
+            pixelSize: 0,
+            pixelSizes: [1, 2, 4, 8],
+            tileSize: 8,
+            canvas: undefined,
+            ctx: undefined
         };
     },
     computed: {
@@ -176,12 +161,15 @@ export default {
 
         this.scan();
     },
+    mounted: function() {
+        this.canvas = document.getElementById("canvas");
+        this.ctx = this.canvas.getContext("2d");     
+    },   
     methods: {
         getPalleteColor: function(pixel) {
             return this.pallete[pixel];
         },
         uncompress: function(offset) {
-            this.tileMap = {};
             this.selected = offset;
             this.isLoading = true;
             this.worker.postMessage("uncompress", [this.rom, offset])
@@ -231,36 +219,62 @@ export default {
         },
         generatePalleteMap: function(section) {
             this.tileMap = {};
-
-            let binaryStream = "";
-
-            for( const b of section ) {
-                binaryStream += Number(b).toString(2).padStart(8, "0");
-            }
-
-            let tileIndex = 0;
-            let tileOffset = 0;
             
-            this.tileMap[tileIndex] = [];
-            this.tileMap[tileIndex][tileOffset] = [];
+            let blockIndex = 0;
+            let rowIndex = 0;
+            
+            this.tileMap[blockIndex] = [];
+            this.tileMap[blockIndex][rowIndex] = [];
 
-            for( let i = 0, j = 0; i < binaryStream.length; i += 8, j += 2 ) {
-                this.tileMap[tileIndex][tileOffset].push(parseInt(binaryStream.substr(i + 4, 4), 2));
-                this.tileMap[tileIndex][tileOffset].push(parseInt(binaryStream.substr(i, 4), 2));
+            for( let i = 0; i < section.length; i++ ) {
+                this.tileMap[blockIndex][rowIndex].push(section[i] & 0b00001111);
+                this.tileMap[blockIndex][rowIndex].push((section[i] & 0b11110000) >> 4);
 
-                if((j+2) % 8 == 0) {
-                    tileOffset++;
-                    if( tileOffset != 8 ) {
-                        this.tileMap[tileIndex][tileOffset] = [];
+                if(((i*2)+2) % this.tileSize == 0) {
+                    rowIndex++;
+                    if( rowIndex != this.tileSize ) {
+                        this.tileMap[blockIndex][rowIndex] = [];
                     }
                 }
-                if( tileOffset == 8 ) {
-                    tileIndex++;
-                    tileOffset = 0;
-                    this.tileMap[tileIndex] = [];
-                    this.tileMap[tileIndex][tileOffset] = [];
+                if( rowIndex == this.tileSize ) {
+                    blockIndex++;
+                    rowIndex = 0;
+                    this.tileMap[blockIndex] = [];
+                    this.tileMap[blockIndex][rowIndex] = [];
                 }
             }
+
+            let pixelIndex = 0;
+            let tileIndex = 0;
+            rowIndex = 0;
+            let tileRowIndex = 0;
+
+            let pixelSize = this.pixelSizes[this.pixelSize];
+
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+           
+            for( const tile in this.tileMap ) {
+                for( const row in this.tileMap[tile] ) {
+                    for( const pixel in this.tileMap[tile][row] ) {
+                        let pixelData = this.tileMap[tile][row][pixel];
+
+                        this.ctx.fillStyle = this.getPalleteColor(pixelData); 
+                        this.ctx.fillRect(
+                            pixelIndex * pixelSize + (tileIndex * pixelSize * this.tileSize), 
+                            rowIndex * pixelSize + (tileRowIndex * pixelSize * this.tileSize), 
+                            pixelSize, pixelSize);
+                        pixelIndex++; 
+                    }
+                    pixelIndex = 0;
+                    rowIndex++;
+                }
+                rowIndex = 0;
+                tileIndex++;
+                if( tileIndex >= this.tilesPerRow ) {
+                    tileRowIndex++;
+                    tileIndex = 0;
+                }
+            } 
         }
     }
 };

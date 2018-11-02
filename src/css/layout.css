@@ -6467,13 +6467,6 @@ label.panel-block {
       transform: scale(1.04);
       transition: 0.1s; }
 
-.graphics-flex-wrapper {
-  display: flex;
-  flex-wrap: wrap; }
-
-.graphics-grid-wrapper {
-  display: grid; }
-
 .offset-table {
   overflow-y: scroll;
   height: 80vh; }

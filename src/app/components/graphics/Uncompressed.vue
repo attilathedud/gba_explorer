@@ -49,7 +49,7 @@ export default {
             offsetText: "00000000",
             offset: 0,
             tileMap: {},
-            tilesPerRow: 0,
+            tilesPerRow: 32,
             pixelSize: 3,
             pixelSizes: [1, 2, 4, 8],
             sectionLength: 128,
@@ -120,34 +120,32 @@ export default {
             rowIndex = 0;
             let tileRowIndex = 0;
 
-            if( this.ctx != undefined ) {
-                let pixelSize = this.pixelSizes[this.pixelSize];
+            let pixelSize = this.pixelSizes[this.pixelSize];
 
-                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-                
-                for( const tile in this.tileMap ) {
-                    for( const row in this.tileMap[tile] ) {
-                        for( const pixel in this.tileMap[tile][row] ) {
-                            let pixelData = this.tileMap[tile][row][pixel];
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            
+            for( const tile in this.tileMap ) {
+                for( const row in this.tileMap[tile] ) {
+                    for( const pixel in this.tileMap[tile][row] ) {
+                        let pixelData = this.tileMap[tile][row][pixel];
 
-                            this.ctx.fillStyle = this.getPalleteColor(pixelData); 
-                            this.ctx.fillRect(
-                                pixelIndex * pixelSize + (tileIndex * pixelSize * this.tileSize), 
-                                rowIndex * pixelSize + (tileRowIndex * pixelSize * this.tileSize), 
-                                pixelSize, pixelSize);
-                            pixelIndex++;
-                        }
-                        pixelIndex = 0;
-                        rowIndex++;
+                        this.ctx.fillStyle = this.getPalleteColor(pixelData); 
+                        this.ctx.fillRect(
+                            pixelIndex * pixelSize + (tileIndex * pixelSize * this.tileSize), 
+                            rowIndex * pixelSize + (tileRowIndex * pixelSize * this.tileSize), 
+                            pixelSize, pixelSize);
+                        pixelIndex++;
                     }
-                    rowIndex = 0;
-                    tileIndex++;
-                    if( tileIndex >= this.tilesPerRow ) {
-                        tileRowIndex++;
-                        tileIndex = 0;
-                    }
-                } 
-            }
+                    pixelIndex = 0;
+                    rowIndex++;
+                }
+                rowIndex = 0;
+                tileIndex++;
+                if( tileIndex >= this.tilesPerRow ) {
+                    tileRowIndex++;
+                    tileIndex = 0;
+                }
+            } 
         },
         scrollDown: function() {
             if( this.offset + this.tilesPerRow * this.sectionLength > this.rom.byteLength )
