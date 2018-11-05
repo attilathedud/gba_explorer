@@ -6481,9 +6481,7 @@ label.panel-block {
     cursor: pointer; }
 
 .canvas-holder {
-  overflow: scroll;
-  width: 100%;
-  height: 100%; }
+  overflow: scroll; }
 
 .canvas-stretch {
   width: 100%;

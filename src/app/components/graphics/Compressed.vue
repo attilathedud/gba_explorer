@@ -22,7 +22,9 @@
             class="button is-loading is-large is-text centered-vertical" />
         </div>
 
-        <div class="canvas-holder">
+        <div 
+          class="canvas-holder"
+          :style="{'height': canvasHolderHeight + 'px', 'width': canvasHolderWidth + 'px'}">
           <canvas id="canvas" />
         </div>
 
@@ -64,7 +66,9 @@ export default {
             pixelSizes: [1, 2, 4, 8],
             tileSize: 8,
             canvas: undefined,
-            ctx: undefined
+            ctx: undefined,
+            canvasHolderHeight: 0,
+            canvasHolderWidth: 0
         };
     },
     computed: {
@@ -284,7 +288,10 @@ export default {
 
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
             this.canvas.width = pixelSize * this.tileSize * this.tilesPerRow;
-            this.canvas.height = window.innerHeight;
+            this.canvas.height = pixelSize * this.tileSize * this.tilesPerRow; 
+
+            this.canvasHolderWidth = window.innerWidth - (window.innerWidth / 2);
+            this.canvasHolderHeight = window.innerHeight - (window.innerHeight / 4);
 
             for( const tile in this.tileMap ) {
                 for( const row in this.tileMap[tile] ) {

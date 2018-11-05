@@ -54,7 +54,7 @@ export default {
             offset: 0,
             tileMap: {},
             tilesPerRow: 32,
-            pixelSize: 3,
+            pixelSize: 0,
             pixelSizes: [1, 2, 4, 8],
             sectionLength: 128,
             tileSize: 8,
