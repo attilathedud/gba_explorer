@@ -22,7 +22,24 @@
             class="button is-loading is-large is-text centered-vertical" />
         </div>
 
-        <canvas id="canvas" />
+        <div class="canvas-holder">
+          <canvas id="canvas" />
+        </div>
+
+        <div class="graphics-zoom">
+          <span class="icon is-large">
+            <i 
+              :class="{'zoom-disabled': pixelSize == 0}" 
+              class="fas fa-2x fa-minus-circle"
+              @click="zoomOut" />
+          </span>
+          <span class="icon is-large"> 
+            <i 
+              :class="{'zoom-disabled': pixelSize == pixelSizes.length - 1}"
+              class="fas fa-2x fa-plus-circle"
+              @click="zoomIn" />
+          </span> 
+        </div>
       </div>
     </div>
   </div>
@@ -217,6 +234,20 @@ export default {
 
             return true;
         },
+        zoomIn: function() {
+            if( this.pixelSize < this.pixelSizes.length - 1 ) {
+                this.pixelSize++;
+
+                this.uncompress(this.selected);
+            }       
+        },        
+        zoomOut: function() {
+            if( this.pixelSize > 0 ) {
+                this.pixelSize--;
+
+                this.uncompress(this.selected);
+            } 
+        },
         generatePalleteMap: function(section) {
             this.tileMap = {};
             
@@ -252,7 +283,9 @@ export default {
             let pixelSize = this.pixelSizes[this.pixelSize];
 
             this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-           
+            this.canvas.width = pixelSize * this.tileSize * this.tilesPerRow;
+            this.canvas.height = window.innerHeight;
+
             for( const tile in this.tileMap ) {
                 for( const row in this.tileMap[tile] ) {
                     for( const pixel in this.tileMap[tile][row] ) {

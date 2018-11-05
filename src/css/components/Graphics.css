@@ -11,6 +11,15 @@
     user-select: none;
     cursor: pointer; }
 
-#canvas {
+.canvas-holder {
+  overflow: scroll;
   width: 100%;
   height: 100%; }
+
+.canvas-stretch {
+  width: 100%;
+  height: 100%; }
+
+.zoom-disabled {
+  opacity: 0.4;
+  cursor: not-allowed !important; }

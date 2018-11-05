@@ -21,16 +21,20 @@
       </p>
     </div>
     
-    <canvas id="canvas" />
+    <canvas 
+      id="canvas"
+      class="canvas-stretch" />
 
     <div class="graphics-zoom">
       <span class="icon is-large">
         <i 
+          :class="{'zoom-disabled': pixelSize == 0}"
           class="fas fa-2x fa-minus-circle"
           @click="zoomOut" />
       </span>
       <span class="icon is-large"> 
         <i 
+          :class="{'zoom-disabled': pixelSize == pixelSizes.length - 1}"
           class="fas fa-2x fa-plus-circle"
           @click="zoomIn" />
       </span> 
@@ -194,7 +198,7 @@ export default {
             } 
         },
         zoomIn: function() { 
-            if( this.pixelSize < 3 ) {
+            if( this.pixelSize < this.pixelSizes.length - 1 ) {
                 this.pixelSize++;
 
                 this.tilesPerRow = Math.floor(this.canvas.width / (this.pixelSizes[this.pixelSize] * this.tileSize)); 
