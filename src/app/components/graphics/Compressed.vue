@@ -184,7 +184,9 @@ export default {
     },
     mounted: function() {
         this.canvas = document.getElementById("canvas");
-        this.ctx = this.canvas.getContext("2d");     
+        this.ctx = this.canvas.getContext("2d"); 
+        
+        window.addEventListener("keydown", this.handleKeypress);
     },   
     methods: {
         getPalleteColor: function(pixel) {
@@ -252,6 +254,25 @@ export default {
                 this.uncompress(this.selected);
             } 
         },
+        handleKeypress: function(event) {
+            const KEY_LEFT = 37;
+            const KEY_UP = 38;
+            const KEY_RIGHT = 39;
+            const KEY_DOWN = 40;
+
+            switch( event.which ) {
+            case KEY_DOWN:
+            case KEY_RIGHT:
+                this.selected = this.compressedSections[this.compressedSections.indexOf(this.selected) + 1];
+                this.uncompress(this.selected); 
+                break;
+            case KEY_UP:
+            case KEY_LEFT:
+                this.selected = this.compressedSections[this.compressedSections.indexOf(this.selected) - 1];
+                this.uncompress(this.selected); 
+                break;
+            }  
+        },
         generatePalleteMap: function(section) {
             this.tileMap = {};
             
@@ -316,6 +337,9 @@ export default {
                 }
             } 
         }
+    },
+    unmounted: function () {
+        window.removeEventListener("keydown", this.handleKeypress);
     }
 };
 </script>
