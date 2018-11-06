@@ -1,6 +1,11 @@
 .offset-table {
     overflow-y: scroll;
     height: 80vh;
+    
+    > table {
+        color: hsl(0, 0%, 100%);
+        background-color: transparent !important;
+    }
 }
 
 .graphics-zoom { 

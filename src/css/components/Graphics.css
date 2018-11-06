@@ -1,6 +1,9 @@
 .offset-table {
   overflow-y: scroll;
   height: 80vh; }
+  .offset-table > table {
+    color: white;
+    background-color: transparent !important; }
 
 .graphics-zoom {
   position: fixed;

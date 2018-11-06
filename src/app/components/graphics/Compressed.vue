@@ -2,7 +2,7 @@
   <div>
     <div class="columns">
       <div class="column is-one-fifth offset-table">
-        <table class="table is-striped is-narrow is-hoverable">
+        <table class="table is-narrow is-hoverable is-fullwidth">
           <thead />
           <tbody>
             <tr 
