@@ -44,6 +44,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { mapMutations } from "vuex";
 
 export default {
     name: "Uncompressed",
@@ -64,7 +65,8 @@ export default {
     },
     computed: {
         ...mapGetters([
-            "rom"
+            "rom",
+            "lastUncompressedSearchOffset"
         ])
     },
     created: function() {
@@ -80,9 +82,12 @@ export default {
         this.ctx = this.canvas.getContext("2d"); 
         
         this.tilesPerRow = Math.floor(this.canvas.width / (this.pixelSizes[this.pixelSize] * this.tileSize)); 
-        this.generatePalleteMap();
+          
+        this.offsetText = this.lastUncompressedSearchOffset;
+        this.startSearch();
     },
     methods: {
+        ...mapMutations(["setUncompressedSearchOffset"]),
         getPalleteColor: function(pixel) {
             return this.pallete[pixel];
         },
@@ -149,7 +154,9 @@ export default {
                     tileRowIndex++;
                     tileIndex = 0;
                 }
-            } 
+            }
+
+            this.setUncompressedSearchOffset(this.offsetText);
         },
         scrollDown: function() {
             if( this.offset + this.tilesPerRow * this.sectionLength > this.rom.byteLength )
