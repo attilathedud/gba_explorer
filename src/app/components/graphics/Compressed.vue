@@ -28,6 +28,18 @@
           <canvas id="canvas" />
         </div>
 
+        <div class="graphics-shift">
+          <span class="icon is-large">
+            <i 
+              class="fas fa-2x fa-angle-double-left"
+              @click="shiftTilesLeft" />
+          </span>
+          <span class="icon is-large"> 
+            <i 
+              class="fas fa-2x fa-angle-double-right"
+              @click="shiftTilesRight" />
+          </span>    
+        </div>
         <div class="graphics-zoom">
           <span class="icon is-large">
             <i 
@@ -254,6 +266,14 @@ export default {
                 this.uncompress(this.selected);
             } 
         },
+        shiftTilesLeft: function() {
+            this.tilesPerRow--;
+            this.uncompress(this.selected);
+        },
+        shiftTilesRight: function() {
+            this.tilesPerRow++;
+            this.uncompress(this.selected);
+        },
         handleKeypress: function(event) {
             const KEY_LEFT = 37;
             const KEY_UP = 38;
@@ -263,11 +283,15 @@ export default {
             switch( event.which ) {
             case KEY_DOWN:
             case KEY_RIGHT:
+                this.tilesPerRow = 32;
+
                 this.selected = this.compressedSections[this.compressedSections.indexOf(this.selected) + 1];
                 this.uncompress(this.selected); 
                 break;
             case KEY_UP:
             case KEY_LEFT:
+                this.tilesPerRow = 32;
+
                 this.selected = this.compressedSections[this.compressedSections.indexOf(this.selected) - 1];
                 this.uncompress(this.selected); 
                 break;

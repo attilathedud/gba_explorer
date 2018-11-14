@@ -8,6 +8,18 @@
     }
 }
 
+.graphics-shift {
+    position: fixed;
+    bottom: 40px;
+    right: 5px;
+    
+    > span > i:hover {
+        color: hsl(0, 0%, 86%);
+        user-select: none;
+        cursor: pointer; 
+    }
+}
+
 .graphics-zoom { 
     position: fixed;
     bottom: 5px;

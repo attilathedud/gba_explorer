@@ -5,6 +5,15 @@
     color: white;
     background-color: transparent !important; }
 
+.graphics-shift {
+  position: fixed;
+  bottom: 40px;
+  right: 5px; }
+  .graphics-shift > span > i:hover {
+    color: #dbdbdb;
+    user-select: none;
+    cursor: pointer; }
+
 .graphics-zoom {
   position: fixed;
   bottom: 5px;
