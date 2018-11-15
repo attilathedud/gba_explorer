@@ -78,8 +78,10 @@ export default {
         window.addEventListener("wheel", this.handleScroll);
         window.addEventListener("keydown", this.handleKeypress);
 
-        this.canvas = document.getElementById("canvas");
-        this.ctx = this.canvas.getContext("2d"); 
+        if( this.canvas == undefined || this.ctz == undefined ) {
+            this.canvas = document.getElementById("canvas");
+            this.ctx = this.canvas.getContext("2d"); 
+        }
         
         this.tilesPerRow = Math.floor(this.canvas.width / (this.pixelSizes[this.pixelSize] * this.tileSize)); 
           

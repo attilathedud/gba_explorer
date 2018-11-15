@@ -3,7 +3,11 @@
     <div class="columns">
       <div class="column is-one-fifth offset-table">
         <table class="table is-narrow is-hoverable is-fullwidth">
-          <thead />
+          <thead>
+            <tr>
+              <td>Offsets</td>
+            </tr>
+          </thead>
           <tbody>
             <tr 
               v-for="section in compressedSections" 
@@ -194,10 +198,12 @@ export default {
 
         this.scan();
     },
-    mounted: function() {
-        this.canvas = document.getElementById("canvas");
-        this.ctx = this.canvas.getContext("2d"); 
-        
+    mounted: function() { 
+        if( this.canvas == undefined || this.ctz == undefined ) {
+            this.canvas = document.getElementById("canvas");
+            this.ctx = this.canvas.getContext("2d"); 
+        }
+
         window.addEventListener("keydown", this.handleKeypress);
     },   
     methods: {
