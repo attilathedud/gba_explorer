@@ -106,6 +106,10 @@ export default {
         window.addEventListener("wheel", this.handleScroll);
         window.addEventListener("keydown", this.handleKeypress);
     },
+    destroyed: function () {
+        window.removeEventListener("wheel", this.handleScroll);
+        window.removeEventListener("keydown", this.handleKeypress);
+    },
     methods: {
         ...mapMutations(["setHexPosition"]),
         translateAscii: function( type, byte ) {
@@ -310,10 +314,6 @@ export default {
 
             this.populateAtOffset(offset);
         }
-    },
-    unmounted: function () {
-        window.removeEventListener("wheel", this.handleScroll);
-        window.removeEventListener("keydown", this.handleKeypress);
     }
 };
 </script>

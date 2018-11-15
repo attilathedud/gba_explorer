@@ -88,6 +88,10 @@ export default {
         this.offsetText = this.lastUncompressedSearchOffset;
         this.startSearch();
     },
+    destroyed: function () {
+        window.removeEventListener("wheel", this.handleScroll);
+        window.removeEventListener("keydown", this.handleKeypress);
+    },
     methods: {
         ...mapMutations(["setUncompressedSearchOffset"]),
         getPalleteColor: function(pixel) {
@@ -224,10 +228,6 @@ export default {
                 this.generatePalleteMap();
             }
         }
-    },
-    unmounted: function () {
-        window.removeEventListener("wheel", this.handleScroll);
-        window.removeEventListener("keydown", this.handleKeypress);
-    }
+    } 
 };
 </script>

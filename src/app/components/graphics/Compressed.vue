@@ -205,7 +205,10 @@ export default {
         }
 
         window.addEventListener("keydown", this.handleKeypress);
-    },   
+    }, 
+    destroyed: function () {
+        window.removeEventListener("keydown", this.handleKeypress);
+    },  
     methods: {
         getPalleteColor: function(pixel) {
             return this.pallete[pixel];
@@ -367,9 +370,6 @@ export default {
                 }
             } 
         }
-    },
-    unmounted: function () {
-        window.removeEventListener("keydown", this.handleKeypress);
-    }
+    } 
 };
 </script>
