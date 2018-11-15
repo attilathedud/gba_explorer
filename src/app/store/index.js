@@ -18,7 +18,8 @@ const state = {
     lastDumpBreakBytes: "",
     lastDumpStrings: "",
     //graphics related data
-    lastUncompressedSearchOffset: "00000000"
+    lastUncompressedSearchOffset: "00000000",
+    lastSelectedCompressedOffset: 0
 };
 
 const mutations = {
@@ -49,6 +50,9 @@ const mutations = {
     },
     setUncompressedSearchOffset(state, text) {
         state.lastUncompressedSearchOffset = text;
+    },
+    setSelectedCompressedOffset(state, offset) {
+        state.lastSelectedCompressedOffset = offset;
     }
 };
 
@@ -64,7 +68,8 @@ const getters =  {
     lastDumpEndAddress: state => state.lastDumpEndAddress,
     lastDumpBreakBytes: state => state.lastDumpBreakBytes,
     lastDumpStrings: state => state.lastDumpStrings,
-    lastUncompressedSearchOffset: state => state.lastUncompressedSearchOffset
+    lastUncompressedSearchOffset: state => state.lastUncompressedSearchOffset,
+    lastSelectedCompressedOffset: state => state.lastSelectedCompressedOffset
 };
 
 export default new Vuex.Store({

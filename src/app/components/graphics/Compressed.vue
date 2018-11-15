@@ -65,6 +65,8 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { mapMutations } from "vuex";
+
 import sww from "simple-web-worker";
 
 export default {
@@ -88,12 +90,14 @@ export default {
         };
     },
     computed: {
-        ...mapGetters(["rom"])
+        ...mapGetters(["rom", "lastSelectedCompressedOffset"])
     },
     created: function() {
         for( let i = 0; i < 16; i++ ) {
             this.pallete[i] = "rgb(" + i * 16 + "," + i * 16 + "," + i * 16 + ")";
         }
+
+        this.selected = this.lastSelectedCompressedOffset;
 
         this.worker = sww.create([
             { 
@@ -210,11 +214,13 @@ export default {
         window.removeEventListener("keydown", this.handleKeypress);
     },  
     methods: {
+        ...mapMutations(["setSelectedCompressedOffset"]),
         getPalleteColor: function(pixel) {
             return this.pallete[pixel];
         },
         uncompress: function(offset) {
             this.selected = offset;
+            this.setSelectedCompressedOffset(this.selected);
             this.isLoading = true;
             this.worker.postMessage("uncompress", [this.rom, offset])
                 .then(results => {
@@ -228,7 +234,10 @@ export default {
                 .then(results => {
                     this.compressedSections = results;
                     this.isLoading = false;
-                    this.uncompress(this.compressedSections[0]);
+                    if(this.selected == 0)
+                        this.uncompress(this.compressedSections[0]);
+                    else
+                        this.uncompress(this.selected);
                 });
         },
         isValidCompression: function(offset, length) {
