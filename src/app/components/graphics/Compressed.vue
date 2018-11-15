@@ -28,7 +28,7 @@
 
         <div 
           class="canvas-holder"
-          :style="{'height': canvasHolderHeight + 'px', 'width': canvasHolderWidth + 'px'}">
+          :style="{'height': canvasHolderHeight + 'px', 'width': canvasHolderWidth + 'px', 'visibility': (isLoading ? 'hidden' : 'visible')}">
           <canvas id="canvas" />
         </div>
 
