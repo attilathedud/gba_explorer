@@ -6503,6 +6503,32 @@ label.panel-block {
   opacity: 0.4;
   cursor: not-allowed !important; }
 
+.centered-container {
+  display: flex;
+  justify-content: center; }
+
+.offset-table {
+  overflow-y: scroll;
+  height: 80vh; }
+  .offset-table > table {
+    color: white;
+    background-color: transparent !important; }
+
+.progress-bar {
+  border: 1px solid;
+  height: 20px;
+  width: 80%; }
+  .progress-bar > .progress-bar-percent {
+    height: 18px;
+    background-color: white; }
+
+.sound-icons {
+  width: 80%; }
+  .sound-icons > span > i:hover {
+    color: #dbdbdb;
+    user-select: none;
+    cursor: pointer; }
+
 html {
   background: #282c34;
   background-image: url("../images/background.png"); }

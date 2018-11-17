@@ -10,17 +10,14 @@
         <p>No sound engine found</p>
       </div>
       <div v-else>
-        <p>Sound engine detected at 0x{{ toHexString(sappyTableOffset, 8) }}</p>
-        <p>Song table detected at 0x{{ toHexString(songTableOffset, 8) }}</p>
-        <p>Song levels {{ songLevels }}</p>
-        <p>Polyphony: {{ polyphony }}, Main Volume: {{ mainVolume }}, Sampling Rate Index: {{ samplingRateLookup[samplingRateIndex] }}, 
-        dac: {{ dacBits }} bits</p>
-        <br>
-
         <div class="columns">
           <div class="column is-one-quarter offset-table">
-            <table class="table is-striped is-narrow is-hoverable">
-              <thead />
+            <table class="table is-narrow is-hoverable is-fullwidth">
+              <thead>
+                <tr>
+                  <td>Offsets</td>
+                </tr>
+              </thead>
               <tbody>
                 <tr 
                   v-for="song in songList" 
@@ -33,7 +30,9 @@
             </table>
           </div>
           <div class="column">
-            <Player :song-data="songSelectedData" />
+            <Player 
+              v-if="songSelected != 0" 
+              :song-data="songSelectedData" />
           </div>
         </div>
       </div>
@@ -60,16 +59,7 @@ export default {
             songSelectedData: new Uint8Array(),
             sappyTableOffset: 0,
             songTableOffset: 0,
-            songLevels: 0,
-            polyphony : 0,
-            mainVolume : 0,
-            samplingRateIndex : 0,
-            dacBits : 0,
-            songList : [],
-            samplingRateLookup: [
-                "invalid", "5734 Hz", "7884 Hz", "10512 Hz", "13379 Hz", "15768 Hz", "18157 Hz",
-                "21024 Hz", "26758 Hz", "31536 Hz", "36314 Hz", "40137 Hz", "42048 Hz", "invalid", "invalid", "invalid"
-            ],
+            songList : [], 
             track: {}
         };
     },
@@ -152,16 +142,10 @@ export default {
 
                     let offset = sappyTableOffset - 16;
 
-                    let data0 = reverseIndianness(offset);
                     let data1 = reverseIndianness(offset + 4);
                     let data2 = reverseIndianness(offset + 8);
 
                     let songTableOffset = (data2 & 0x3FFFFFF) + 12 * data1;
-
-                    let polyphony = (data0 & 0x000F00) >> 8;
-                    let mainVolume = (data0 & 0x00F000) >> 12;
-                    let samplingRateIndex = (data0 & 0x0F0000) >> 16;
-                    let dacBits = ((data0 & 0xF00000) >> 20);
 
                     let songList = [];
                     let streamPointer = songTableOffset;
@@ -169,7 +153,7 @@ export default {
                     let songPointer = 0;
                     do {
                         songPointer = reverseIndianness(streamPointer) - 0x8000000;
-                        if( songPointer > 0 ) {
+                        if( songPointer > 0 && songPointer < rom.byteLength) {
                             songList.push(songPointer);
                         }
                         streamPointer += 4;
@@ -177,13 +161,8 @@ export default {
                     } while( songPointer != 0 && songPointer < rom.byteLength );
 
                     return {
-                        "sappyTableOffset" : sappyTableOffset, 
-                        "songLevels" : data1, 
+                        "sappyTableOffset" : sappyTableOffset,
                         "songTableOffset" : songTableOffset,
-                        "polyphony" : polyphony,
-                        "mainVolume" : mainVolume,
-                        "samplingRateIndex" : samplingRateIndex,
-                        "dacBits" : dacBits,
                         "songList" : songList
                     };
                 }
@@ -200,11 +179,6 @@ export default {
                 .then(results => {
                     this.sappyTableOffset = results.sappyTableOffset;
                     this.songTableOffset = results.songTableOffset;
-                    this.songLevels = results.songLevels;
-                    this.polyphony = results.polyphony;
-                    this.mainVolume = results.mainVolume;
-                    this.samplingRateIndex = results.samplingRateIndex;
-                    this.dacBits = results.dacBits;
                     this.songList = results.songList;
 
                     this.isSearching = false;

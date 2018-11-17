@@ -1,0 +1,35 @@
+.centered-container {
+    display: flex;
+    justify-content: center;
+}
+
+.offset-table {
+    overflow-y: scroll;
+    height: 80vh;
+    
+    > table {
+        color: hsl(0, 0%, 100%);
+        background-color: transparent !important;
+    }
+}
+
+.progress-bar {
+    border: 1px solid;
+    height: 20px;
+    width: 80%;
+
+    > .progress-bar-percent {
+        height: 18px;
+        background-color: hsl(0, 0%, 100%);
+    }
+}
+
+.sound-icons {
+    width: 80%;
+
+    > span > i:hover {
+        color: hsl(0, 0%, 86%);
+        user-select: none;
+        cursor: pointer; 
+    }
+}
