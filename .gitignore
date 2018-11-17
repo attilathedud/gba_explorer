@@ -1,6 +1,9 @@
 node_modules
 out
 
+# vim stuff
+*.swp
+
 # Used for loading roms while developing
 roms
 
