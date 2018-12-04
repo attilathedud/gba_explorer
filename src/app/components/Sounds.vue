@@ -6,8 +6,10 @@
         class="button is-loading is-large is-text centered-vertical" />
     </div>
     <div v-if="!isSearching">
-      <div v-if="sappyTableOffset == -1">
-        <p>No sound engine found</p>
+      <div 
+        v-if="sappyTableOffset == -1"
+        class="notification is-danger">  
+        No sound engine found
       </div>
       <div v-else>
         <div class="columns">
@@ -30,6 +32,12 @@
             </table>
           </div>
           <div class="column">
+            <div 
+              class="notification is-danger">
+              This feature is experimental. It does not use the original notes or soundfont from the rom,
+              so tracks will sound slightly different.
+            </div>
+
             <Player 
               v-if="songSelected != 0" 
               :song-data="songSelectedData" />
@@ -78,52 +86,49 @@ export default {
                     }
 
                     function reverseIndianness(offset) {
-                        //use Buffer read functions
-                        return parseInt(toHexString(rom[offset+3],2) + toHexString(rom[offset+2],2) + toHexString(rom[offset+1],2) + toHexString(rom[offset],2), 16);
+                        return parseInt(
+                            toHexString(rom[offset+3],2) + 
+                            toHexString(rom[offset+2],2) + 
+                            toHexString(rom[offset+1],2) + 
+                            toHexString(rom[offset],2), 16); 
                     }
 
-                    //code is taken from GBA Sappy Engine Detector by Bregalad
-                    let sappySignatureOld = [
-                        0x00, 0xB5, 0x00, 0x04, 0x07, 0x4A, 0x08, 0x49,
-                        0x40, 0x0B, 0x40, 0x18, 0x83, 0x88, 0x59, 0x00,
-                        0xC9, 0x18, 0x89, 0x00, 0x89, 0x18, 0x0A, 0x68,
-                        0x01, 0x68, 0x10, 0x1C, 0x00, 0xF0
+                    let sappySignatures = [
+                        [
+                            0x00, 0xB5, 0x00, 0x04, 0x07, 0x4A, 0x08, 0x49,
+                            0x40, 0x0B, 0x40, 0x18, 0x83, 0x88, 0x59, 0x00,
+                            0xC9, 0x18, 0x89, 0x00, 0x89, 0x18, 0x0A, 0x68,
+                            0x01, 0x68, 0x10, 0x1C, 0x00, 0xF0
+                        ],
+                        [
+                            0x00, 0xB5, 0x00, 0x04, 0x07, 0x4B, 0x08, 0x49,
+                            0x40, 0x0B, 0x40, 0x18, 0x82, 0x88, 0x51, 0x00,
+                            0x89, 0x18, 0x89, 0x00, 0xC9, 0x18, 0x0A, 0x68,
+                            0x01, 0x68, 0x10, 0x1C, 0x00, 0xF0
+                        ] 
                     ];
 
-                    let sappySignatureNew = [
-                        0x00, 0xB5, 0x00, 0x04, 0x07, 0x4B, 0x08, 0x49,
-                        0x40, 0x0B, 0x40, 0x18, 0x82, 0x88, 0x51, 0x00,
-                        0x89, 0x18, 0x89, 0x00, 0xC9, 0x18, 0x0A, 0x68,
-                        0x01, 0x68, 0x10, 0x1C, 0x00, 0xF0
-                    ];
-
+                    //code is taken from GBA Sappy Engine Detector by Bregalad 
                     let selectSongOffset = 0;
                     let matchScore = 0;
 
                     for( let i = 0; i < rom.byteLength; i++ ) {
-                        matchScore = 0;
+                        for( let sappyPattern = 0; sappyPattern < sappySignatures.length; sappyPattern++ ) {
+                            matchScore = 0;
 
-                        for( let j = 0; j < sappySignatureOld.length; j++ ) {
-                            if( sappySignatureOld[j] == rom[i+j] ) {
-                                matchScore++;
+                            for( let j = 0; j < sappySignatures[sappyPattern].length; j++ ) {
+                                if( sappySignatures[sappyPattern][j] == rom[i+j] ) {
+                                    matchScore++;    
+                                }
+                            }
+
+                            if( matchScore == sappySignatures[sappyPattern].length ) {
+                                selectSongOffset = i;
+                                break;
                             }
                         }
 
-                        if( matchScore == sappySignatureOld.length ) {
-                            selectSongOffset = i;
-                            break;
-                        }
-
-                        matchScore = 0;
-
-                        for( let j = 0; j < sappySignatureNew.length; j++ ) {
-                            if( sappySignatureNew[j] == rom[i+j] ) {
-                                matchScore++;
-                            }
-                        }
-
-                        if( matchScore == sappySignatureNew.length ) {
-                            selectSongOffset = i;
+                        if( selectSongOffset != 0 ) {
                             break;
                         }
                     }
@@ -172,6 +177,12 @@ export default {
         this.track = new Track(this.rom);
         this.scan();
     },
+    mounted: function() { 
+        window.addEventListener("keydown", this.handleKeypress);
+    }, 
+    destroyed: function () {
+        window.removeEventListener("keydown", this.handleKeypress);
+    },  
     methods: {
         scan: function() {
             this.isSearching = true;
@@ -187,6 +198,33 @@ export default {
         dumpTrack: function(offset) {
             this.songSelected = offset;
             this.songSelectedData = this.track.dumpTrack(offset);
+        },
+        handleKeypress: function(event) {
+            const KEY_LEFT = 37;
+            const KEY_UP = 38;
+            const KEY_RIGHT = 39;
+            const KEY_DOWN = 40;
+
+            let nextSong = 0;
+
+            switch( event.which ) {
+            case KEY_DOWN:
+            case KEY_RIGHT:
+                nextSong = this.songList.indexOf(this.songSelected) + 1;
+                if(nextSong > this.songList.length - 1 || nextSong < 0)
+                    return;
+
+                this.dumpTrack(this.songList[nextSong]);
+                break;
+            case KEY_UP:
+            case KEY_LEFT:
+                nextSong = this.songList.indexOf(this.songSelected) - 1;
+                if(nextSong < 0 ) 
+                    return;
+
+                this.dumpTrack(this.songList[nextSong]);
+                break;
+            }    
         }
     },
 };

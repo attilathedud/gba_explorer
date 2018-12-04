@@ -77,7 +77,7 @@ export default {
            
             let context = this;
 
-            Soundfont.instrument(this.ac, "alto_sax").then(function (instrument) {
+            Soundfont.instrument(this.ac, "pad_3_polysynth").then(function (instrument) {
                 context.player = new MidiPlayer.Player(function(event) {
                     if (event.name == "Note on") {
                         instrument.play(event.noteName, context.ac.currentTime);
