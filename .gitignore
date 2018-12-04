@@ -2,7 +2,11 @@ node_modules
 out
 
 # vim stuff
-*.swp
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
 
 # Used for loading roms while developing
 roms
