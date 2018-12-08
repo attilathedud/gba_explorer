@@ -23,30 +23,47 @@
 const dialog = require("electron").remote.dialog;
 const fs = require("fs");
 
+const debugMode = false;
+
 export default {
     name: "FileSelector",
     created: function() {
-        //todo: if we are in a dev env, hardcode the opening
-        fs.readFile(process.cwd() + "/roms/zelda.gba", (err, data) => {
-            if(err){
-                //todo show error
-                return;
-            }
+        if( debugMode ) {
+            fs.readFile(process.cwd() + "/roms/zelda.gba", (err, data) => {
+                if(err){
+                    alert("Cannot find the file specified");
+                    return;
+                }
 
-            this.$emit("file-picked", data);
-        });
+                this.$emit("file-picked", data);
+            });
+        } 
     },
     methods: {
         chooseFile() {
-            dialog.showOpenDialog((files) => {
+            dialog.showOpenDialog({ filters: [
+                { name: "rom", extensions: ["gba", "rom"] }
+            ] }, (files) => {
                 if( files === undefined ) {
+                    alert("Please select a rom file");
                     return;
                 }
 
                 fs.readFile(files[0], (err, data) => {
                     if(err){
-                        //todo show error
+                        alert("Cannot find the file specified");
                         return;
+                    }
+
+                    let calculatedChecksum = 0;
+                    for( let n = 0xA0; n <= 0xBC; n++ ) {
+                        calculatedChecksum -= data[n];
+                    }
+
+                    calculatedChecksum = (calculatedChecksum - 0x19) & 0xFF;
+
+                    if( calculatedChecksum != data[0xBD] ) {
+                        alert("This rom does not have a valid checksum. Some information will be displayed incorrectly.");
                     }
 
                     this.$emit("file-picked", data);
