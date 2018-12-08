@@ -1,6 +1,17 @@
 <template>
-  <div class="tabs is-right is-full-width">
+  <div class="tabs is-full-width">
     <ul>
+      <li
+        @click="selectNewFile">
+        <a>
+          <span class="icon is-small"><i
+            class="fas fa-gamepad"
+            aria-hidden="true" /></span>
+          <span>Choose</span>
+        </a>
+      </li>
+    </ul>
+    <ul class="is-right">
       <li 
         v-for="item in categories" 
         :key="item.title" 
@@ -37,6 +48,9 @@ export default {
         itemPicked(item) {
             this.selected = item;
             this.$emit("item-picked", item);
+        },
+        selectNewFile() {
+            this.itemPicked("Choose"); 
         }
     }
 };

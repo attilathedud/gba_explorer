@@ -23,6 +23,24 @@ const state = {
 };
 
 const mutations = {
+    resetState(state) {
+        state.rom = Buffer.alloc(0);
+        //hexview related data
+        state.lastHexPosition = 0;
+        //strings related data
+        state.textAsByte = {};
+        state.byteAsText = {};
+        state.lastSearchText = "";
+        state.lastSearchMatches = [];
+        state.lastSearchSelectedMatch = {};
+        state.lastDumpStartAddress = "";
+        state.lastDumpEndAddress = "";
+        state.lastDumpBreakBytes = "";
+        state.lastDumpStrings = "";
+        //graphics related data
+        state.lastUncompressedSearchOffset = "00000000";
+        state.lastSelectedCompressedOffset = 0;
+    },
     setRom(state, rom) {
         state.rom = rom;
     },

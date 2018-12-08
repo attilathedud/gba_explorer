@@ -1,5 +1,5 @@
 <template>
-  <div v-if="rom.length == 0">
+  <div v-if="rom.length == 0 || section == 'Choose'">
     <FileSelector @file-picked="onFilePicked" />
   </div>
   <div v-else>
@@ -50,10 +50,13 @@ export default {
     },
     methods: {
         ...mapMutations([
+            "resetState",
             "setRom"
         ]),
         onFilePicked: function(data) {
+            this.resetState();
             this.setRom(data);
+            this.section = "Header";
         },
         onItemPicked: function(item) {
             this.section = item;

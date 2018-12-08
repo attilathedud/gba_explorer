@@ -12,7 +12,7 @@
     <br>
     <h2 class="title">Code</h2>
     <p>
-      The source code for this program is available <a href="https://www.github.com/attilathedud/gba_explorer">here.</a> It is an Electron application that uses Vue. It is licensed under the Apache License. 
+      The source code for this program is available <a href="https://www.github.com/attilathedud/gba_explorer">here.</a> It is an Electron application that uses Vue. It is written by attilathedud and licensed under the Apache License. 
     </p>
     <br>
     <p>
