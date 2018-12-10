@@ -29,7 +29,7 @@ export default {
     name: "FileSelector",
     created: function() {
         if( debugMode ) {
-            fs.readFile(process.cwd() + "/roms/zelda.gba", (err, data) => {
+            fs.readFile(process.cwd() + "/roms/metroid.gba", (err, data) => {
                 if(err){
                     alert("Cannot find the file specified");
                     return;
