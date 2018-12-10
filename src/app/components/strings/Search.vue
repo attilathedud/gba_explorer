@@ -2,10 +2,12 @@
   <div @keyup.esc="isPickingMatch=false">
     <div 
       v-if="showErrorOnSearch" 
-      class="notification is-danger">
+      class="notification is-danger"
+    >
       <button 
         class="delete" 
-        @click="showErrorOnSearch=false" />
+        @click="showErrorOnSearch=false"
+      />
       {{ errorMessage }}
     </div>
     <p>Search for a string that exists within the game. Fuzz is the amount of "mistakes" allowed in a possible match.</p><br>
@@ -15,7 +17,8 @@
           v-model="searchText" 
           class="input" 
           type="text" 
-          @keyup.enter="startSearch">
+          @keyup.enter="startSearch"
+        >
       </div>
       <div class="control">
         <div class="select">
@@ -23,7 +26,8 @@
             <option
               v-for="n in 10"
               :key="n.id"
-              :value="n">
+              :value="n"
+            >
               Fuzz: {{ n }}
             </option>
           </select>
@@ -33,23 +37,31 @@
         <button 
           class="button" 
           :class="{'is-loading':isSearching}" 
-          @click="startSearch">Search</button>
+          @click="startSearch"
+        >
+          Search
+        </button>
       </div>
     </div>
     <br>
     <div 
       v-if="matches.length > 0" 
-      class="field">
-      <label class="label">Selected Match for "{{ lastSearchText }}"</label>
+      class="field"
+    >
+      <label class="label">
+        Selected Match for "{{ lastSearchText }}"
+      </label>
       <div class="control">
         <div class="select">
           <select 
             v-model="matchSelected" 
-            @change="selectMatch(matchSelected)">
+            @change="selectMatch(matchSelected)"
+          >
             <option 
               v-for="match in matches" 
               :key="match.id" 
-              :value="match.address">
+              :value="match.address"
+            >
               0x{{ Number(match.address).toString(16).toUpperCase().padStart(8, '0') }} | {{ match.bytes.replace(/(.{4})/g, '$1 ').trim() }}
             </option>
           </select>
@@ -58,11 +70,14 @@
     </div>
     <div 
       class="modal" 
-      :class="{'is-active':isPickingMatch}">
+      :class="{'is-active':isPickingMatch}"
+    >
       <div class="modal-background" />
       <div class="modal-content">
         <div class="box">
-          <p class="has-text-grey-dark">There were multiple matches for the search. Please choose one to use.</p>
+          <p class="has-text-grey-dark">
+            There were multiple matches for the search. Please choose one to use.
+          </p>
           <hr>
           <table class="table is-striped is-narrow is-hoverable is-fullwidth">
             <tbody>
@@ -70,7 +85,8 @@
                 v-for="match in matches" 
                 :key="match.id" 
                 class="search-selector" 
-                @click="selectMatch(match.address)">
+                @click="selectMatch(match.address)"
+              >
                 <td>0x{{ Number(match.address).toString(16).toUpperCase().padStart(8, '0') }}</td>
                 <td>{{ match.bytes.replace(/(.{4})/g, '$1 ').trim() }}</td>
               </tr>
@@ -81,7 +97,8 @@
       <button 
         class="modal-close is-large" 
         aria-label="close" 
-        @click="isPickingMatch=false" />
+        @click="isPickingMatch=false"
+      />
     </div>
   </div>
 </template>

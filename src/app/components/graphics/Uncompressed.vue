@@ -12,31 +12,38 @@
           v-model="offsetText" 
           class="input" 
           type="text" 
-          @keyup.enter="startSearch">
+          @keyup.enter="startSearch"
+        >
       </p>
       <p class="control">
         <a 
           class="button" 
-          @click="startSearch">Search</a>
+          @click="startSearch"
+        >
+          Search
+        </a>
       </p>
     </div>
     
     <canvas 
       id="canvas"
-      class="canvas-stretch" />
+      class="canvas-stretch"
+    />
 
     <div class="graphics-zoom">
       <span class="icon is-large">
         <i 
           :class="{'zoom-disabled': pixelSize == 0}"
           class="fas fa-2x fa-minus-circle"
-          @click="zoomOut" />
+          @click="zoomOut"
+        />
       </span>
       <span class="icon is-large"> 
         <i 
           :class="{'zoom-disabled': pixelSize == pixelSizes.length - 1}"
           class="fas fa-2x fa-plus-circle"
-          @click="zoomIn" />
+          @click="zoomIn"
+        />
       </span> 
     </div>
   </div>

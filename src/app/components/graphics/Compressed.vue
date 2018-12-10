@@ -13,7 +13,8 @@
               v-for="section in compressedSections" 
               :key="section.id" 
               :class="{'is-selected':section == selected}" 
-              @click="uncompress(section)">
+              @click="uncompress(section)"
+            >
               <td>{{ toHexString(section, 8) }}</td>
             </tr>
           </tbody>
@@ -23,12 +24,14 @@
         <div class="centered-horizontal">
           <a 
             v-if="isLoading" 
-            class="button is-loading is-large is-text centered-vertical" />
+            class="button is-loading is-large is-text centered-vertical"
+          />
         </div>
 
         <div 
           class="canvas-holder"
-          :style="{'height': canvasHolderHeight + 'px', 'width': canvasHolderWidth + 'px', 'visibility': (isLoading ? 'hidden' : 'visible')}">
+          :style="{'height': canvasHolderHeight + 'px', 'width': canvasHolderWidth + 'px', 'visibility': (isLoading ? 'hidden' : 'visible')}"
+        >
           <canvas id="canvas" />
         </div>
 
@@ -36,12 +39,14 @@
           <span class="icon is-large">
             <i 
               class="fas fa-2x fa-angle-double-left"
-              @click="shiftTilesLeft" />
+              @click="shiftTilesLeft"
+            />
           </span>
           <span class="icon is-large"> 
             <i 
               class="fas fa-2x fa-angle-double-right"
-              @click="shiftTilesRight" />
+              @click="shiftTilesRight"
+            />
           </span>    
         </div>
         <div class="graphics-zoom">
@@ -49,13 +54,15 @@
             <i 
               :class="{'zoom-disabled': pixelSize == 0}" 
               class="fas fa-2x fa-minus-circle"
-              @click="zoomOut" />
+              @click="zoomOut"
+            />
           </span>
           <span class="icon is-large"> 
             <i 
               :class="{'zoom-disabled': pixelSize == pixelSizes.length - 1}"
               class="fas fa-2x fa-plus-circle"
-              @click="zoomIn" />
+              @click="zoomIn"
+            />
           </span> 
         </div>
       </div>

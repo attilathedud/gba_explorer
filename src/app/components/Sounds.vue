@@ -3,12 +3,14 @@
     <div class="centered-horizontal">
       <a 
         v-if="isSearching" 
-        class="button is-loading is-large is-text centered-vertical" />
+        class="button is-loading is-large is-text centered-vertical"
+      />
     </div>
     <div v-if="!isSearching">
       <div 
         v-if="sappyTableOffset == -1"
-        class="notification is-danger">  
+        class="notification is-danger"
+      >  
         No sound engine found
       </div>
       <div v-else>
@@ -25,7 +27,8 @@
                   v-for="song in songList" 
                   :key="song.id" 
                   :class="{'is-selected':song == songSelected}" 
-                  @click="dumpTrack(song)">
+                  @click="dumpTrack(song)"
+                >
                   <td>{{ toHexString(song, 8) }}</td>
                 </tr>
               </tbody>
@@ -33,14 +36,16 @@
           </div>
           <div class="column">
             <div 
-              class="notification is-danger">
+              class="notification is-danger"
+            >
               This feature is experimental. It does not use the original notes or soundfont from the rom,
               so tracks will sound slightly different.
             </div>
 
             <Player 
               v-if="songSelected != 0" 
-              :song-data="songSelectedData" />
+              :song-data="songSelectedData"
+            />
           </div>
         </div>
       </div>

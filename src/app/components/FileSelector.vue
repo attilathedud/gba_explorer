@@ -7,12 +7,19 @@
     </figure>
     <div class="media-content">
       <div class="content">
-        <h3 class="is-size-3 has-text-dark">Start Exploring!</h3>
-        <p class="has-text-dark">Please choose a .gba file to explore.</p>
+        <h3 class="is-size-3 has-text-dark">
+          Start Exploring!
+        </h3>
+        <p class="has-text-dark">
+          Please choose a .gba file to explore.
+        </p>
         <div class="centered-horizontal">
           <button 
             class="button is-primary is-medium choose-file-button" 
-            @click="chooseFile">Choose</button>
+            @click="chooseFile"
+          >
+            Choose
+          </button>
         </div>
       </div>
     </div>

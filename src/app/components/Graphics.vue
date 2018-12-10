@@ -4,7 +4,8 @@
       <SideNavbar 
         :categories="categories" 
         :selected="section" 
-        @item-picked="onItemPicked" />
+        @item-picked="onItemPicked"
+      />
     </div>
     <div class="column">
       <Compressed v-if="section == 'Compressed'" />

@@ -4,7 +4,8 @@
       <div class="progress-bar">
         <div 
           :style="{'width': percentBar + '%'}"
-          class="progress-bar-percent" />
+          class="progress-bar-percent"
+        />
       </div>
     </div>
     <div class="centered-container">
@@ -13,12 +14,14 @@
           <i 
             :class="{'fa-play': !isPlaying, 'fa-pause': isPlaying}"
             class="fas fa-2x"
-            @click="playOrPauseTrack" />
+            @click="playOrPauseTrack"
+          />
         </span>
         <span class="icon is-large"> 
           <i 
             class="fas fa-2x fa-stop"
-            @click="stopTrack" />
+            @click="stopTrack"
+          />
         </span> 
       </div>
     </div>

@@ -1,30 +1,39 @@
 <template>
   <div>
     <div class="field">
-      <label class="label">Start Address</label>
+      <label class="label">
+        Start Address
+      </label>
       <div class="control">
         <input 
           v-model="startAddress" 
           class="input" 
-          type="text">
+          type="text"
+        >
       </div>
     </div>
     <div class="field">
-      <label class="label">End Address</label>
+      <label class="label">
+        End Address
+      </label>
       <div class="control">
         <input 
           v-model="endAddress" 
           class="input" 
-          type="text">
+          type="text"
+        >
       </div>
     </div>
     <div class="field">
-      <label class="label">Break Bytes (optional)</label>
+      <label class="label">
+        Break Bytes (optional)
+      </label>
       <div class="control">
         <input 
           v-model="breakBytes" 
           class="input" 
-          type="text">
+          type="text"
+        >
       </div>
     </div>
     <div class="field">
@@ -32,16 +41,21 @@
         <button 
           class="button" 
           :class="{'is-loading':isDumping}" 
-          @click="dump">Dump</button>
+          @click="dump"
+        >
+          Dump
+        </button>
       </div>
     </div>
     <div
       v-if="dumpedStrings.length > 0"
-      class="field">
+      class="field"
+    >
       <div class="control">
         <textarea 
           v-model="dumpedStrings" 
-          class="textarea" />
+          class="textarea"
+        />
       </div>
     </div>
   </div>

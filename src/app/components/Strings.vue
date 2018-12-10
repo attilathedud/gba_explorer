@@ -4,18 +4,22 @@
       <SideNavbar 
         :categories="categories" 
         :selected="section" 
-        @item-picked="onItemPicked" />
+        @item-picked="onItemPicked"
+      />
     </div>
     <div class="column">
       <Search 
         v-if="section == 'Search'" 
-        @search-finished="onSearchFinished" />
+        @search-finished="onSearchFinished"
+      />
       <Dictionary 
         v-if="section == 'Dictionary'"
-        @item-added="onItemAdded" />
+        @item-added="onItemAdded"
+      />
       <HexView 
         v-if="section == 'Hex View'"
-        :use-dictionary="true" />
+        :use-dictionary="true"
+      />
       <Dump v-if="section == 'Dump'" />
     </div>
   </div>

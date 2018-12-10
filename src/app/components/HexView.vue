@@ -2,10 +2,12 @@
   <div class="hex-view-holder">
     <div 
       v-if="showErrorNoResults" 
-      class="notification is-danger">
+      class="notification is-danger"
+    >
       <button 
         class="delete" 
-        @click="showErrorNoResults=false" />
+        @click="showErrorNoResults=false"
+      />
       No matches found.
     </div>
     <div class="field has-addons">
@@ -24,25 +26,33 @@
           v-model="searchText" 
           class="input" 
           type="text"
-          @keyup.enter="startSearch">
+          @keyup.enter="startSearch"
+        >
       </p>
       <p class="control">
         <a 
           class="button" 
-          @click="startSearch">Search</a>
+          @click="startSearch"
+        >
+          Search
+        </a>
       </p>
     </div>
     <table class="table is-striped is-narrow is-hoverable">
       <tbody>
         <tr 
           v-for="(address, index) in addresses" 
-          :key="address.id">
-          <td class="has-text-grey-light is-divider">{{ address }}</td>
+          :key="address.id"
+        >
+          <td class="has-text-grey-light is-divider">
+            {{ address }}
+          </td>
           <td 
             v-for="(item, item_index) in romData.slice((index) * 16, ((index) * 16) + 16)" 
             :key="item.id" 
             :class="{'has-background-success':getHex(address)+item_index == selected}" 
-            @click="byteClicked(item_index, address)">
+            @click="byteClicked(item_index, address)"
+          >
             {{ item }}
           </td>
           <td class="is-divider" />
@@ -51,7 +61,8 @@
               v-for="(letter, letter_index) in ascii.slice((index) * 16, ((index) * 16) + 16)" 
               :key="letter.id" 
               :class="{'has-background-success':getHex(address)+letter_index == selected}"
-              @click="byteClicked(letter_index, address)">
+              @click="byteClicked(letter_index, address)"
+            >
               {{ letter }}
             </span>
           </td>

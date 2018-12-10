@@ -2,11 +2,15 @@
   <div class="tabs is-full-width">
     <ul>
       <li
-        @click="selectNewFile">
+        @click="selectNewFile"
+      >
         <a>
-          <span class="icon is-small"><i
-            class="fas fa-gamepad"
-            aria-hidden="true" /></span>
+          <span class="icon is-small">
+            <i
+              class="fas fa-gamepad"
+              aria-hidden="true"
+            />
+          </span>
           <span>Choose</span>
         </a>
       </li>
@@ -16,11 +20,15 @@
         v-for="item in categories" 
         :key="item.title" 
         :class="{'is-active':item.title == selected}" 
-        @click="itemPicked(item.title)">
+        @click="itemPicked(item.title)"
+      >
         <a>
-          <span class="icon is-small"><i 
-            :class="item.icon" 
-            aria-hidden="true" /></span>
+          <span class="icon is-small">
+            <i 
+              :class="item.icon" 
+              aria-hidden="true"
+            />
+          </span>
           <span>{{ item.title }}</span>
         </a>
       </li>
