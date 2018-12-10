@@ -1,6 +1,6 @@
 {
   "name": "gba_explorer",
-  "productName": "gba_explorer",
+  "productName": "GBA Explorer",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
@@ -59,6 +59,7 @@
     "simple-web-worker": "^1.2.0",
     "soundfont-player": "^0.10.7",
     "vue": "^2.5.19",
+    "vue-template-compiler": "^2.5.19",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
