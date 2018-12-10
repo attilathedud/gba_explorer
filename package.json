@@ -51,14 +51,14 @@
     }
   },
   "dependencies": {
-    "bulma": "^0.7.1",
-    "electron-compile": "^6.4.2",
+    "bulma": "^0.7.2",
+    "electron-compile": "^6.4.3",
     "electron-devtools-installer": "^2.2.4",
     "electron-squirrel-startup": "^1.0.0",
-    "midi-player-js": "^2.0.3",
+    "midi-player-js": "^2.0.5",
     "simple-web-worker": "^1.2.0",
     "soundfont-player": "^0.10.7",
-    "vue": "^2.5.16",
+    "vue": "^2.5.19",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
@@ -69,13 +69,13 @@
     "electron-forge": "^5.2.3",
     "electron-prebuilt-compile": "2.0.2",
     "eslint": "^4.19.1",
-    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
-    "eslint-plugin-vue": "^5.0.0-beta.1",
+    "eslint-plugin-vue": "^5.0.0",
     "gulp": "^3.9.1",
     "gulp-clean-css": "^4.0.0",
-    "gulp-sass": "^4.0.1"
+    "gulp-sass": "^4.0.2"
   }
 }
