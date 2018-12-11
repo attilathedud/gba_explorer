@@ -56,6 +56,9 @@ export default {
     created: function() {
         this.createAndPlay(this.songData);
     },
+    destroyed: function () {
+        this.stopTrack();
+    }, 
     methods: {
         playOrPauseTrack: function() {
             if( this.isPlaying ) {
