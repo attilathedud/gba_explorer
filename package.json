@@ -33,7 +33,8 @@
         ]
       },
       "electronPackagerConfig": {
-        "packageManager": "npm"
+        "packageManager": "npm",
+        "icon": "src/images/icon"
       },
       "electronWinstallerConfig": {
         "name": "gba_explorer"
