@@ -58,6 +58,8 @@ import Track from "../midi/track.js";
 import Player from "./sounds/Player.vue";
 
 import { mapGetters } from "vuex";
+import { mapMutations } from "vuex";
+
 import sww from "simple-web-worker";
 
 export default {
@@ -78,7 +80,8 @@ export default {
     },
     computed: {
         ...mapGetters([
-            "rom"
+            "rom",
+            "lastSelectedSongOffset"
         ])
     },
     created: function() {
@@ -189,6 +192,7 @@ export default {
         window.removeEventListener("keydown", this.handleKeypress);
     },  
     methods: {
+        ...mapMutations(["setSelectedSongOffset"]),
         scan: function() {
             this.isSearching = true;
             this.worker.postMessage("scan", [this.rom])
@@ -197,12 +201,17 @@ export default {
                     this.songTableOffset = results.songTableOffset;
                     this.songList = results.songList;
 
+                    if( this.lastSelectedSongOffset != 0 ) {
+                        this.dumpTrack(this.lastSelectedSongOffset);
+                    }
+
                     this.isSearching = false;
                 });
         },
         dumpTrack: function(offset) {
             this.songSelected = offset;
             this.songSelectedData = this.track.dumpTrack(offset);
+            this.setSelectedSongOffset(offset);
         },
         handleKeypress: function(event) {
             const KEY_LEFT = 37;

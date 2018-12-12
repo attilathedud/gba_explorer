@@ -19,7 +19,9 @@ const state = {
     lastDumpStrings: "",
     //graphics related data
     lastUncompressedSearchOffset: "00000000",
-    lastSelectedCompressedOffset: 0
+    lastSelectedCompressedOffset: 0,
+    //sounds related data
+    lastSelectedSongOffset: 0
 };
 
 const mutations = {
@@ -40,6 +42,8 @@ const mutations = {
         //graphics related data
         state.lastUncompressedSearchOffset = "00000000";
         state.lastSelectedCompressedOffset = 0;
+        //sounds related data
+        state.lastSelectedSongOffset = 0;
     },
     setRom(state, rom) {
         state.rom = rom;
@@ -71,6 +75,9 @@ const mutations = {
     },
     setSelectedCompressedOffset(state, offset) {
         state.lastSelectedCompressedOffset = offset;
+    },
+    setSelectedSongOffset(state, offset) {
+        state.lastSelectedSongOffset = offset;
     }
 };
 
@@ -87,7 +94,8 @@ const getters =  {
     lastDumpBreakBytes: state => state.lastDumpBreakBytes,
     lastDumpStrings: state => state.lastDumpStrings,
     lastUncompressedSearchOffset: state => state.lastUncompressedSearchOffset,
-    lastSelectedCompressedOffset: state => state.lastSelectedCompressedOffset
+    lastSelectedCompressedOffset: state => state.lastSelectedCompressedOffset,
+    lastSelectedSongOffset: state => state.lastSelectedSongOffset
 };
 
 export default new Vuex.Store({
