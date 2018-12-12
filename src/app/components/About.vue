@@ -50,6 +50,11 @@
         CC 3.0 BY
       </a>
     </p>
+    <br>
+    <hr>
+    <p>
+      Version 1.0.0
+    </p>
   </div>
 </template>
 
